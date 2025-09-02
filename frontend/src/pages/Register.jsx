@@ -1,0 +1,104 @@
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { registerPlayer } from '../api/auth';
+import './Register.css';
+
+const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOption }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
+    referalCode: ''
+  });
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await registerPlayer(formData);
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.player));
+        localStorage.setItem('userType', 'player');
+        onRegister();
+      } else {
+        toast.error('Registration failed!');
+      }
+    } catch (error) {
+      toast.error('Registration error!');
+    }
+  };
+
+  return (
+    <div className="register">
+      <div className="register-container">
+        <h2>Player Registration</h2>
+        
+        {showAgentOption && (
+          <div className="user-type-toggle">
+            <button className="active">Player</button>
+            <button onClick={onSwitchToAgent}>Agent</button>
+          </div>
+        )}
+        
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Name"
+            value={formData.name}
+            onChange={(e) => setFormData({...formData, name: e.target.value})}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            required
+          />
+          <input
+            type="tel"
+            placeholder="Phone"
+            value={formData.phone}
+            onChange={(e) => setFormData({...formData, phone: e.target.value})}
+            required
+          />
+          <div className="password-input">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={formData.password}
+              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              required
+            />
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? '🫥' : '👁️'}
+            </button>
+          </div>
+          <input
+            type="text"
+            placeholder="Referral Code (Optional)"
+            value={formData.referalCode}
+            onChange={(e) => setFormData({...formData, referalCode: e.target.value})}
+          />
+          <button type="submit">Register</button>
+        </form>
+        
+        <p>
+          Already have an account? 
+          <button type="button" onClick={onSwitchToLogin} className="link-button">
+            Login here
+          </button>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default Register;

@@ -1,0 +1,360 @@
+.history {
+  padding: 16px;
+  padding-bottom: 80px;
+}
+
+.history-header h2 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  color: var(--heading-color);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--background-light-color);
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card.wins {
+  border-left: 4px solid var(--success-color);
+}
+
+.stat-card.losses {
+  border-left: 4px solid var(--danger-color);
+}
+
+.stat-card.earnings {
+  border-left: 4px solid var(--primary-color);
+}
+
+.stat-card.commission {
+  border-left: 4px solid #ff9800;
+}
+
+.stat-number {
+  display: block;
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--heading-color);
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--secondary-color);
+}
+
+.history-list h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: var(--heading-color);
+}
+
+.history-item {
+  background: var(--background-light-color);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.game-info {
+  padding: 16px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.game-info h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--heading-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.game-info h4::before {
+  content: '🎮';
+  font-size: 14px;
+}
+
+.game-meta {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: var(--secondary-color);
+}
+
+.game-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gameplay-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.play-item {
+  display: grid;
+  grid-template-columns: 60px 1fr 80px 60px 70px;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.board {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+  font-size: 11px;
+}
+
+.bet-type {
+  color: var(--heading-color);
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.numbers {
+  background: #e0f2fe;
+  color: #0277bd;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+  font-size: 12px;
+}
+
+.qty {
+  color: var(--secondary-color);
+  font-size: 11px;
+}
+
+.amount {
+  padding-right: 25%;
+  color: var(--primary-color);
+  font-weight: 600;
+  text-align: right;
+}
+
+.game-result {
+  padding: 16px;
+  background: #f8fafc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.amounts {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.bet-amount, .win-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.bet-amount span:first-child, .win-amount span:first-child {
+  font-size: 10px;
+  color: var(--secondary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bet-amount span:last-child {
+  font-size: 16px;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.win-amount span:last-child {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--success-color);
+}
+
+.commission {
+  color: #ff9800;
+  font-size: 10px;
+}
+
+.status {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.status.won {
+  background: var(--success-color);
+  color: white;
+}
+
+.status.lost {
+  background: var(--danger-color);
+  color: white;
+}
+
+.loading, .no-history {
+  text-align: center;
+  padding: 40px;
+  color: var(--secondary-color);
+}
+
+.no-history p {
+  margin: 0;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .history {
+    padding: 12px;
+    padding-bottom: 80px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    padding: 12px;
+  }
+
+  .stat-number {
+    font-size: 18px;
+  }
+
+  .play-item {
+    grid-template-columns: 50px 1fr 70px 50px 60px;
+    gap: 8px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .board {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+
+  .bet-type {
+    font-size: 11px;
+  }
+
+  .numbers {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+
+  .amounts {
+    gap: 16px;
+  }
+
+  .bet-amount span:last-child,
+  .win-amount span:last-child {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .history {
+    padding: 8px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .stat-card {
+    padding: 10px;
+  }
+
+  .stat-number {
+    font-size: 16px;
+  }
+
+  .game-info {
+    padding: 12px;
+  }
+
+  .game-info h4 {
+    font-size: 14px;
+  }
+
+  .game-meta {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .play-item {
+    grid-template-columns: 35px 1fr 50px 40px 50px;
+    gap: 4px;
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+
+  .amount {
+    padding-right: 0;
+  }
+
+  .board {
+    font-size: 9px;
+    padding: 2px 4px;
+  }
+
+  .bet-type {
+    font-size: 10px;
+  }
+
+  .numbers {
+    font-size: 10px;
+    padding: 2px 4px;
+  }
+
+  .game-result {
+    padding: 12px;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .amounts {
+    justify-content: space-around;
+    gap: 12px;
+  }
+
+  .bet-amount span:last-child,
+  .win-amount span:last-child {
+    font-size: 13px;
+  }
+
+  .status {
+    align-self: center;
+  }
+}

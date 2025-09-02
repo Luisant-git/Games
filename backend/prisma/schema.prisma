@@ -1,0 +1,183 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id       Int        @id  @default(autoincrement())
+  name     String?
+  email    String     @unique
+  phone    String?    @unique
+  password String 
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+enum BetType {
+  SINGLE
+  DOUBLE
+  TRIPLE_DIGIT
+  FOUR_DIGIT
+}
+
+model Game {
+  id                    Int           @id @default(autoincrement())
+  betType               BetType?
+  board                 String?       // Store as comma-separated values (e.g., "A,B" or "A,B,C")
+  winningAmount         Int?          // Winning amount for this entry
+  ticket                Int?          // Ticket rate
+  singleDigitMatching   Int?          // Single digit matching amount
+  doubleDigitMatching   Int?          // Double digit matching amount
+  tripleDigitMatching   Int?          // Triple digit matching amount
+  isActive              Boolean       @default(true)
+  agentCommissions      AgentCommission[]
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+}
+
+model Player {
+  id          Int           @id @default(autoincrement())
+  name        String?
+  email       String        @unique
+  phone       String?       @unique
+  password    String
+  referalCode String?
+  agent       Agent?        @relation(fields: [agentId], references: [id])
+  agentId     Int?
+  wallet      PlayerWallet?
+  gameHistory GameHistory[]
+  deposits    Deposit[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Agent {
+  id        Int           @id @default(autoincrement())
+  name      String?
+  username  String        @unique
+  password  String
+  referCode String        @unique @default(cuid())
+  isActive  Boolean       @default(false)
+  players   Player[]
+  wallet    AgentWallet?
+  commissions AgentCommission[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model PlayerWallet {
+  id       Int     @id @default(autoincrement())
+  balance  Float   @default(0)
+  player   Player  @relation(fields: [playerId], references: [id])
+  playerId Int     @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AgentWallet {
+  id       Int     @id @default(autoincrement())
+  balance  Float   @default(0)
+  agent    Agent   @relation(fields: [agentId], references: [id])
+  agentId  Int     @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GameHistory {
+  id              Int      @id @default(autoincrement())
+  player          Player   @relation(fields: [playerId], references: [id])
+  playerId        Int
+  categoryId      Int
+  showtimeId      Int
+  showTime        DateTime
+  playStart       DateTime
+  playEnd         DateTime
+  totalBetAmount  Float
+  totalWinAmount  Float    @default(0)
+  agentCommission Float    @default(0)
+  isWon           Boolean  @default(false)
+  gameplay        GamePlay[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model GamePlay {
+  id            Int         @id @default(autoincrement())
+  gameHistory   GameHistory @relation(fields: [gameHistoryId], references: [id])
+  gameHistoryId Int
+  gameId        Int
+  board         String
+  betType       BetType
+  numbers       String      // Store as string or JSON
+  qty           Int
+  amount        Float
+  winAmount     Float       @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Category {
+   id           Int       @id    @default(autoincrement())
+   name         String
+   image        String
+   createdAt    DateTime   @default(now())
+   updatedAt    DateTime   @updatedAt
+   timing       Timing[]
+}
+
+model Timing {
+  id             Int        @id @default(autoincrement())
+  name           String     // Name/description of the timing slot
+  categoryId     Int
+  category       Category   @relation(fields: [categoryId], references: [id])
+  showTimes      ShowTime[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model ShowTime {
+  id        Int      @id @default(autoincrement())
+  playStart DateTime
+  playEnd   DateTime
+  showTime  DateTime
+  timingId  Int
+  timing    Timing   @relation(fields: [timingId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AgentCommission {
+  id            Int     @id @default(autoincrement())
+  agentId       Int
+  gameId        Int
+  commissionRate Float
+  agent         Agent   @relation(fields: [agentId], references: [id])
+  game          Game    @relation(fields: [gameId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@unique([agentId, gameId])
+}
+
+model Deposit {
+  id        Int      @id @default(autoincrement())
+  playerId  Int
+  utrNumber String
+  amount    Float
+  ticket    Int?
+  status    DepositStatus
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  player    Player   @relation(fields: [playerId], references: [id])
+}
+
+enum DepositStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}

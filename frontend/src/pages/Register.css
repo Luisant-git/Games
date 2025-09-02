@@ -1,0 +1,129 @@
+.register {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.register-container {
+  background: var(--background-light-color);
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.register-container h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: var(--heading-color);
+}
+
+.user-type-toggle {
+  display: flex;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.user-type-toggle button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: var(--background-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.user-type-toggle button.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.register-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.register-container input {
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 14px;
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+.register-container input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.register-container button[type="submit"] {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.register-container button[type="submit"]:hover {
+  background: var(--hover-color);
+}
+
+.register-container p {
+  text-align: center;
+  margin-top: 16px;
+  color: var(--text-color);
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
+}
+
+.link-button:hover {
+  color: var(--hover-color);
+}
+
+.password-input {
+  position: relative;
+}
+
+.password-input input {
+  padding-right: 40px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--secondary-color);
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-toggle:hover {
+  color: var(--text-color);
+}

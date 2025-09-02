@@ -1,0 +1,203 @@
+.profile {
+  padding: 16px;
+  padding-bottom: 80px;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-avatar {
+  font-size: 48px;
+  background: #f0f0f0;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+
+.profile-info h2 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.profile-info p {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.member-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.profile-stats {
+  display: flex;
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  border-right: 1px solid #f0f0f0;
+}
+
+.stat-item:last-child {
+  border-right: none;
+}
+
+.stat-item.wallet .stat-number {
+  color: white;
+}
+
+.stat-item.wallet .stat-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.stat-number {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2874f0;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.profile-menu {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item:hover {
+  background: #f8f8f8;
+}
+
+.menu-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-icon {
+  font-size: 18px;
+}
+
+.menu-label {
+  font-size: 14px;
+  color: #333;
+}
+
+.menu-count {
+  background: #2874f0;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: auto;
+}
+
+.menu-arrow {
+  font-size: 14px;
+  color: #999;
+}
+
+.referral-section {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.referral-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.referral-icon {
+  font-size: 16px;
+}
+
+.referral-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.referral-code-container {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 8px 12px;
+  gap: 8px;
+}
+
+.referral-code {
+  flex: 1;
+  font-family: monospace;
+  font-size: 14px;
+  color: #495057;
+  font-weight: 500;
+}
+
+.copy-button {
+  background: #2874f0;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.2s ease;
+}
+
+.copy-button:hover {
+  background: #1e5bb8;
+}
+
+.copy-button:active {
+  transform: scale(0.95);
+}
