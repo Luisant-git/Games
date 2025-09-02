@@ -12,6 +12,8 @@ const Timing = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTiming, setEditingTiming] = useState(null)
   const [form] = Form.useForm()
+  console.log(categories, "<--- categories-time");
+  
 
   useEffect(() => {
     fetchData()
@@ -24,7 +26,7 @@ const Timing = () => {
         categoryAPI.getAll()
       ])
       setTimings(Array.isArray(timingsData) ? timingsData : [])
-      setCategories(Array.isArray(categoriesData) ? categoriesData : [])
+      setCategories(categoriesData?.categories || [])
     } catch (error) {
       console.error('Error fetching data:', error)
       setTimings([])
