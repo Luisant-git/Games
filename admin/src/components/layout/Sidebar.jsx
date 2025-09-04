@@ -13,7 +13,7 @@ import {
   PayCircleOutlined,
 } from "@ant-design/icons";
 
-const Sidebar = ({ isOpen, onClose }) => {
+const Sidebar = ({ isOpen, onClose, isMobile }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -78,7 +78,9 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   const handleMenuClick = ({ key }) => {
     navigate(key);
-    onClose();
+    if (isMobile) {
+      onClose();
+    }
   };
 
   return (

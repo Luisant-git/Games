@@ -4,6 +4,7 @@ import { EditOutlined, DeleteOutlined, PlusOutlined, UploadOutlined } from '@ant
 import toast from 'react-hot-toast'
 import { categoryAPI } from '../api/category'
 import { uploadAPI } from '../api/upload'
+import { useMediaQuery } from 'react-responsive'
 
 const Category = () => {
   const [categories, setCategories] = useState([])
@@ -13,6 +14,7 @@ const Category = () => {
   const [uploading, setUploading] = useState(false)
   const [imageUrl, setImageUrl] = useState('')
   const [form] = Form.useForm()
+  const isMobile = useMediaQuery({ maxWidth: 1024 })
 
   useEffect(() => {
     fetchCategories()
@@ -117,7 +119,7 @@ const Category = () => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      width: 80,
+      width: 60,
     },
     {
       title: 'Name',
@@ -184,8 +186,8 @@ const Category = () => {
   ]
 
   return (
-    <div style={{ padding: '24px' }}>
-      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div style={{ width: '100vw', marginLeft: '-1.5rem', marginRight: '-1.5rem', padding: '0 1rem' }}>
+      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 0.5rem' }}>
         <h2>Category Management</h2>
         <Button
           type="primary"
@@ -196,13 +198,27 @@ const Category = () => {
         </Button>
       </div>
 
-      <Table
-        columns={columns}
-        dataSource={categories}
-        loading={loading}
-        rowKey="id"
-        pagination={{ pageSize: 10 }}
-      />
+      <div style={{
+        width: '100%',
+        overflowX: 'scroll',
+        overflowY: 'hidden',
+        WebkitOverflowScrolling: 'touch',
+        border: '1px solid #d9d9d9',
+        borderRadius: '6px',
+        margin: '0 0.5rem'
+      }}>
+        <div style={{ minWidth: '700px' }}>
+          <Table
+            columns={columns}
+            dataSource={categories}
+            loading={loading}
+            rowKey="id"
+            pagination={{ pageSize: 10 }}
+            scroll={false}
+            size="small"
+          />
+        </div>
+      </div>
 
       <Modal
         title={editingCategory ? 'Edit Category' : 'Add Category'}

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Tag, Popconfirm, Button, message } from 'antd'
+import { Tag, Popconfirm, Button, message } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { agentAPI } from '../api/agent'
+import './Agent.css'
 
 const Agent = () => {
     const [allAgents, setAllAgents] = useState([]);
@@ -22,80 +23,7 @@ const Agent = () => {
           setLoading(false)
         }
       }
-  const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 60,
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Username',
-      dataIndex: 'username',
-      key: 'username',
-    },
-    {
-      title: 'Refer Code',
-      dataIndex: 'referCode',
-      key: 'referCode',
-    },
-    {
-      title: 'Status',
-      dataIndex: 'isActive',
-      key: 'isActive',
-      render: (isActive, record) => (
-        <Popconfirm
-          title="Change Status"
-          description={`Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this agent?`}
-          onConfirm={() => handleToggleStatus(record.id)}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Tag 
-            color={isActive ? 'green' : 'red'} 
-            style={{ cursor: 'pointer' }}
-          >
-            {isActive ? 'Active' : 'Inactive'}
-          </Tag>
-        </Popconfirm>
-      ),
-    },
-    {
-      title: 'Wallet Balance',
-      key: 'balance',
-      render: (record) => `₹${record.wallet?.balance || 0}`,
-    },
-    {
-      title: 'Players',
-      key: 'players',
-      render: (record) => record.players?.length || 0,
-    },
-    {
-      title: 'Created At',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (date) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (record) => (
-        <Button
-          type="primary"
-          size="small"
-          onClick={() => navigate(`/agents/${record.id}/commission`)}
-        >
-          Manage
-        </Button>
-      ),
-    },
 
-  ]
 
   const handleToggleStatus = async (agentId) => {
     try {
@@ -108,23 +36,85 @@ const Agent = () => {
   }
 
   return (
-    <div className="content">
-      <div className="section-header">
+    <div style={{ width: '100vw', marginLeft: '-1.5rem', marginRight: '-1.5rem', padding: '0 1rem' }}>
+      <div className="section-header" style={{ padding: '0 0.5rem' }}>
         <h2>Agents Management</h2>
       </div>
       
-      <Table
-        columns={columns}
-        dataSource={allAgents}
-        rowKey="id"
-        loading={loading}
-        pagination={{
-          pageSize: 10,
-          showSizeChanger: true,
-          showQuickJumper: true,
-        }}
-        scroll={{ x: 800 }}
-      />
+      {loading ? (
+        <div className="loading-container">Loading...</div>
+      ) : (
+        <>
+          {/* Table */}
+          <div style={{
+            width: '100%',
+            overflowX: 'scroll',
+            overflowY: 'hidden',
+            WebkitOverflowScrolling: 'touch',
+            border: '1px solid #d9d9d9',
+            borderRadius: '6px',
+            margin: '0 0.5rem'
+          }}>
+            <div style={{ minWidth: '900px' }}>
+              <table className="responsive-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Refer Code</th>
+                    <th>Status</th>
+                    <th>Wallet Balance</th>
+                    <th>Players</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allAgents.map((agent) => (
+                    <tr key={agent.id}>
+                      <td>{agent.id}</td>
+                      <td>{agent.name}</td>
+                      <td>{agent.username}</td>
+                      <td>{agent.referCode}</td>
+                      <td>
+                        <Popconfirm
+                          title="Change Status"
+                          description={`Are you sure you want to ${agent.isActive ? 'deactivate' : 'activate'} this agent?`}
+                          onConfirm={() => handleToggleStatus(agent.id)}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <Tag 
+                            color={agent.isActive ? 'green' : 'red'} 
+                            style={{ cursor: 'pointer' }}
+                          >
+                            {agent.isActive ? 'Active' : 'Inactive'}
+                          </Tag>
+                        </Popconfirm>
+                      </td>
+                      <td>₹{agent.wallet?.balance || 0}</td>
+                      <td>{agent.players?.length || 0}</td>
+                      <td>{new Date(agent.createdAt).toLocaleDateString()}</td>
+                      <td>
+                        <Button
+                          type="primary"
+                          size="small"
+                          onClick={() => navigate(`/agents/${agent.id}/commission`)}
+                        >
+                          Manage
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+
+        </>
+      )}
     </div>
   )
 }

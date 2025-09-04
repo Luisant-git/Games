@@ -1,0 +1,162 @@
+@import '../responsive.css';
+
+.timing-container {
+  padding: 24px;
+}
+
+.timing-header {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.timing-header h2 {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.timing-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--background-light-color);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.responsive-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--background-light-color);
+  min-width: 800px; /* Ensure table is wide enough to scroll */
+}
+
+.responsive-table th,
+.responsive-table td {
+  padding: 12px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+.responsive-table th {
+  background: var(--background-color);
+  color: var(--heading-color);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.responsive-table td {
+  color: var(--text-color);
+  font-size: 0.875rem;
+}
+
+.responsive-table tr:hover {
+  background: var(--background-color);
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: var(--secondary-color);
+  font-size: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .timing-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .timing-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .timing-container {
+    padding: 16px;
+  }
+
+  .timing-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .responsive-table {
+    min-width: 700px;
+  }
+
+  .responsive-table th,
+  .responsive-table td {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .timing-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .timing-actions .ant-btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .responsive-table {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 425px) {
+  .timing-container {
+    padding: 12px;
+  }
+
+  .timing-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .table-container {
+    margin: 0 -12px;
+    padding: 0 12px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .responsive-table {
+    min-width: 600px;
+  }
+
+  .responsive-table th,
+  .responsive-table td {
+    padding: 6px 3px;
+    font-size: 0.7rem;
+  }
+
+  .ant-btn-sm {
+    font-size: 0.65rem;
+    padding: 2px 4px;
+    height: auto;
+  }
+}

@@ -1,0 +1,242 @@
+@import '../responsive.css';
+
+.category-container {
+  padding: 24px;
+}
+
+.category-header {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.category-header h2 {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.category-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--background-light-color);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.table-container .ant-table-wrapper {
+  display: block !important;
+}
+
+.table-container .ant-table {
+  display: table !important;
+  min-width: 700px; /* Ensure table is wide enough to scroll */
+}
+
+/* Ensure action column is visible - Category specific */
+.category-container .ant-table-thead > tr > th:last-child,
+.category-container .ant-table-tbody > tr > td:last-child {
+  position: sticky;
+  right: 0;
+  background: var(--background-light-color);
+  min-width: 100px;
+  z-index: 1;
+}
+
+.category-container .ant-table-thead > tr > th:last-child {
+  background: var(--background-color);
+}
+
+@media (max-width: 1024px) {
+  .category-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .category-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .category-container {
+    padding: 16px;
+  }
+
+  .category-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-container .ant-table {
+    min-width: 700px;
+  }
+
+  .ant-table-thead > tr > th {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .ant-table-tbody > tr > td {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .ant-btn {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  .category-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .category-actions .ant-btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .table-container .ant-table {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 425px) {
+  .category-container {
+    padding: 12px;
+  }
+
+  .category-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .table-container {
+    margin: 0 -12px;
+    padding: 0 12px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-container .ant-table {
+    min-width: 600px;
+  }
+
+  .ant-table-thead > tr > th {
+    padding: 6px 3px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+
+  .ant-table-tbody > tr > td {
+    padding: 6px 3px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+
+  /* Force action column visibility on mobile - Category specific */
+  .category-container .ant-table-thead > tr > th:last-child,
+  .category-container .ant-table-tbody > tr > td:last-child {
+    position: sticky !important;
+    right: 0 !important;
+    min-width: 80px !important;
+    width: 80px !important;
+    background: var(--background-light-color) !important;
+    z-index: 10 !important;
+    box-shadow: -2px 0 4px rgba(0,0,0,0.1);
+  }
+
+  .category-container .ant-table-thead > tr > th:last-child {
+    background: var(--background-color) !important;
+  }
+
+  .ant-btn-sm {
+    font-size: 0.65rem;
+    padding: 2px 4px;
+    height: auto;
+  }
+}
+
+/* Loading and Empty States */
+.category-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: var(--secondary-color);
+}
+
+.category-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--secondary-color);
+}
+
+.category-empty h3 {
+  margin-bottom: 0.5rem;
+  color: var(--heading-color);
+}
+
+/* Form Responsive */
+@media (max-width: 768px) {
+  .ant-modal {
+    margin: 0;
+    max-width: 100vw;
+    top: 0;
+  }
+
+  .ant-modal-content {
+    border-radius: 0;
+  }
+
+  .ant-form-item {
+    margin-bottom: 16px;
+  }
+
+  .ant-input,
+  .ant-select-selector {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 425px) {
+  .ant-modal-header {
+    padding: 16px;
+  }
+
+  .ant-modal-body {
+    padding: 16px;
+  }
+
+  .ant-modal-footer {
+    padding: 16px;
+    text-align: center;
+  }
+
+  .ant-modal-footer .ant-btn {
+    width: 100%;
+    margin: 0 0 8px 0;
+  }
+}

@@ -1,0 +1,272 @@
+.orders-container {
+  padding: 24px;
+}
+
+.orders-header {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.orders-header h2 {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.orders-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.orders-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--background-light-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  color: var(--secondary-color);
+  font-size: 14px;
+}
+
+.filters {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filters .ant-select {
+  min-width: 120px;
+}
+
+.mobile-cards {
+  display: none;
+}
+
+.mobile-card {
+  background: var(--background-light-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.mobile-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: var(--heading-color);
+}
+
+.mobile-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mobile-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mobile-card-label {
+  font-weight: 500;
+  color: var(--secondary-color);
+  font-size: 0.875rem;
+}
+
+.mobile-card-value {
+  font-size: 0.875rem;
+  color: var(--text-color);
+  text-align: right;
+  word-break: break-word;
+}
+
+.mobile-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+}
+
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--background-light-color);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+@media (max-width: 1024px) {
+  .orders-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .orders-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .orders-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .orders-container {
+    padding: 16px;
+  }
+  
+  .orders-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .orders-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .filters {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .filters .ant-select {
+    width: 100%;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .ant-table {
+    min-width: 700px;
+  }
+  
+  .ant-table-thead > tr > th {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+  
+  .ant-table-tbody > tr > td {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .mobile-cards {
+    display: block;
+  }
+  
+  .ant-table-wrapper {
+    display: none;
+  }
+  
+  .orders-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .orders-actions .ant-btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 425px) {
+  .orders-container {
+    padding: 12px;
+  }
+  
+  .orders-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .orders-stats {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .stat-card {
+    padding: 12px;
+  }
+  
+  .stat-value {
+    font-size: 20px;
+  }
+  
+  .mobile-card {
+    padding: 12px;
+  }
+  
+  .mobile-card-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .mobile-card-actions .ant-btn {
+    width: 100%;
+    font-size: 0.8rem;
+  }
+  
+  .table-container {
+    margin: 0 -12px;
+    padding: 0 12px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  
+  .ant-table {
+    min-width: 600px;
+  }
+  
+  .ant-table-thead > tr > th {
+    padding: 6px 3px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+  
+  .ant-table-tbody > tr > td {
+    padding: 6px 3px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+  
+  .ant-btn-sm {
+    font-size: 0.65rem;
+    padding: 2px 4px;
+    height: auto;
+  }
+}

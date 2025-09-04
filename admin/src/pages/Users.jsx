@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Table } from 'antd';
 import { playerAPI } from "../api/player";
+import './Users.css';
 
 const Users = () => {
   const [allPlayers, setAllPlayers] = useState([]);
@@ -20,65 +20,86 @@ const Users = () => {
             setLoading(false)
           }
         }
-  const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 60,
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-    },
-    {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
-    },
-    {
-      title: 'Referal Code',
-      dataIndex: 'referalCode',
-      key: 'referalCode',
-      render: (code) => code || 'N/A',
-    },
-    {
-      title: 'Wallet Balance',
-      key: 'balance',
-      render: (record) => `₹${record.wallet?.balance || 0}`,
-    },
-    {
-      title: 'Created At',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (date) => new Date(date).toLocaleDateString(),
-    },
-  ]
+
+
+  const renderMobileCard = (player) => (
+    <div key={player.id} className="mobile-card">
+      <div className="mobile-card-header">
+        <span className="mobile-card-id">#{player.id}</span>
+        <span className="mobile-card-value">{player.name}</span>
+      </div>
+      <div className="mobile-card-body">
+        <div className="mobile-card-row">
+          <span className="mobile-card-label">Email:</span>
+          <span className="mobile-card-value">{player.email}</span>
+        </div>
+        <div className="mobile-card-row">
+          <span className="mobile-card-label">Phone:</span>
+          <span className="mobile-card-value">{player.phone}</span>
+        </div>
+        <div className="mobile-card-row">
+          <span className="mobile-card-label">Referral Code:</span>
+          <span className="mobile-card-value">{player.referalCode || 'N/A'}</span>
+        </div>
+        <div className="mobile-card-row">
+          <span className="mobile-card-label">Wallet Balance:</span>
+          <span className="mobile-card-value">₹{player.wallet?.balance || 0}</span>
+        </div>
+        <div className="mobile-card-row">
+          <span className="mobile-card-label">Created:</span>
+          <span className="mobile-card-value">{new Date(player.createdAt).toLocaleDateString()}</span>
+        </div>
+      </div>
+    </div>
+  )
 
   return (
-    <div className="users-section">
-      <div className="section-header">
+    <div style={{ width: '100vw', marginLeft: '-1.5rem', marginRight: '-1.5rem', padding: '0 1rem' }}>
+      <div className="section-header" style={{ padding: '0 0.5rem' }}>
         <h2>Player Management</h2>
       </div>
       
-      <Table
-        columns={columns}
-        dataSource={allPlayers}
-        rowKey="id"
-        loading={loading}
-        pagination={{
-          pageSize: 10,
-          showSizeChanger: true,
-          showQuickJumper: true,
-        }}
-        scroll={{ x: 800 }}
-      />
+      {/* Table View */}
+      <div style={{
+        width: '100%',
+        overflowX: 'scroll',
+        overflowY: 'hidden',
+        WebkitOverflowScrolling: 'touch',
+        border: '1px solid #d9d9d9',
+        borderRadius: '6px',
+        margin: '0 0.5rem'
+      }}>
+        <div style={{ minWidth: '800px' }}>
+          <table className="responsive-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Referral Code</th>
+                <th>Wallet Balance</th>
+                <th>Created At</th>
+              </tr>
+            </thead>
+            <tbody>
+              {allPlayers.map((player) => (
+                <tr key={player.id}>
+                  <td>{player.id}</td>
+                  <td>{player.name}</td>
+                  <td>{player.email}</td>
+                  <td>{player.phone}</td>
+                  <td>{player.referalCode || 'N/A'}</td>
+                  <td>₹{player.wallet?.balance || 0}</td>
+                  <td>{new Date(player.createdAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+
     </div>
   )
 }

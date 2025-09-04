@@ -4,6 +4,7 @@ import { EditOutlined, DeleteOutlined, PlusOutlined, MinusCircleOutlined } from 
 import { timingAPI } from '../api/timing'
 import { categoryAPI } from '../api/category'
 import dayjs from 'dayjs'
+import { useMediaQuery } from 'react-responsive'
 
 const Timing = () => {
   const [timings, setTimings] = useState([])
@@ -12,6 +13,7 @@ const Timing = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTiming, setEditingTiming] = useState(null)
   const [form] = Form.useForm()
+  const isMobile = useMediaQuery({ maxWidth: 1024 })
   console.log(categories, "<--- categories-time");
   
 
@@ -94,7 +96,7 @@ const Timing = () => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      width: 80,
+      width: 60,
     },
     {
       title: 'Name',
@@ -161,8 +163,8 @@ const Timing = () => {
   ]
 
   return (
-    <div style={{ padding: '24px' }}>
-      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div style={{ width: '100vw', marginLeft: '-1.5rem', marginRight: '-1.5rem', padding: '0 1rem' }}>
+      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 0.5rem' }}>
         <h2>Timing Management</h2>
         <Button
           type="primary"
@@ -173,13 +175,27 @@ const Timing = () => {
         </Button>
       </div>
 
-      <Table
-        columns={columns}
-        dataSource={timings}
-        loading={loading}
-        rowKey="id"
-        pagination={{ pageSize: 10 }}
-      />
+      <div style={{
+        width: '100%',
+        overflowX: 'scroll',
+        overflowY: 'hidden',
+        WebkitOverflowScrolling: 'touch',
+        border: '1px solid #d9d9d9',
+        borderRadius: '6px',
+        margin: '0 0.5rem'
+      }}>
+        <div style={{ minWidth: '800px' }}>
+          <Table
+            columns={columns}
+            dataSource={timings}
+            loading={loading}
+            rowKey="id"
+            pagination={{ pageSize: 10 }}
+            scroll={false}
+            size="small"
+          />
+        </div>
+      </div>
 
       <Modal
         title={editingTiming ? 'Edit Timing' : 'Add Timing'}

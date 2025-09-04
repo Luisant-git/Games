@@ -1,0 +1,236 @@
+@import '../responsive.css';
+
+.deposit-container {
+  padding: 24px;
+}
+
+.deposit-header {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.deposit-header h2 {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.deposit-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.deposit-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--background-light-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  color: var(--secondary-color);
+  font-size: 14px;
+}
+
+.filters {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filters .ant-select {
+  min-width: 120px;
+}
+
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--background-light-color);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.table-responsive-wrapper .ant-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive-wrapper .ant-table {
+  min-width: 800px;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .deposit-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .deposit-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .deposit-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .deposit-container {
+    padding: 16px;
+  }
+
+  .deposit-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .deposit-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .filters {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .filters .ant-select {
+    width: 100%;
+  }
+
+  .table-responsive-wrapper {
+    margin: 0 -16px;
+    padding: 0 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-responsive-wrapper .ant-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-responsive-wrapper .ant-table {
+    min-width: 800px;
+  }
+
+  .ant-table-thead > tr > th {
+    padding: 8px 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .ant-table-tbody > tr > td {
+    padding: 8px 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .deposit-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .deposit-actions .ant-btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .ant-table {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  .deposit-container {
+    padding: 12px;
+  }
+
+  .deposit-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .deposit-stats {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .stat-card {
+    padding: 12px;
+  }
+
+  .stat-value {
+    font-size: 20px;
+  }
+
+  .table-responsive-wrapper {
+    margin: 0 -12px;
+    padding: 0 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-responsive-wrapper .ant-table {
+    min-width: 800px;
+  }
+
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    padding: 6px 2px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 425px) {
+  .table-responsive-wrapper {
+    margin: 0 -12px;
+    padding: 0 12px;
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+    width: calc(100vw - 24px);
+  }
+
+  .table-responsive-wrapper .ant-table {
+    min-width: 800px;
+    width: 800px;
+  }
+
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    padding: 4px 2px;
+    font-size: 0.65rem;
+    min-width: 60px;
+  }
+}

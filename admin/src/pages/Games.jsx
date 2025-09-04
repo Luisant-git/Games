@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Table, Button, Modal, Form, Input, InputNumber, Select, Space, Popconfirm, Tag } from 'antd'
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import { gamesAPI } from '../api/games'
+import { useMediaQuery } from 'react-responsive'
 
 const { Option } = Select
 
@@ -11,6 +12,7 @@ const Games = () => {
   const [showForm, setShowForm] = useState(false)
   const [editingGame, setEditingGame] = useState(null)
   const [form] = Form.useForm()
+  const isMobile = useMediaQuery({ maxWidth: 1024 })
 
   useEffect(() => {
     fetchGames()
@@ -84,7 +86,7 @@ const Games = () => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      width: 80,
+      width: 60,
       render: (id) => `#${id}`,
     },
     {
@@ -178,8 +180,8 @@ const Games = () => {
   ]
 
   return (
-    <div style={{ padding: '24px' }}>
-      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div style={{ width: '100vw', marginLeft: '-1.5rem', marginRight: '-1.5rem', padding: '0 1rem' }}>
+      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 0.5rem' }}>
         <h2>Board Management</h2>
         <Button
           type="primary"
@@ -194,13 +196,27 @@ const Games = () => {
         </Button>
       </div>
 
-      <Table
-        columns={columns}
-        dataSource={games}
-        loading={loading}
-        rowKey="id"
-        pagination={{ pageSize: 10 }}
-      />
+      <div style={{
+        width: '100%',
+        overflowX: 'scroll',
+        overflowY: 'hidden',
+        WebkitOverflowScrolling: 'touch',
+        border: '1px solid #d9d9d9',
+        borderRadius: '6px',
+        margin: '0 0.5rem'
+      }}>
+        <div style={{ minWidth: '1000px' }}>
+          <Table
+            columns={columns}
+            dataSource={games}
+            loading={loading}
+            rowKey="id"
+            pagination={{ pageSize: 10 }}
+            scroll={false}
+            size="small"
+          />
+        </div>
+      </div>
 
       <Modal
         title={editingGame ? 'Edit Game' : 'Add Game'}

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Table, InputNumber, Button, message, Typography } from 'antd'
+import { InputNumber, Button, message } from 'antd'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeftOutlined } from '@ant-design/icons'
 import { agentAPI } from '../api/agent'
-
-const { Title } = Typography
+import './Commission.css'
 
 const Commission = () => {
   const { agentId } = useParams()
@@ -55,75 +53,107 @@ const Commission = () => {
     }
   }
 
-  const columns = [
-    {
-      title: 'Board',
-      dataIndex: ['game', 'board'],
-      key: 'board',
-    },
-    {
-      title: 'Bet Type',
-      dataIndex: ['game', 'betType'],
-      key: 'betType',
-    },
-    {
-      title: 'Ticket',
-      dataIndex: ['game', 'ticket'],
-      key: 'ticket',
-      render: (amount) => `₹${amount || 0}`,
-    },
-    {
-      title: 'Commission Rate',
-      key: 'commissionRate',
-      render: (record) => (
-        <InputNumber
-          value={record.commissionRate}
-          onChange={(value) => handleCommissionChange(record.gameId, value)}
-          min={0}
-          style={{ width: 100 }}
-          addonAfter="₹"
-        />
-      ),
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (record) => (
+  const renderMobileCard = (record) => (
+    <div key={record.gameId} className="mobile-card">
+      <div className="mobile-card-header">
+        <span>{record.game?.board}</span>
+        <span>{record.game?.betType}</span>
+      </div>
+      <div className="mobile-card-body">
+        <div className="mobile-card-row">
+          <span className="mobile-card-label">Ticket:</span>
+          <span className="mobile-card-value">₹{record.game?.ticket || 0}</span>
+        </div>
+        <div className="mobile-card-row">
+          <span className="mobile-card-label">Commission Rate:</span>
+          <InputNumber
+            value={record.commissionRate}
+            onChange={(value) => handleCommissionChange(record.gameId, value)}
+            min={0}
+            size="small"
+            addonAfter="₹"
+          />
+        </div>
+      </div>
+      <div className="mobile-card-actions">
         <Button
           type="primary"
           size="small"
           onClick={() => handleSave(record.gameId, record.commissionRate)}
+          block
         >
           Save
         </Button>
-      ),
-    },
-  ]
+      </div>
+    </div>
+  )
 
   return (
-    <div className="content">
-      <div className="section-header" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <Button 
-          icon={<ArrowLeftOutlined />} 
-          onClick={() => navigate('/agents')}
-        >
-          Back
-        </Button>
-        <Title level={2} style={{ margin: 0 }}>
-          Commission Management - {agentName}
-        </Title>
+    <div style={{ width: '100vw', marginLeft: '-1.5rem', marginRight: '-1.5rem', padding: '0 1rem' }}>
+      <div className="commission-header" style={{ padding: '0 0.5rem' }}>
+        <Button onClick={() => navigate('/agents')}>← Back</Button>
+        <h2>Commission Management - {agentName}</h2>
       </div>
       
-      <Table
-        columns={columns}
-        dataSource={commissions}
-        rowKey="gameId"
-        loading={loading}
-        pagination={{
-          pageSize: 10,
-          showSizeChanger: true,
-        }}
-      />
+      {loading ? (
+        <div className="loading-container">Loading...</div>
+      ) : (
+        <>
+          {/* Table */}
+          <div style={{
+            width: '100%',
+            overflowX: 'scroll',
+            overflowY: 'hidden',
+            WebkitOverflowScrolling: 'touch',
+            border: '1px solid #d9d9d9',
+            borderRadius: '6px',
+            margin: '0 0.5rem'
+          }}>
+            <div style={{ minWidth: '700px' }}>
+              <table className="responsive-table">
+                <thead>
+                  <tr>
+                    <th>Board</th>
+                    <th>Bet Type</th>
+                    <th>Ticket</th>
+                    <th>Commission Rate</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {commissions.map((record) => (
+                    <tr key={record.gameId}>
+                      <td>{record.game?.board}</td>
+                      <td>{record.game?.betType}</td>
+                      <td>₹{record.game?.ticket || 0}</td>
+                      <td>
+                        <InputNumber
+                          value={record.commissionRate}
+                          onChange={(value) => handleCommissionChange(record.gameId, value)}
+                          min={0}
+                          size="small"
+                          addonAfter="₹"
+                        />
+                      </td>
+                      <td>
+                        <Button
+                          type="primary"
+                          size="small"
+                          onClick={() => handleSave(record.gameId, record.commissionRate)}
+                        >
+                          Save
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+
+        </>
+      )}
     </div>
   )
 }
