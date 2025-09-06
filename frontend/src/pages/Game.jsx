@@ -1,14 +1,20 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { playGame } from "../api/games";
+import { playGame, getPlayerGameHistory } from "../api/games";
 import "./Game.css";
 
-const Game = ({ category, games, onNavigateToHistory }) => {
+const Game = ({ category, games }) => {
+  const navigate = useNavigate();
   const [bets, setBets] = useState([]);
   console.log('GAME BETS', bets);
   const [selectedShow, setSelectedShow] = useState(null);
   const [timeLeft, setTimeLeft] = useState("");
   const [quantities, setQuantities] = useState({});
+  const [showBets, setShowBets] = useState(false);
+  const [historyBets, setHistoryBets] = useState([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   console.log('GAME GAMES', games);
 
   const updateQuantity = (gameId, change) => {
@@ -75,7 +81,10 @@ const Game = ({ category, games, onNavigateToHistory }) => {
   const totalAmount = bets.reduce((sum, b) => sum + b.amount, 0);
 
   const submitBets = async () => {
-    if (bets.length === 0) return;
+  if (bets.length === 0) {
+    toast.error('No bets to submit.');
+    return;
+  }
     
     try {
       const response = await playGame({
@@ -93,6 +102,7 @@ const Game = ({ category, games, onNavigateToHistory }) => {
         setBets([]);
         setQuantities({});
         toast.success('Bets submitted successfully!');
+        setShowConfirm(false);
       } else {
         const errorData = await response.json();
         toast.error(errorData.message || 'Failed to submit bets');
@@ -312,14 +322,141 @@ const Game = ({ category, games, onNavigateToHistory }) => {
           ))}
       </div>
 
+      {/* VIEW BETS MODAL */}
+      {showBets && (
+        <div className="bets-modal" onClick={() => setShowBets(false)}>
+          <div className="bets-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>{selectedShow?.showTime ? new Date(selectedShow.showTime).toLocaleString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'}) : 'Recent'} Bets</h3>
+              <button className="close-x" onClick={() => setShowBets(false)}>×</button>
+            </div>
+            {loadingHistory ? (
+              <div className="empty-bets">
+                <p>Loading bets...</p>
+              </div>
+            ) : historyBets.length === 0 ? (
+              <div className="empty-bets">
+                <p>No bets have been placed for the chosen show time</p>
+              </div>
+            ) : (
+              <div className="bets-list">
+                {historyBets.map((history, index) => (
+                  <div key={index} className="history-item">
+                    <div className="history-header">
+                      <span className="game-date">{new Date(history.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    {history.gameplay?.map((bet, betIndex) => (
+                      <div key={betIndex} className="bet-item">
+                        <div className={`bet-board ${bet.board}`}>{bet.board}</div>
+                        <div className="bet-details">
+                          <div className="bet-row-info">
+                            <span className="bet-label">Numbers:</span>
+                            <span className="bet-numbers">{bet.numbers}</span>
+                          </div>
+                          <div className="bet-row-info">
+                            <span className="bet-label">Quantity:</span>
+                            <span className="bet-qty">{bet.qty}</span>
+                          </div>
+                          <div className="bet-row-info">
+                            <span className="bet-label">Amount:</span>
+                            <span className="bet-amount">₹{bet.amount}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    <div className="history-total">
+                      <span>Total: ₹{history.totalBetAmount}</span>
+                      {history.isWon && <span className="win-amount">Won: ₹{history.totalWinAmount}</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <button className="close-btn" onClick={() => setShowBets(false)}>Close</button>
+          </div>
+        </div>
+      )}
+
+      {/* CONFIRM BETS MODAL */}
+      {showConfirm && (
+        <div className="bets-modal" onClick={() => setShowConfirm(false)}>
+          <div className="bets-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Confirm Bets</h3>
+              <button className="close-x" onClick={() => setShowConfirm(false)}>×</button>
+            </div>
+            {bets.length === 0 ? (
+              <div className="empty-bets">
+                <p>No bets added yet</p>
+              </div>
+            ) : (
+              <div className="bets-list">
+                {bets.map((bet, index) => (
+                  <div key={index} className="bet-item">
+                    <div className={`bet-board ${bet.board}`}>{bet.board}</div>
+                    <div className="bet-details">
+                      <div className="bet-row-info">
+                        <span className="bet-label">Numbers:</span>
+                        <span className="bet-numbers">{Array.isArray(bet.numbers) ? bet.numbers.join('') : bet.numbers}</span>
+                      </div>
+                      <div className="bet-row-info">
+                        <span className="bet-label">Quantity:</span>
+                        <span className="bet-qty">{bet.qty}</span>
+                      </div>
+                      <div className="bet-row-info">
+                        <span className="bet-label">Amount:</span>
+                        <span className="bet-amount">₹{bet.amount}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <div className="total-summary">
+                  <div className="total-icon">💰</div>
+                  <div className="total-text">
+                    <div className="total-amount">₹{totalAmount}</div>
+                    <div className="total-count">{bets.length} bet{bets.length !== 1 ? 's' : ''}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className="confirm-buttons">
+              <button className="cancel-btn" onClick={() => setShowConfirm(false)}>Cancel</button>
+              <button className="confirm-btn" onClick={() => {
+                submitBets();
+              }}>Confirm & Pay</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* FOOTER */}
       <div className="footer">
         <span>
           ₹{totalAmount} ({bets.length} numbers)
         </span>
-        <button className="view-btn" onClick={onNavigateToHistory}>View Bets</button>
-        <button className="history-btn" onClick={onNavigateToHistory}>Bet History</button>
-        <button className="pay-btn" onClick={submitBets}>Pay Now</button>
+        <button className="view-btn" onClick={async () => {
+          setLoadingHistory(true);
+          setShowBets(true);
+          try {
+            const response = await getPlayerGameHistory();
+            if (response.ok) {
+              const data = await response.json();
+              const filteredBets = data.filter(history => {
+                if (!selectedShow) return false;
+                const historyShowTime = new Date(history.showTime).getTime();
+                const selectedShowTime = new Date(selectedShow.showTime).getTime();
+                return historyShowTime === selectedShowTime;
+              });
+              setHistoryBets(filteredBets);
+            }
+          } catch (error) {
+            console.error('Error fetching history:', error);
+          } finally {
+            setLoadingHistory(false);
+          }
+        }}>View Bets</button>
+        <button className="history-btn" onClick={()=>navigate('/history')}>Bet History</button>
+        <button className="pay-btn" onClick={() => setShowConfirm(true)}>Pay Now</button>
       </div>
     </div>
   );

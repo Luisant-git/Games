@@ -20,8 +20,8 @@ export class DepositService {
         player: {
           select: {
             id: true,
-            name: true,
-            email: true,
+            username: true,
+            phone: true,
           },
         },
       },
@@ -40,8 +40,8 @@ export class DepositService {
         player: {
           select: {
             id: true,
-            name: true,
-            email: true,
+            username: true,
+            phone: true,
           },
         },
       },
@@ -64,8 +64,8 @@ export class DepositService {
         player: {
           select: {
             id: true,
-            name: true,
-            email: true,
+            username: true,
+            phone: true,
           },
         },
       },
@@ -85,8 +85,8 @@ export class DepositService {
         player: {
           select: {
             id: true,
-            name: true,
-            email: true,
+            username: true,
+            phone: true,
           },
         },
       },
@@ -112,8 +112,8 @@ export class DepositService {
         player: {
           select: {
             id: true,
-            name: true,
-            email: true,
+            username: true,
+            phone: true,
           },
         },
       },
@@ -135,8 +135,8 @@ export class DepositService {
         player: {
           select: {
             id: true,
-            name: true,
-            email: true,
+            username: true,
+            phone: true,
           },
         },
       },

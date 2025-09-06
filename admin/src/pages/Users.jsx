@@ -74,8 +74,7 @@ const Users = () => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
+                <th>Username</th>
                 <th>Phone</th>
                 <th>Referral Code</th>
                 <th>Wallet Balance</th>
@@ -86,8 +85,7 @@ const Users = () => {
               {allPlayers.map((player) => (
                 <tr key={player.id}>
                   <td>{player.id}</td>
-                  <td>{player.name}</td>
-                  <td>{player.email}</td>
+                  <td>{player.username}</td>
                   <td>{player.phone}</td>
                   <td>{player.referalCode || 'N/A'}</td>
                   <td>₹{player.wallet?.balance || 0}</td>

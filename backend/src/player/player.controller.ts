@@ -47,17 +47,16 @@ export class PlayerController {
     schema: {
       type: 'object',
       properties: {
-        name: { type: 'string' },
-        email: { type: 'string' },
+        username: { type: 'string' },
         phone: { type: 'string' },
         password: { type: 'string' },
         referalCode: { type: 'string' }
       },
-      required: ['email', 'password']
+      required: ['username', 'password']
     }
   })
   @ApiResponse({ status: 201, description: 'Player registered successfully' })
-  async register(@Body() body: { name?: string; email: string; phone?: string; password: string; referalCode?: string }) {
+  async register(@Body() body: { username: string; phone?: string; password: string; referalCode?: string }) {
     return this.playerService.register(body);
   }
 
@@ -67,15 +66,15 @@ export class PlayerController {
     schema: {
       type: 'object',
       properties: {
-        email: { type: 'string' },
+        username: { type: 'string' },
         password: { type: 'string' }
       },
-      required: ['email', 'password']
+      required: ['username', 'password']
     }
   })
   @ApiResponse({ status: 200, description: 'Login successful' })
-  async login(@Body() body: { email: string; password: string }) {
-    return this.playerService.login(body.email, body.password);
+  async login(@Body() body: { username: string; password: string }) {
+    return this.playerService.login(body.username, body.password);
   }
 
   @Post('game-win')

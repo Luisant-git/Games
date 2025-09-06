@@ -10,7 +10,7 @@ export class PlayerService {
     private jwtService: JwtService,
   ) {}
 
-  async register(data: { name?: string; email: string; phone?: string; password: string; referalCode?: string }) {
+  async register(data: { username: string; phone?: string; password: string; referalCode?: string }) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
     
     let agentId: number | undefined = undefined;
@@ -40,13 +40,13 @@ export class PlayerService {
       },
     });
 
-    const token = this.jwtService.sign({ id: player.id, email: player.email, type: 'player' }, { expiresIn: '999y' });
+    const token = this.jwtService.sign({ id: player.id, username: player.username, type: 'player' }, { expiresIn: '999y' });
     return { player: { ...player, password: undefined }, token };
   }
 
-  async login(email: string, password: string) {
+  async login(username: string, password: string) {
     const player = await this.prisma.player.findUnique({
-      where: { email },
+      where: { username },
       include: { wallet: true, agent: true },
     });
 
@@ -54,7 +54,7 @@ export class PlayerService {
       throw new Error('Invalid credentials');
     }
 
-    const token = this.jwtService.sign({ id: player.id, email: player.email, type: 'player' }, { expiresIn: '999y' });
+    const token = this.jwtService.sign({ id: player.id, username: player.username, type: 'player' }, { expiresIn: '999y' });
     return { player: { ...player, password: undefined }, token };
   }
 

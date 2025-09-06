@@ -89,8 +89,8 @@ export class AgentService {
         players: {
           select: {
             id: true,
-            name: true,
-            email: true,
+            username: true,
+            phone: true,
             createdAt: true
           }
         }
@@ -123,8 +123,8 @@ export class AgentService {
         players: {
           select: {
             id: true,
-            name: true,
-            email: true,
+            username: true,
+            phone: true,
             createdAt: true
           }
         }

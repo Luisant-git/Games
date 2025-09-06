@@ -5,8 +5,7 @@ import './Register.css';
 
 const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOption }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    username: '',
     phone: '',
     password: '',
     referalCode: ''
@@ -46,16 +45,9 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
         <form onSubmit={handleSubmit}>
           <input
             type="text"
-            placeholder="Name"
-            value={formData.name}
-            onChange={(e) => setFormData({...formData, name: e.target.value})}
-            required
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            placeholder="Username"
+            value={formData.username}
+            onChange={(e) => setFormData({...formData, username: e.target.value})}
             required
           />
           <input

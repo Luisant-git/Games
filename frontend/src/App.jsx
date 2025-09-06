@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import './App.css';
 import Header from './components/Header';
@@ -16,126 +17,79 @@ import AgentRegister from './pages/AgentRegister';
 import Deposit from './pages/Deposit';
 import Withdraw from './pages/Withdraw';
 
-function App() {
-  const [activeTab, setActiveTab] = useState('home');
-  const [currentView, setCurrentView] = useState(() => {
-    if (!!localStorage.getItem('token')) return 'main';
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.has('agent') ? 'agentLogin' : 'login';
-  });
+const AppContent = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
   const [userType, setUserType] = useState(localStorage.getItem('userType') || 'player');
-  const [showAgentOptions, setShowAgentOptions] = useState(false);
   const [isInGame, setIsInGame] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    setShowAgentOptions(urlParams.has('agent'));
-  }, []);
 
   const handleLogin = () => {
     setIsLoggedIn(true);
     setUserType(localStorage.getItem('userType') || 'player');
-    setCurrentView('main');
     if (localStorage.getItem('userType') === 'agent') {
-      setActiveTab('profile');
+      navigate('/agent-profile');
     } else {
-      setActiveTab('home');
+      navigate('/');
     }
   };
 
   const handleRegister = () => {
     setIsLoggedIn(true);
     setUserType(localStorage.getItem('userType') || 'player');
-    setCurrentView('main');
     if (localStorage.getItem('userType') === 'agent') {
-      setActiveTab('profile');
+      navigate('/agent-profile');
     } else {
-      setActiveTab('home');
+      navigate('/');
     }
   };
 
-  const renderContent = () => {
-    if (currentView === 'login') {
-      return (
-        <Login 
-          onLogin={handleLogin}
-          onSwitchToRegister={() => setCurrentView('register')}
-          onSwitchToAgent={showAgentOptions ? () => setCurrentView('agentLogin') : null}
-          showAgentOption={showAgentOptions}
-        />
-      );
-    }
-    
-    if (currentView === 'register') {
-      return (
-        <Register 
-          onRegister={handleRegister}
-          onSwitchToLogin={() => setCurrentView('login')}
-          onSwitchToAgent={showAgentOptions ? () => setCurrentView('agentRegister') : null}
-          showAgentOption={showAgentOptions}
-        />
-      );
-    }
-    
-    if (currentView === 'agentLogin') {
-      return (
-        <AgentLogin 
-          onLogin={handleLogin}
-          onSwitchToRegister={() => setCurrentView('agentRegister')}
-          onSwitchToPlayer={showAgentOptions ? null : () => setCurrentView('login')}
-        />
-      );
-    }
-    
-    if (currentView === 'agentRegister') {
-      return (
-        <AgentRegister 
-          onRegister={handleRegister}
-          onSwitchToLogin={() => setCurrentView('agentLogin')}
-          onSwitchToPlayer={showAgentOptions ? null : () => setCurrentView('register')}
-        />
-      );
-    }
-    
-
-    
-    // Agent users only see profile
-    if (userType === 'agent') {
-      return <AgentProfile />;
-    }
-
-    // Player navigation
-    switch (activeTab) {
-      case 'home':
-        return <Home onGameStateChange={setIsInGame} onCategoryChange={setSelectedCategory} selectedCategory={selectedCategory} onNavigateToHistory={() => setActiveTab('history')} />;
-      case 'rank':
-        return <Rank />;
-      case 'game':
-        return <Game />;
-      case 'history':
-        return <History />;
-      case 'profile':
-        return <Profile onNavigate={setActiveTab} />;
-      case 'deposit':
-        return <Deposit />;
-      case 'withdraw':
-        return <Withdraw />;
-      default:
-        return <Home onGameStateChange={setIsInGame} />;
-    }
+  const getActiveTab = () => {
+    const path = location.pathname;
+    if (path === '/') return 'home';
+    if (path === '/rank') return 'rank';
+    if (path === '/game') return 'game';
+    if (path === '/history') return 'history';
+    if (path === '/profile') return 'profile';
+    return 'home';
   };
+
+  const showHeader = isLoggedIn && userType !== 'agent' && !['/login', '/register', '/agent-login', '/agent-register'].includes(location.pathname);
+  const showBottomNav = isLoggedIn && userType !== 'agent' && !isInGame && !['/login', '/register', '/agent-login', '/agent-register', '/deposit', '/withdraw'].includes(location.pathname);
 
   return (
     <div className="app">
       <Toaster position="top-center" />
-      {(currentView === 'main' && isLoggedIn && userType !== 'agent') && <Header showBackButton={!!selectedCategory || (activeTab !== 'home')} onBackClick={() => { setSelectedCategory(null); setActiveTab('home'); }} onNavigateToHome={() => { setActiveTab('home'); setSelectedCategory(null); }} />}
+      {showHeader && (
+        <Header selectedCategory={selectedCategory} />
+      )}
       <main className="main-content">
-        {renderContent()}
+        <Routes>
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/register" element={<Register onRegister={handleRegister} />} />
+          <Route path="/agent-login" element={<AgentLogin onLogin={handleLogin} />} />
+          <Route path="/agent-register" element={<AgentRegister onRegister={handleRegister} />} />
+          <Route path="/" element={isLoggedIn ? <Home onGameStateChange={setIsInGame} onCategoryChange={setSelectedCategory} selectedCategory={selectedCategory} /> : <Navigate to="/login" />} />
+          <Route path="/rank" element={isLoggedIn ? <Rank /> : <Navigate to="/login" />} />
+          <Route path="/game" element={isLoggedIn ? <Game /> : <Navigate to="/login" />} />
+          <Route path="/history" element={isLoggedIn ? <History /> : <Navigate to="/login" />} />
+          <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/login" />} />
+          <Route path="/agent-profile" element={isLoggedIn && userType === 'agent' ? <AgentProfile /> : <Navigate to="/login" />} />
+          <Route path="/deposit" element={isLoggedIn ? <Deposit /> : <Navigate to="/login" />} />
+          <Route path="/withdraw" element={isLoggedIn ? <Withdraw /> : <Navigate to="/login" />} />
+        </Routes>
       </main>
-      {(currentView === 'main' && isLoggedIn && userType !== 'agent' && !isInGame) && <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />}
+      {showBottomNav && <BottomNavigation activeTab={getActiveTab()} />}
     </div>
+  );
+};
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 

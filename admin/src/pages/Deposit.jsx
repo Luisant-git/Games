@@ -55,13 +55,13 @@ const Deposit = () => {
       title: 'Player',
       key: 'player',
       width: 120,
-      render: (record) => record.player?.name || 'N/A',
+      render: (record) => record.player?.username || 'N/A',
     },
     {
-      title: 'Player Email',
-      key: 'playerEmail',
+      title: 'Player Phone',
+      key: 'playerPhone',
       width: 180,
-      render: (record) => record.player?.email || 'N/A',
+      render: (record) => record.player?.phone || 'N/A',
     },
     {
       title: 'UTR Number',
@@ -140,28 +140,25 @@ const Deposit = () => {
       
       <div style={{
         width: '100%',
-        overflowX: 'scroll',
+        overflowX: 'auto',
         overflowY: 'hidden',
         WebkitOverflowScrolling: 'touch',
         border: '1px solid #d9d9d9',
         borderRadius: '6px',
         margin: '0 0.5rem'
       }}>
-        <div style={{ minWidth: '800px' }}>
-          <Table
-            columns={columns}
-            dataSource={depositData}
-            rowKey="id"
-            loading={loading}
-            pagination={{
-              pageSize: 10,
-              showSizeChanger: true,
-              showQuickJumper: true,
-            }}
-            scroll={false}
-            size="small"
-          />
-        </div>
+        <Table
+          columns={columns}
+          dataSource={depositData}
+          rowKey="id"
+          loading={loading}
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+          }}
+          size="small"
+        />
       </div>
     </div>
   );

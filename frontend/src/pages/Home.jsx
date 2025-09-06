@@ -1,52 +1,121 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getCategories } from "../api/category";
+import { getPlayerWallet } from "../api/wallet";
 import Game from "./Game";
 import "./Home.css";
 
-const Home = ({ onGameStateChange, onCategoryChange, selectedCategory, onNavigateToHistory }) => {
+const Home = ({
+  onGameStateChange,
+  onCategoryChange,
+  selectedCategory,
+  disclaimerText = "Dear player, this involves financial risk, so please play responsibly",
+  noticeText = "Your money will be credited to the bank within 5 minutes. Our agency is 100% genuine 🏆"
+}) => {
+  const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [games, setGames] = useState([]);
-  console.log(games);
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (onGameStateChange) {
-      onGameStateChange(!!selectedCategory);
-    }
+    if (onGameStateChange) onGameStateChange(!!selectedCategory);
   }, [selectedCategory, onGameStateChange]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const categoryData = await getCategories();
-      setCategories(categoryData?.categories || []);
-      setGames(categoryData?.games || []);
-    };
-    fetchData();
+    (async () => {
+      try {
+        const [categoryData, walletResponse] = await Promise.all([
+          getCategories(),
+          getPlayerWallet()
+        ]);
+        
+        setCategories(categoryData?.categories || []);
+        setGames(categoryData?.games || []);
+        
+        if (walletResponse.ok) {
+          const walletData = await walletResponse.json();
+          setWalletBalance(walletData.balance || 0);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
+
+  // Helper: format INR nicely
+  const formatINR = (amt) =>
+    new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 2 }).format(amt || 0);
+
+  if (selectedCategory) {
+    return (
+      <div className="home">
+        <Game
+          category={selectedCategory}
+          games={games}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="home">
-      {selectedCategory ? (
-        <Game category={selectedCategory} games={games} onNavigateToHistory={onNavigateToHistory} />
-      ) : (
-        <>
-          {/* <div className="search-bar">
-            <input type="text" placeholder="Search for games ..." />
-            <button className="search-btn">🔍</button>
-          </div> */}
-          {categories.map((category) => (
+      {/* Wallet Card */}
+      <section className="wallet-card" aria-label="Wallet Balance">
+        <div className="wallet-balance">
+          <span className="rupee">₹</span>
+          <span className="amount">{(walletBalance ?? 0).toFixed(2)}</span>
+        </div>
+        <div className="wallet-caption">wallet balance</div>
+        <div className="wallet-actions">
+          <button className="btn btn-warning" onClick={() => navigate('/withdraw')}>WITHDRAW</button>
+          <button className="btn btn-success" onClick={() => navigate('/deposit')}>DEPOSIT</button>
+        </div>
+      </section>
+
+      {/* Disclaimer */}
+      <section className="info-box info-disclaimer" role="note">
+        <h4 className="info-title">Disclaimer !!!</h4>
+        <p className="info-text">{disclaimerText}</p>
+      </section>
+
+      {/* Categories from API (your banner images) */}
+      <section className="banners">
+        {loading && (
+          <>
+            <div className="banner-skeleton" />
+            <div className="banner-skeleton" />
+          </>
+        )}
+
+        {!loading && categories?.length === 0 && (
+          <div className="empty-state">No categories found.</div>
+        )}
+
+        {!loading &&
+          categories.map((category) => (
             <div className="banner" key={category.id}>
               <img
                 className="banner-image"
                 src={category.image}
                 alt={category.name}
-                onClick={() => {
-                  onCategoryChange(category);
-                }}
+                loading="lazy"
+                onClick={() => onCategoryChange?.(category)}
               />
             </div>
           ))}
-        </>
-      )}
+      </section>
+
+      {/* Notice */}
+      <section className="info-box info-notice" role="status">
+        <h4 className="info-title">⚠️ Notice</h4>
+        <p className="info-text">{noticeText}</p>
+      </section>
+
+      {/* Bottom padding for fixed tab bars */}
+      <div className="tabbar-spacer" />
     </div>
   );
 };

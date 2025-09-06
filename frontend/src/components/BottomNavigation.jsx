@@ -1,12 +1,14 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './BottomNavigation.css';
 
-const BottomNavigation = ({ activeTab, onTabChange }) => {
+const BottomNavigation = ({ activeTab }) => {
+  const navigate = useNavigate();
   const navItems = [
-    { id: 'home', icon: '🏠', label: 'Home' },
-    { id: 'rank', icon: '🏆', label: 'Rank' },
-    { id: 'history', icon: '📊', label: 'History' },
-    { id: 'profile', icon: '👤', label: 'Profile' }
+    { id: 'home', icon: '🏠', label: 'Home', path: '/' },
+    { id: 'rank', icon: '🏆', label: 'Rank', path: '/rank' },
+    { id: 'history', icon: '📊', label: 'History', path: '/history' },
+    { id: 'profile', icon: '👤', label: 'Profile', path: '/profile' }
   ];
 
   return (
@@ -15,7 +17,7 @@ const BottomNavigation = ({ activeTab, onTabChange }) => {
         <button
           key={item.id}
           className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
-          onClick={() => onTabChange(item.id)}
+          onClick={() => navigate(item.path)}
         >
           <span className="nav-icon">{item.icon}</span>
           <span className="nav-label">{item.label}</span>

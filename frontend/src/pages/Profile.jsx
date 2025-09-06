@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getPlayerWallet } from '../api/wallet';
 import './Profile.css';
 import { getPlayerProfile } from '../api/auth';
 
-const Profile = ({ onNavigate }) => {
+const Profile = () => {
+  const navigate = useNavigate();
   const [balance, setBalance] = useState(0);
   const [user, setUser] = useState({});
 
@@ -40,8 +42,8 @@ const Profile = ({ onNavigate }) => {
   };
   
   const menuItems = [
-    { id: 1, icon: '💰', label: 'Deposit', action: () => onNavigate('deposit') },
-    { id: 2, icon: '🏦', label: 'Withdraw', action: () => onNavigate('withdraw') },
+    { id: 1, icon: '💰', label: 'Deposit', action: () => navigate('/deposit') },
+    { id: 2, icon: '🏦', label: 'Withdraw', action: () => navigate('/withdraw') },
     { id: 8, icon: '🚪', label: 'Logout', action: handleLogout }
   ];
 
@@ -50,8 +52,7 @@ const Profile = ({ onNavigate }) => {
       <div className="profile-header">
         <div className="profile-avatar">🙍🏻</div>
         <div className="profile-info">
-          <h2>{user.name || 'Player'}</h2>
-          <p>{user.email}</p>
+          <h2>{user.username || 'Player'}</h2>
           <span className="member-badge">Premium Member</span>
         </div>
       </div>

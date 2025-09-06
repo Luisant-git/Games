@@ -41,8 +41,7 @@ model Game {
 
 model Player {
   id          Int           @id @default(autoincrement())
-  name        String?
-  email       String        @unique
+  username    String        @unique
   phone       String?       @unique
   password    String
   referalCode String?

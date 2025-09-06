@@ -44,9 +44,9 @@ const Timing = () => {
         ...values,
         categoryId: parseInt(values.categoryId),
         showTimes: values.showTimes.map(st => ({
-          playStart: st.playStart.toDate(),
-          playEnd: st.playEnd.toDate(),
-          showTime: st.showTime.toDate()
+          playStart: new Date(st.playStart),
+          playEnd: new Date(st.playEnd),
+          showTime: new Date(st.showTime)
         }))
       }
       
@@ -68,9 +68,9 @@ const Timing = () => {
       name: timing.name,
       categoryId: timing.categoryId,
       showTimes: timing.showTimes.map(st => ({
-        playStart: dayjs(st.playStart),
-        playEnd: dayjs(st.playEnd),
-        showTime: dayjs(st.showTime)
+        playStart: dayjs(st.playStart).format('YYYY-MM-DDTHH:mm'),
+        playEnd: dayjs(st.playEnd).format('YYYY-MM-DDTHH:mm'),
+        showTime: dayjs(st.showTime).format('YYYY-MM-DDTHH:mm')
       }))
     })
     setIsModalOpen(true)
@@ -116,8 +116,8 @@ const Timing = () => {
         <div>
           {showTimes?.map((st, i) => (
             <div key={i}>
-              Show: {dayjs(st.showTime).format('HH:mm')}<br/>
-              Play: {dayjs(st.playStart).format('HH:mm')} - {dayjs(st.playEnd).format('HH:mm')}
+              Show: {dayjs(st.showTime).format('hh:mm A')}<br/>
+              Play: {dayjs(st.playStart).format('hh:mm A')} - {dayjs(st.playEnd).format('hh:mm A')}
             </div>
           ))}
         </div>
@@ -202,7 +202,8 @@ const Timing = () => {
         open={isModalOpen}
         onCancel={handleCancel}
         footer={null}
-        width={600}
+        width={isMobile ? '95vw' : 600}
+        style={isMobile ? { top: 20 } : {}}
       >
         <Form
           form={form}
@@ -236,17 +237,18 @@ const Timing = () => {
                 <Form.Item label="Show Times">
                   {fields.map(({ key, name, ...restField }) => (
                     <Card key={key} size="small" style={{ marginBottom: 8 }}>
-                      <Space align="baseline">
+                      <div style={{ display: isMobile ? 'flex' : 'grid', flexDirection: 'column', gridTemplateColumns: isMobile ? 'none' : '1fr 1fr 1fr', gap: '8px', alignItems: 'start' }}>
                         <Form.Item
                           {...restField}
                           name={[name, 'showTime']}
                           rules={[{ required: true, message: 'Missing show time' }]}
                           label="Show Time"
+                          style={{ marginBottom: 0 }}
                         >
-                          <DatePicker
-                            showTime
-                            format="YYYY-MM-DD HH:mm"
+                          <Input
+                            type="datetime-local"
                             placeholder="Show Time"
+                            style={{ width: '100%', fontSize: isMobile ? '16px' : '14px' }}
                           />
                         </Form.Item>
 
@@ -255,11 +257,12 @@ const Timing = () => {
                           name={[name, 'playStart']}
                           rules={[{ required: true, message: 'Missing play start time' }]}
                           label="Play Start"
+                          style={{ marginBottom: 0 }}
                         >
-                          <DatePicker
-                            showTime
-                            format="YYYY-MM-DD HH:mm"
+                          <Input
+                            type="datetime-local"
                             placeholder="Play Start Time"
+                            style={{ width: '100%', fontSize: isMobile ? '16px' : '14px' }}
                           />
                         </Form.Item>
 
@@ -268,18 +271,21 @@ const Timing = () => {
                           name={[name, 'playEnd']}
                           rules={[{ required: true, message: 'Missing play end time' }]}
                           label="Play End"
+                          style={{ marginBottom: 0 }}
                         >
-                          <DatePicker
-                            showTime
-                            format="YYYY-MM-DD HH:mm"
+                          <Input
+                            type="datetime-local"
                             placeholder="Play End Time"
+                            style={{ width: '100%', fontSize: isMobile ? '16px' : '14px' }}
                           />
                         </Form.Item>
                         
                         {fields.length > 1 && (
-                          <MinusCircleOutlined onClick={() => remove(name)} />
+                          <div style={{ textAlign: 'center' }}>
+                            <MinusCircleOutlined onClick={() => remove(name)} style={{ color: '#ff4d4f', fontSize: '16px' }} />
+                          </div>
                         )}
-                      </Space>
+                      </div>
                     </Card>
                   ))}
                   <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>

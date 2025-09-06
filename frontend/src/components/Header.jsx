@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Header.css";
 import { getPlayerWallet } from "../api/wallet";
 
-const Header = ({ showBackButton, onBackClick, onNavigateToHome }) => {
+const Header = ({ selectedCategory }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const showBackButton = location.pathname !== '/' || !!selectedCategory;
   const [balance, setBalance] = useState(0);
   console.log(balance, '<--- balance');
 
@@ -24,14 +28,14 @@ const Header = ({ showBackButton, onBackClick, onNavigateToHome }) => {
       <div className="header-content">
         <div className="logo">
           {showBackButton ? (
-            <button className="back-btn" onClick={onBackClick}>
+            <button className="back-btn" onClick={() => selectedCategory ? window.location.reload() : navigate(-1)}>
               🡸
             </button>
-          ) : <span className="logo-text" onClick={onNavigateToHome} style={{cursor: 'pointer'}}>GameHub</span>}
+          ) : <span className="logo-text" onClick={() => navigate('/')} style={{cursor: 'pointer'}}>GameHub</span>}
         </div>
         <div className="header-actions">
-          <button className="notification-btn">💵{balance}</button>
-          {/* <button className="menu-btn">☰</button> */}
+          {/* <button className="notification-btn">💵{balance}</button> */}
+          <button className="menu-btn">🔔</button>
         </div>
       </div>
     </header>
