@@ -64,10 +64,37 @@ const Deposit = () => {
       render: (record) => record.player?.phone || 'N/A',
     },
     {
-      title: 'UTR Number',
-      dataIndex: 'utrNumber',
-      key: 'utrNumber',
+      title: 'Transfer Type',
+      dataIndex: 'transferType',
+      key: 'transferType',
       width: 120,
+      render: (type) => type === 'BANK_TRANSFER' ? 'Bank Transfer' : 'UPI Transfer',
+    },
+    {
+      title: 'Transfer Details',
+      key: 'transferDetails',
+      width: 200,
+      render: (record) => {
+        const details = record.transferDetails;
+        if (record.transferType === 'BANK_TRANSFER') {
+          return (
+            <div>
+              <div><strong>Bank:</strong> {details?.bankName || 'N/A'}</div>
+              <div><strong>Account:</strong> {details?.accountNumber || 'N/A'}</div>
+              <div><strong>TXN ID:</strong> {details?.transactionId || 'N/A'}</div>
+            </div>
+          );
+        } else {
+          const appName = details?.upiAppName === 'GOOGLE_PAY' ? 'Google Pay' : 'PhonePe';
+          return (
+            <div>
+              <div><strong>UPI ID:</strong> {details?.upiId || 'N/A'}</div>
+              <div><strong>App:</strong> {appName}</div>
+              <div><strong>TXN ID:</strong> {details?.transactionId || 'N/A'}</div>
+            </div>
+          );
+        }
+      },
     },
     {
       title: 'Amount',

@@ -52,6 +52,7 @@ export class GamesController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   getPlayerHistory(@Request() req) {
-    return this.gamesService.getPlayerHistory(req.user.userId);
+    const playerId = req.user.userId || req.user.id || req.user.sub;
+    return this.gamesService.getPlayerHistory(playerId);
   }
 }

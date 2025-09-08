@@ -101,8 +101,11 @@ export class GamesService {
           },
         });
         const commissionRate = commission?.commissionRate || 0;
-        agentCommission += game.amount * (commissionRate / 100);
+        const gameCommission = commissionRate;
+        console.log(`Game ${game.gameId}: Amount ${game.amount}, Commission Rate ₹${commissionRate}, Commission ${gameCommission}`);
+        agentCommission += gameCommission;
       }
+      console.log(`Total agent commission: ₹${agentCommission}`);
     }
 
     const gameHistory = await this.prisma.gameHistory.create({

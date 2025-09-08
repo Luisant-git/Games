@@ -52,7 +52,16 @@ const Game = ({ category, games }) => {
     return () => clearInterval(interval);
   }, [selectedShow]);
 
+  const isGameActive = () => {
+    if (!selectedShow) return false;
+    const now = new Date();
+    const playStart = new Date(selectedShow.playStart);
+    const playEnd = new Date(selectedShow.playEnd);
+    return now >= playStart && now <= playEnd;
+  };
+
   const addBet = (game, numbers) => {
+    if (!isGameActive()) return;
     const currentQty = quantities[game.id] || 0;
     if (currentQty === 0) return;
     
@@ -162,7 +171,7 @@ const Game = ({ category, games }) => {
       )}
 
       {/* SINGLE DIGIT */}
-      <div className="section">
+      <div className={`section ${!isGameActive() ? 'disabled' : ''}`}>
         {games.filter((g) => g.betType === "SINGLE").length > 0 && (
           <h3>
             Single Digit{" "}
@@ -179,17 +188,17 @@ const Game = ({ category, games }) => {
           .map((game) => (
             <div key={game.id} className="bet-row">
               <span className={`board ${game.board}`}>{game.board}</span>
-              <input type="number" min="0" max="9" placeholder="0-9" />
+              <input type="number" min="0" max="9" placeholder="0-9" disabled={!isGameActive()} />
               <div className="qty">
-                <button onClick={() => updateQuantity(game.id, -1)}>-</button>
+                <button onClick={() => updateQuantity(game.id, -1)} disabled={!isGameActive()}>-</button>
                 <span>{quantities[game.id] || 0}</span>
-                <button onClick={() => updateQuantity(game.id, 1)}>+</button>
+                <button onClick={() => updateQuantity(game.id, 1)} disabled={!isGameActive()}>+</button>
               </div>
               <button className="add-btn" onClick={(e) => {
                 const input = e.target.parentElement.querySelector('input');
                 const number = parseInt(input.value) || 0;
                 addBet(game, number);
-              }}>
+              }} disabled={!isGameActive()}>
                 Add
               </button>
             </div>
@@ -197,7 +206,7 @@ const Game = ({ category, games }) => {
       </div>
 
       {/* DOUBLE DIGITS */}
-      <div className="section">
+      <div className={`section ${!isGameActive() ? 'disabled' : ''}`}>
         {games.filter((g) => g.betType === "DOUBLE").length > 0 && (
           <h3>
             Double Digits{" "}
@@ -214,17 +223,17 @@ const Game = ({ category, games }) => {
           .map((game) => (
             <div key={game.id} className="bet-row">
               <span className={`board ${game.board}`}>{game.board}</span>
-              <input type="number" min="0" max="99" placeholder="00-99" />
+              <input type="number" min="0" max="99" placeholder="00-99" disabled={!isGameActive()} />
               <div className="qty">
-                <button onClick={() => updateQuantity(game.id, -1)}>-</button>
+                <button onClick={() => updateQuantity(game.id, -1)} disabled={!isGameActive()}>-</button>
                 <span>{quantities[game.id] || 0}</span>
-                <button onClick={() => updateQuantity(game.id, 1)}>+</button>
+                <button onClick={() => updateQuantity(game.id, 1)} disabled={!isGameActive()}>+</button>
               </div>
               <button className="add-btn" onClick={(e) => {
                 const input = e.target.parentElement.querySelector('input');
                 const number = parseInt(input.value) || 0;
                 addBet(game, number);
-              }}>
+              }} disabled={!isGameActive()}>
                 Add
               </button>
             </div>
@@ -232,7 +241,7 @@ const Game = ({ category, games }) => {
       </div>
 
       {/* THREE DIGITS */}
-      <div className="section">
+      <div className={`section ${!isGameActive() ? 'disabled' : ''}`}>
         {games.filter((g) => g.betType === "TRIPLE_DIGIT").length > 0 && (
           <h3>
             Three Digits{" "}
@@ -251,15 +260,15 @@ const Game = ({ category, games }) => {
             <div key={game.id} className="bet-row triple-digit">
               <div className="top-row">
                 <span className={`board ${game.board}`}>{game.board}</span>
-                <input type="number" min="0" max="9" placeholder="0" />
-                <input type="number" min="0" max="9" placeholder="0" />
-                <input type="number" min="0" max="9" placeholder="0" />
+                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} />
+                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} />
+                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} />
               </div>
               <div className="controls-section">
                 <div className="qty">
-                  <button onClick={() => updateQuantity(game.id, -1)}>-</button>
+                  <button onClick={() => updateQuantity(game.id, -1)} disabled={!isGameActive()}>-</button>
                   <span>{quantities[game.id] || 0}</span>
-                  <button onClick={() => updateQuantity(game.id, 1)}>+</button>
+                  <button onClick={() => updateQuantity(game.id, 1)} disabled={!isGameActive()}>+</button>
                 </div>
                 <button
                   className="add-btn"
@@ -268,6 +277,7 @@ const Game = ({ category, games }) => {
                     const numbers = Array.from(inputs).map(input => parseInt(input.value) || 0);
                     addBet(game, numbers);
                   }}
+                  disabled={!isGameActive()}
                 >
                   Add
                 </button>
@@ -277,7 +287,7 @@ const Game = ({ category, games }) => {
       </div>
 
       {/* 4DS DIGITS */}
-      <div className="section">
+      <div className={`section ${!isGameActive() ? 'disabled' : ''}`}>
         {games.filter((g) => g.betType === "FOUR_DIGIT").length > 0 && (
           <h3>
             4DS Digits{" "}
@@ -296,16 +306,16 @@ const Game = ({ category, games }) => {
             <div key={game.id} className="bet-row four-digit">
               <div className="top-row">
                 <span className={`board ${game.board}`}>{game.board}</span>
-                <input type="number" min="0" max="9" placeholder="0" />
-                <input type="number" min="0" max="9" placeholder="0" />
-                <input type="number" min="0" max="9" placeholder="0" />
-                <input type="number" min="0" max="9" placeholder="0" />
+                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} />
+                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} />
+                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} />
+                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} />
               </div>
               <div className="controls-section">
                 <div className="qty">
-                  <button onClick={() => updateQuantity(game.id, -1)}>-</button>
+                  <button onClick={() => updateQuantity(game.id, -1)} disabled={!isGameActive()}>-</button>
                   <span>{quantities[game.id] || 0}</span>
-                  <button onClick={() => updateQuantity(game.id, 1)}>+</button>
+                  <button onClick={() => updateQuantity(game.id, 1)} disabled={!isGameActive()}>+</button>
                 </div>
                 <button
                   className="add-btn"
@@ -314,6 +324,7 @@ const Game = ({ category, games }) => {
                     const numbers = Array.from(inputs).map(input => parseInt(input.value) || 0);
                     addBet(game, numbers);
                   }}
+                  disabled={!isGameActive()}
                 >
                   Add
                 </button>

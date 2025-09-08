@@ -163,15 +163,26 @@ model AgentCommission {
 }
 
 model Deposit {
-  id        Int      @id @default(autoincrement())
-  playerId  Int
-  utrNumber String
-  amount    Float
-  ticket    Int?
-  status    DepositStatus
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  player    Player   @relation(fields: [playerId], references: [id])
+  id              Int           @id @default(autoincrement())
+  playerId        Int
+  transferType    TransferType
+  transferDetails Json
+  amount          Float
+  ticket          Int?
+  status          DepositStatus
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  player          Player        @relation(fields: [playerId], references: [id])
+}
+
+enum TransferType {
+  BANK_TRANSFER
+  UPI_TRANSFER
+}
+
+enum UpiAppName {
+  GOOGLE_PAY
+  PHONE_PE
 }
 
 enum DepositStatus {

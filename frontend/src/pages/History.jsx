@@ -73,10 +73,10 @@ const History = () => {
         {loading ? (
           <div className="loading">Loading history...</div>
         ) : history.length > 0 ? (
-          history.filter(game => !game.isWon).map((game) => (
+          history.filter(game => !game.isWon).map((game, index) => (
             <div key={game.id} className="history-item">
               <div className="game-info">
-                <h4>Game #{game.id}</h4>
+                <h4>Game #{index + 1}</h4>
                 <div className="game-meta">
                   <span>📅 {formatDate(game.createdAt)}</span>
                   <span>🕐 {formatDate(game.showTime)}</span>
@@ -102,6 +102,10 @@ const History = () => {
                   <div className="win-amount">
                     <span>Potential Win</span>
                     <span>₹{game.totalWinAmount}</span>
+                  </div>
+                  <div className='win-amount'>
+                    <span>Agent commission</span>
+                    <span>₹{game.agentCommission}</span>
                   </div>
                 </div>
               </div>

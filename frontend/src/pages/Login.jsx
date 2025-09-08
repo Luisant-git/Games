@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { loginPlayer } from '../api/auth';
 import './Login.css';
 
 const Login = ({ onLogin, onSwitchToRegister, onSwitchToAgent, showAgentOption }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -19,7 +21,8 @@ const Login = ({ onLogin, onSwitchToRegister, onSwitchToAgent, showAgentOption }
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.player));
         localStorage.setItem('userType', 'player');
-        onLogin();
+        navigate('/');
+        if (onLogin) onLogin();
       } else {
         toast.error('Login failed!');
       }
@@ -88,7 +91,7 @@ const Login = ({ onLogin, onSwitchToRegister, onSwitchToAgent, showAgentOption }
         
         <p>
           Don't have an account? 
-          <button type="button" onClick={onSwitchToRegister} className="link-button">
+          <button type="button" onClick={() => navigate('/register')} className="link-button">
             Register here
           </button>
         </p>

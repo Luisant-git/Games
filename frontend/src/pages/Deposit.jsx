@@ -9,10 +9,21 @@ const Deposit = () => {
   const [balance, setBalance] = useState(0);
   const [isVerifying, setIsVerifying] = useState(false);
   const [status, setStatus] = useState(null);
-  const [utrNumber, setUtrNumber] = useState("");
+  const [transferType, setTransferType] = useState("BANK_TRANSFER");
   const [amount, setAmount] = useState("");
   const [depositHistory, setDepositHistory] = useState([]);
-  console.log(depositHistory, "<--- depositHistory");
+  
+  // Bank Transfer fields
+  const [accountNumber, setAccountNumber] = useState("");
+  const [ifscCode, setIfscCode] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [accountHolderName, setAccountHolderName] = useState("");
+  const [bankTransactionId, setBankTransactionId] = useState("");
+  
+  // UPI Transfer fields
+  const [upiId, setUpiId] = useState("");
+  const [upiTransactionId, setUpiTransactionId] = useState("");
+  const [upiAppName, setUpiAppName] = useState("");
   
 
   useEffect(() => {
@@ -36,27 +47,60 @@ const Deposit = () => {
     setStatus(null);
 
     try {
+      let transferDetails = {};
+      
+      if (transferType === "BANK_TRANSFER") {
+        transferDetails = {
+          accountNumber,
+          ifscCode,
+          bankName,
+          accountHolderName,
+          transactionId: bankTransactionId
+        };
+      } else {
+        transferDetails = {
+          upiId,
+          transactionId: upiTransactionId,
+          upiAppName
+        };
+      }
+
       const data = {
-        utrNumber,
+        transferType,
+        transferDetails,
         amount: parseFloat(amount),
       };
+      
       const response = await createDeposit(data);
 
       if (response.success) {
         toast.success("Payment verified successfully!");
         setStatus("success");
-        setBalance((prev) => prev + parseFloat(amount));
-        setUtrNumber("");
-        setAmount("");
+        resetForm();
+        getAllDepositHistory();
       } else {
         setStatus("error");
+        toast.error(response.message || "Payment verification failed");
       }
     } catch (err) {
       console.error("Error verifying payment:", err);
       setStatus("error");
+      toast.error("Payment verification failed");
     } finally {
       setIsVerifying(false);
     }
+  };
+
+  const resetForm = () => {
+    setAmount("");
+    setAccountNumber("");
+    setIfscCode("");
+    setBankName("");
+    setAccountHolderName("");
+    setBankTransactionId("");
+    setUpiId("");
+    setUpiTransactionId("");
+    setUpiAppName("");
   };
 
   const getAllDepositHistory = async () => {
@@ -85,26 +129,119 @@ const Deposit = () => {
         </div>
 
         <div className="card deposit-actions-card">
-          <h3 className="card-title">Deposit via BharatPe</h3>
+          <h3 className="card-title">Deposit Funds</h3>
           <div className="qr-section">
             <img src={QRCODE} alt="Scan Me to Pay" className="qr-image" />
             <p className="upi-note">
-              Accept All UPI Payment Automatic Add Amount In Your Wallet
+              Scan QR for UPI payments or use bank transfer details below
             </p>
           </div>
 
           <form className="verify-form" onSubmit={handleVerifyPayment}>
             <h3 className="card-title">Verify Your Payment</h3>
+            
             <div className="form-group">
-              <label>UTR Number</label>
-              <input
-                type="text"
-                placeholder="Enter UTR from payment receipt"
-                value={utrNumber}
-                onChange={(e) => setUtrNumber(e.target.value)}
-                required
-              />
+              <label>Transfer Type</label>
+              <select
+                value={transferType}
+                onChange={(e) => setTransferType(e.target.value)}
+                className="transfer-type-select"
+              >
+                <option value="BANK_TRANSFER">Bank Transfer</option>
+                <option value="UPI_TRANSFER">UPI Transfer</option>
+              </select>
             </div>
+
+            {transferType === "BANK_TRANSFER" ? (
+              <>
+                <div className="form-group">
+                  <label>Account Number</label>
+                  <input
+                    type="text"
+                    placeholder="Enter bank account number"
+                    value={accountNumber}
+                    onChange={(e) => setAccountNumber(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>IFSC Code</label>
+                  <input
+                    type="text"
+                    placeholder="Enter IFSC code"
+                    value={ifscCode}
+                    onChange={(e) => setIfscCode(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Bank Name</label>
+                  <input
+                    type="text"
+                    placeholder="Enter bank name"
+                    value={bankName}
+                    onChange={(e) => setBankName(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Account Holder Name</label>
+                  <input
+                    type="text"
+                    placeholder="Enter account holder name"
+                    value={accountHolderName}
+                    onChange={(e) => setAccountHolderName(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Transaction ID</label>
+                  <input
+                    type="text"
+                    placeholder="Enter transaction ID"
+                    value={bankTransactionId}
+                    onChange={(e) => setBankTransactionId(e.target.value)}
+                    required
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="form-group">
+                  <label>UPI ID</label>
+                  <input
+                    type="text"
+                    placeholder="Enter UPI ID (e.g., user@gpay)"
+                    value={upiId}
+                    onChange={(e) => setUpiId(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>UPI App Name</label>
+                  <select
+                    value={upiAppName}
+                    onChange={(e) => setUpiAppName(e.target.value)}
+                    className="transfer-type-select"
+                    required
+                  >
+                    <option value="">Select UPI App</option>
+                    <option value="GOOGLE_PAY">Google Pay</option>
+                    <option value="PHONE_PE">PhonePe</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Transaction ID</label>
+                  <input
+                    type="text"
+                    placeholder="Enter UPI transaction ID"
+                    value={upiTransactionId}
+                    onChange={(e) => setUpiTransactionId(e.target.value)}
+                    required
+                  />
+                </div>
+              </>
+            )}
 
             <div className="form-group">
               <label>Amount (₹)</label>
@@ -147,8 +284,18 @@ const Deposit = () => {
               {depositHistory.map((deposit) => (
                 <div key={deposit.id} className="history-item">
                   <div className="history-details">
-                    <p><strong>UTR:</strong> {deposit.utrNumber}</p>
+                    <p><strong>Type:</strong> {deposit.transferType === 'BANK_TRANSFER' ? 'Bank Transfer' : 'UPI Transfer'}</p>
                     <p><strong>Amount:</strong> ₹{deposit.amount}</p>
+                    <p><strong>Transaction ID:</strong> {deposit.transferDetails?.transactionId}</p>
+                    {deposit.transferType === 'BANK_TRANSFER' && (
+                      <p><strong>Bank:</strong> {deposit.transferDetails?.bankName}</p>
+                    )}
+                    {deposit.transferType === 'UPI_TRANSFER' && (
+                      <>
+                        <p><strong>UPI ID:</strong> {deposit.transferDetails?.upiId}</p>
+                        <p><strong>UPI App:</strong> {deposit.transferDetails?.upiAppName === 'GOOGLE_PAY' ? 'Google Pay' : 'PhonePe'}</p>
+                      </>
+                    )}
                     <p><strong>Status:</strong> <span className={`status-${deposit.status.toLowerCase()}`}>{deposit.status}</span></p>
                     <p><strong>Date:</strong> {new Date(deposit.createdAt).toLocaleDateString()}</p>
                   </div>

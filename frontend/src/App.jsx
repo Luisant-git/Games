@@ -24,6 +24,8 @@ const AppContent = () => {
   const [userType, setUserType] = useState(localStorage.getItem('userType') || 'player');
   const [isInGame, setIsInGame] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  
+  const isAgentMode = new URLSearchParams(location.search).get('agent') !== null;
 
   const handleLogin = () => {
     setIsLoggedIn(true);
@@ -70,7 +72,13 @@ const AppContent = () => {
           <Route path="/register" element={<Register onRegister={handleRegister} />} />
           <Route path="/agent-login" element={<AgentLogin onLogin={handleLogin} />} />
           <Route path="/agent-register" element={<AgentRegister onRegister={handleRegister} />} />
-          <Route path="/" element={isLoggedIn ? <Home onGameStateChange={setIsInGame} onCategoryChange={setSelectedCategory} selectedCategory={selectedCategory} /> : <Navigate to="/login" />} />
+          <Route path="/" element={
+            isLoggedIn ? (
+              <Home onGameStateChange={setIsInGame} onCategoryChange={setSelectedCategory} selectedCategory={selectedCategory} />
+            ) : (
+              isAgentMode ? <AgentLogin onLogin={handleLogin} /> : <Navigate to="/login" />
+            )
+          } />
           <Route path="/rank" element={isLoggedIn ? <Rank /> : <Navigate to="/login" />} />
           <Route path="/game" element={isLoggedIn ? <Game /> : <Navigate to="/login" />} />
           <Route path="/history" element={isLoggedIn ? <History /> : <Navigate to="/login" />} />

@@ -1,11 +1,20 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, IsNumber, IsPositive } from 'class-validator';
+import { IsOptional, IsNumber, IsPositive, IsEnum, IsObject } from 'class-validator';
+import { TransferType, UpiAppName } from './create-deposit.dto';
 
 export class UpdateDepositDto {
-  @ApiPropertyOptional({ example: 'UTR987654321', description: 'UTR Number for the deposit' })
+  @ApiPropertyOptional({ enum: TransferType, example: TransferType.UPI_TRANSFER, description: 'Type of transfer' })
   @IsOptional()
-  @IsString()
-  utrNumber?: string;
+  @IsEnum(TransferType)
+  transferType?: TransferType;
+
+  @ApiPropertyOptional({ 
+    example: { upiId: 'user@paytm', transactionId: 'UPI123456789', upiAppName: 'GOOGLE_PAY' }, 
+    description: 'Transfer details based on transfer type' 
+  })
+  @IsOptional()
+  @IsObject()
+  transferDetails?: object;
 
   @ApiPropertyOptional({ example: 1500.75, description: 'Deposit amount' })
   @IsOptional()

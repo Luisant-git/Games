@@ -4,12 +4,15 @@ import { CreateDepositDto } from './dto/create-deposit.dto';
 import { UpdateDepositDto } from './dto/update-deposit.dto';
 import { UpdateDepositStatusDto } from './dto/update-deposit-status.dto';
 import { DepositStatus } from './entities/deposit.entity';
+import { DepositValidation } from './deposit.validation';
 
 @Injectable()
 export class DepositService {
   constructor(private prisma: PrismaService) {}
 
   async create(createDepositDto: CreateDepositDto, playerId: number) {
+    DepositValidation.validateTransferDetails(createDepositDto.transferType, createDepositDto.transferDetails);
+
     const deposit = await this.prisma.deposit.create({
       data: {
         ...createDepositDto,
@@ -105,6 +108,10 @@ export class DepositService {
   async update(id: number, updateDepositDto: UpdateDepositDto) {
     const deposit = await this.findOne(id);
     
+    if (updateDepositDto.transferType && updateDepositDto.transferDetails) {
+      DepositValidation.validateTransferDetails(updateDepositDto.transferType, updateDepositDto.transferDetails);
+    }
+
     return this.prisma.deposit.update({
       where: { id },
       data: updateDepositDto,

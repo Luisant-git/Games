@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { loginAgent } from '../api/auth';
 import './Login.css';
 
 const AgentLogin = ({ onLogin, onSwitchToRegister, onSwitchToPlayer }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -19,7 +21,8 @@ const AgentLogin = ({ onLogin, onSwitchToRegister, onSwitchToPlayer }) => {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.agent));
         localStorage.setItem('userType', 'agent');
-        onLogin();
+        navigate('/agent-profile');
+        if (onLogin) onLogin();
       } else {
         toast.error('Login failed!');
       }
@@ -69,7 +72,7 @@ const AgentLogin = ({ onLogin, onSwitchToRegister, onSwitchToPlayer }) => {
         
         <p>
           Don't have an account? 
-          <button type="button" onClick={onSwitchToRegister} className="link-button">
+          <button type="button" onClick={() => navigate('/agent-register')} className="link-button">
             Register here
           </button>
         </p>
