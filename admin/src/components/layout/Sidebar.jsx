@@ -11,6 +11,7 @@ import {
   TeamOutlined,
   DeliveredProcedureOutlined,
   PayCircleOutlined,
+  HistoryOutlined,
 } from "@ant-design/icons";
 
 const Sidebar = ({ isOpen, onClose, isMobile }) => {
@@ -73,6 +74,11 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
           label: "Deposit",
         },
       ],
+    },
+    {
+      key: "/game-history",
+      icon: <HistoryOutlined />,
+      label: "Game History",
     }
   ];
 

@@ -15,7 +15,8 @@ const Header = ({ onMenuToggle, isMobile }) => {
       '/timing': 'Timing',
       '/deposit': 'Deposit',
       '/analytics': 'Analytics',
-      '/settings': 'Settings'
+      '/settings': 'Settings',
+      '/game-history': 'Game History',
     }
     return routes[location.pathname] || 'Admin Panel'
   }
