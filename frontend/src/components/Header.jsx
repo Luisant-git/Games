@@ -29,7 +29,7 @@ const Header = ({ selectedCategory }) => {
         <div className="logo">
           {showBackButton ? (
             <button className="back-btn" onClick={() => selectedCategory ? window.location.reload() : navigate(-1)}>
-              🡸
+              <span style={{fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer'}}>←</span>
             </button>
           ) : <span className="logo-text" onClick={() => navigate('/')} style={{cursor: 'pointer'}}>GameHub</span>}
         </div>

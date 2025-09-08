@@ -11,6 +11,7 @@ const Game = ({ category, games }) => {
   const [selectedShow, setSelectedShow] = useState(null);
   const [timeLeft, setTimeLeft] = useState("");
   const [quantities, setQuantities] = useState({});
+  const [inputValues, setInputValues] = useState({});
   const [showBets, setShowBets] = useState(false);
   const [historyBets, setHistoryBets] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
@@ -90,10 +91,10 @@ const Game = ({ category, games }) => {
   const totalAmount = bets.reduce((sum, b) => sum + b.amount, 0);
 
   const submitBets = async () => {
-  if (bets.length === 0) {
-    toast.error('No bets to submit.');
-    return;
-  }
+    if (bets.length === 0) {
+      toast.error('No bets to submit.');
+      return;
+    }
     
     try {
       const response = await playGame({
@@ -108,13 +109,20 @@ const Game = ({ category, games }) => {
       console.log('Submit response:', response);
 
       if (response.ok) {
+        // Reset state first
         setBets([]);
         setQuantities({});
-        toast.success('Bets submitted successfully!');
+        setInputValues({});
         setShowConfirm(false);
+        // Then show success message
+        toast.success('Bets submitted successfully!');
       } else {
-        const errorData = await response.json();
-        toast.error(errorData.message || 'Failed to submit bets');
+        try {
+          const errorData = await response.json();
+          toast.error(errorData.message || 'Failed to submit bets');
+        } catch {
+          toast.error('Failed to submit bets');
+        }
       }
     } catch (error) {
       console.error('Submit error:', error);
@@ -188,15 +196,22 @@ const Game = ({ category, games }) => {
           .map((game) => (
             <div key={game.id} className="bet-row">
               <span className={`board ${game.board}`}>{game.board}</span>
-              <input type="number" min="0" max="9" placeholder="0-9" disabled={!isGameActive()} />
+              <input 
+                type="number" 
+                min="0" 
+                max="9" 
+                placeholder="0-9" 
+                value={inputValues[game.id] || ''}
+                onChange={(e) => setInputValues(prev => ({...prev, [game.id]: e.target.value}))}
+                disabled={!isGameActive()} 
+              />
               <div className="qty">
                 <button onClick={() => updateQuantity(game.id, -1)} disabled={!isGameActive()}>-</button>
                 <span>{quantities[game.id] || 0}</span>
                 <button onClick={() => updateQuantity(game.id, 1)} disabled={!isGameActive()}>+</button>
               </div>
-              <button className="add-btn" onClick={(e) => {
-                const input = e.target.parentElement.querySelector('input');
-                const number = parseInt(input.value) || 0;
+              <button className="add-btn" onClick={() => {
+                const number = parseInt(inputValues[game.id]) || 0;
                 addBet(game, number);
               }} disabled={!isGameActive()}>
                 Add
@@ -223,15 +238,22 @@ const Game = ({ category, games }) => {
           .map((game) => (
             <div key={game.id} className="bet-row">
               <span className={`board ${game.board}`}>{game.board}</span>
-              <input type="number" min="0" max="99" placeholder="00-99" disabled={!isGameActive()} />
+              <input 
+                type="number" 
+                min="0" 
+                max="99" 
+                placeholder="00-99" 
+                value={inputValues[game.id] || ''}
+                onChange={(e) => setInputValues(prev => ({...prev, [game.id]: e.target.value}))}
+                disabled={!isGameActive()} 
+              />
               <div className="qty">
                 <button onClick={() => updateQuantity(game.id, -1)} disabled={!isGameActive()}>-</button>
                 <span>{quantities[game.id] || 0}</span>
                 <button onClick={() => updateQuantity(game.id, 1)} disabled={!isGameActive()}>+</button>
               </div>
-              <button className="add-btn" onClick={(e) => {
-                const input = e.target.parentElement.querySelector('input');
-                const number = parseInt(input.value) || 0;
+              <button className="add-btn" onClick={() => {
+                const number = parseInt(inputValues[game.id]) || 0;
                 addBet(game, number);
               }} disabled={!isGameActive()}>
                 Add
