@@ -382,7 +382,7 @@ const Game = ({ category, games }) => {
                       <div key={betIndex} className="bet-item">
                         <span className="board">{bet.board}</span>
                         <span className="bet-type">{bet.betType?.replace('_', ' ') || 'Bet'}</span>
-                        <span className="numbers">{bet.numbers}</span>
+                        <span className="numbers">{['TRIPLE_DIGIT', 'FOUR_DIGIT'].includes(bet.betType) ? JSON.parse(bet.numbers).join('') : bet.numbers}</span>
                         <span className="qty">×{bet.qty}</span>
                         <span className="amount">₹{bet.amount}</span>
                       </div>

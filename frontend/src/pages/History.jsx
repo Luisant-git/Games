@@ -86,7 +86,7 @@ const History = () => {
                     <div key={play.id} className="play-item">
                       <span className="board">{play.board}</span>
                       <span className="bet-type">{play.betType.replace('_', ' ')}</span>
-                      <span className="numbers">{play.betType === 'TRIPLE_DIGIT' ? JSON.parse(play.numbers).join(',') : play.numbers}</span>
+                      <span className="numbers">{['TRIPLE_DIGIT', 'FOUR_DIGIT'].includes(play.betType) ? JSON.parse(play.numbers).join('') : play.numbers}</span>
                       <span className="qty">×{play.qty}</span>
                       <span className="amount">₹{play.amount}</span>
                     </div>
