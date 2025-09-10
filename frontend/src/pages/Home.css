@@ -182,8 +182,4 @@
   .banner-image{ aspect-ratio: 18 / 9; }
 }
 
-@media (max-width: 380px){
-  .banners{
-    grid-template-columns: 1fr;  /* fallback to 1 per row */
-  }
-}
+

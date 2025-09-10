@@ -380,21 +380,11 @@ const Game = ({ category, games }) => {
                     </div>
                     {history.gameplay?.map((bet, betIndex) => (
                       <div key={betIndex} className="bet-item">
-                        <div className={`bet-board ${bet.board}`}>{bet.board}</div>
-                        <div className="bet-details">
-                          <div className="bet-row-info">
-                            <span className="bet-label">Numbers:</span>
-                            <span className="bet-numbers">{bet.numbers}</span>
-                          </div>
-                          <div className="bet-row-info">
-                            <span className="bet-label">Quantity:</span>
-                            <span className="bet-qty">{bet.qty}</span>
-                          </div>
-                          <div className="bet-row-info">
-                            <span className="bet-label">Amount:</span>
-                            <span className="bet-amount">₹{bet.amount}</span>
-                          </div>
-                        </div>
+                        <span className="board">{bet.board}</span>
+                        <span className="bet-type">{bet.betType?.replace('_', ' ') || 'Bet'}</span>
+                        <span className="numbers">{bet.numbers}</span>
+                        <span className="qty">×{bet.qty}</span>
+                        <span className="amount">₹{bet.amount}</span>
                       </div>
                     ))}
                     <div className="history-total">
@@ -413,7 +403,7 @@ const Game = ({ category, games }) => {
       {/* CONFIRM BETS MODAL */}
       {showConfirm && (
         <div className="bets-modal" onClick={() => setShowConfirm(false)}>
-          <div className="bets-content" onClick={(e) => e.stopPropagation()}>
+          <div className="bets-content confirm-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3>Confirm Bets</h3>
               <button className="close-x" onClick={() => setShowConfirm(false)}>×</button>
@@ -425,30 +415,19 @@ const Game = ({ category, games }) => {
             ) : (
               <div className="bets-list">
                 {bets.map((bet, index) => (
-                  <div key={index} className="bet-item">
-                    <div className={`bet-board ${bet.board}`}>{bet.board}</div>
-                    <div className="bet-details">
-                      <div className="bet-row-info">
-                        <span className="bet-label">Numbers:</span>
-                        <span className="bet-numbers">{Array.isArray(bet.numbers) ? bet.numbers.join('') : bet.numbers}</span>
-                      </div>
-                      <div className="bet-row-info">
-                        <span className="bet-label">Quantity:</span>
-                        <span className="bet-qty">{bet.qty}</span>
-                      </div>
-                      <div className="bet-row-info">
-                        <span className="bet-label">Amount:</span>
-                        <span className="bet-amount">₹{bet.amount}</span>
-                      </div>
-                    </div>
+                  <div key={index} className="confirm-bet-item">
+                    <span className="board">{bet.board}</span>
+                    <span className="qty">×{bet.qty}</span>
+                    <button className="remove-bet" onClick={() => {
+                      const newBets = bets.filter((_, i) => i !== index);
+                      setBets(newBets);
+                    }}>×</button>
                   </div>
                 ))}
-                <div className="total-summary">
-                  <div className="total-icon">💰</div>
-                  <div className="total-text">
-                    <div className="total-amount">₹{totalAmount}</div>
-                    <div className="total-count">{bets.length} bet{bets.length !== 1 ? 's' : ''}</div>
-                  </div>
+                <div className="confirm-total">
+                  <div className="confirm-total-label">Total Amount</div>
+                  <div className="confirm-total-amount">₹{totalAmount}</div>
+                  <div className="confirm-total-count">{bets.length} bet{bets.length !== 1 ? 's' : ''}</div>
                 </div>
               </div>
             )}

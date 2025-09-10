@@ -104,6 +104,23 @@ const Deposit = () => {
       render: (amount) => `₹${amount}`,
     },
     {
+      title: 'Screenshot',
+      dataIndex: 'screenshot',
+      key: 'screenshot',
+      width: 120,
+      render: (screenshot) => {
+        if (screenshot) {
+          const imageUrl = screenshot.startsWith('http') ? screenshot : `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4020'}/uploads/${screenshot}`;
+          return (
+            <a href={imageUrl} target="_blank" rel="noopener noreferrer">
+              View Screenshot
+            </a>
+          );
+        }
+        return 'No Screenshot';
+      },
+    },
+    {
       title: 'Ticket',
       dataIndex: 'ticket',
       key: 'ticket',

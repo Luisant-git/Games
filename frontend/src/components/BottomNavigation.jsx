@@ -6,7 +6,7 @@ const BottomNavigation = ({ activeTab }) => {
   const navigate = useNavigate();
   const navItems = [
     { id: 'home', icon: '🏠', label: 'Home', path: '/' },
-    { id: 'rank', icon: '🏆', label: 'Rank', path: '/rank' },
+    { id: 'support', icon: '📞', label: 'Support', path: '/support' },
     { id: 'history', icon: '📊', label: 'History', path: '/history' },
     { id: 'profile', icon: '👤', label: 'Profile', path: '/profile' }
   ];

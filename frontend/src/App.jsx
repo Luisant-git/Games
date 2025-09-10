@@ -5,7 +5,7 @@ import './App.css';
 import Header from './components/Header';
 import BottomNavigation from './components/BottomNavigation';
 import Home from './pages/Home';
-import Rank from './pages/Rank';
+import Support from './pages/Support';
 import Game from './pages/Game';
 import History from './pages/History';
 import Profile from './pages/Profile';
@@ -16,6 +16,8 @@ import AgentLogin from './pages/AgentLogin';
 import AgentRegister from './pages/AgentRegister';
 import Deposit from './pages/Deposit';
 import Withdraw from './pages/Withdraw';
+import ChangePassword from './pages/ChangePassword';
+import Account from './pages/Account';
 
 const AppContent = () => {
   const navigate = useNavigate();
@@ -50,7 +52,7 @@ const AppContent = () => {
   const getActiveTab = () => {
     const path = location.pathname;
     if (path === '/') return 'home';
-    if (path === '/rank') return 'rank';
+    if (path === '/support') return 'support';
     if (path === '/game') return 'game';
     if (path === '/history') return 'history';
     if (path === '/profile') return 'profile';
@@ -79,13 +81,15 @@ const AppContent = () => {
               isAgentMode ? <AgentLogin onLogin={handleLogin} /> : <Navigate to="/login" />
             )
           } />
-          <Route path="/rank" element={isLoggedIn ? <Rank /> : <Navigate to="/login" />} />
+          <Route path="/support" element={isLoggedIn ? <Support /> : <Navigate to="/login" />} />
           <Route path="/game" element={isLoggedIn ? <Game /> : <Navigate to="/login" />} />
           <Route path="/history" element={isLoggedIn ? <History /> : <Navigate to="/login" />} />
           <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/login" />} />
           <Route path="/agent-profile" element={isLoggedIn && userType === 'agent' ? <AgentProfile /> : <Navigate to="/login" />} />
           <Route path="/deposit" element={isLoggedIn ? <Deposit /> : <Navigate to="/login" />} />
           <Route path="/withdraw" element={isLoggedIn ? <Withdraw /> : <Navigate to="/login" />} />
+          <Route path="/change-password" element={isLoggedIn ? <ChangePassword /> : <Navigate to="/login" />} />
+          <Route path="/account" element={isLoggedIn ? <Account /> : <Navigate to="/login" />} />
         </Routes>
       </main>
       {showBottomNav && <BottomNavigation activeTab={getActiveTab()} />}

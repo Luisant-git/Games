@@ -3,13 +3,14 @@ import "./Deposit.css";
 import QRCODE from "../assets/scan_me_qr_code.jpg";
 import { getPlayerWallet } from "../api/wallet";
 import { createDeposit, getDepositHistory } from "../api/deposit";
+import { uploadFile } from "../api/upload";
 import toast from "react-hot-toast";
 
 const Deposit = () => {
   const [balance, setBalance] = useState(0);
   const [isVerifying, setIsVerifying] = useState(false);
   const [status, setStatus] = useState(null);
-  const [transferType, setTransferType] = useState("BANK_TRANSFER");
+  const [transferType, setTransferType] = useState("UPI_TRANSFER");
   const [amount, setAmount] = useState("");
   const [depositHistory, setDepositHistory] = useState([]);
   
@@ -24,6 +25,8 @@ const Deposit = () => {
   const [upiId, setUpiId] = useState("");
   const [upiTransactionId, setUpiTransactionId] = useState("");
   const [upiAppName, setUpiAppName] = useState("");
+  const [screenshotFile, setScreenshotFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
   
 
   useEffect(() => {
@@ -47,6 +50,20 @@ const Deposit = () => {
     setStatus(null);
 
     try {
+      let screenshotUrl = null;
+      
+      if (screenshotFile) {
+        setUploading(true);
+        try {
+          const uploadResponse = await uploadFile(screenshotFile);
+          screenshotUrl = uploadResponse.filename;
+        } catch (uploadError) {
+          toast.error('Failed to upload screenshot');
+          return;
+        } finally {
+          setUploading(false);
+        }
+      }
       let transferDetails = {};
       
       if (transferType === "BANK_TRANSFER") {
@@ -69,6 +86,7 @@ const Deposit = () => {
         transferType,
         transferDetails,
         amount: parseFloat(amount),
+        ...(screenshotUrl && { screenshot: screenshotUrl }),
       };
       
       const response = await createDeposit(data);
@@ -101,6 +119,7 @@ const Deposit = () => {
     setUpiId("");
     setUpiTransactionId("");
     setUpiAppName("");
+    setScreenshotFile(null);
   };
 
   const getAllDepositHistory = async () => {
@@ -254,12 +273,22 @@ const Deposit = () => {
               />
             </div>
 
+            <div className="form-group">
+              <label>Screenshot (Optional)</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setScreenshotFile(e.target.files[0])}
+              />
+              {screenshotFile && <p>Selected: {screenshotFile.name}</p>}
+            </div>
+
             <button
               type="submit"
               className="verify-button"
-              disabled={isVerifying}
+              disabled={isVerifying || uploading}
             >
-              {isVerifying ? "Verifying..." : "VERIFY DEPOSIT"}
+              {uploading ? "Uploading..." : isVerifying ? "Verifying..." : "VERIFY DEPOSIT"}
             </button>
 
             {status === "success" && (

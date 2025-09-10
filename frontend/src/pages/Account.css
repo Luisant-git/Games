@@ -1,0 +1,86 @@
+.account-screen {
+  padding: 14px 14px 90px;
+  background: var(--bg);
+  min-height: 100dvh;
+}
+
+.account-card {
+  background: var(--background-light-color);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.account-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 8px;
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+}
+
+.account-title {
+  margin-top: 10px;
+  margin-bottom: 14px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--heading);
+}
+
+.account-balance {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  margin: 6px 0 16px;
+}
+.account-balance .currency {
+  font-size: 20px;
+  color: var(--success-color);
+  font-weight: 800;
+}
+.account-balance .amount {
+  font-size: 28px;
+  color: var(--success-color);
+  font-weight: 900;
+}
+
+.field-label {
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 600;
+  margin: 6px 0 6px;
+}
+
+.field-label[for="mobile"] {
+  margin-top: 20px;
+}
+
+@media (max-width: 539px) {
+  .input#username {
+    margin-bottom: 20px;
+  }
+}
+
+.input {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 15px;
+}
+.input:disabled {
+  background: #f6f7ff;
+  color: #6f6f84;
+}
+
+@media (min-width: 540px) {
+  .account-screen { padding: 16px 18px 100px; }
+  .account-card { max-width: 520px; margin: 0 auto 18px; }
+}

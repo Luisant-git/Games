@@ -44,6 +44,8 @@ const Profile = () => {
   const menuItems = [
     { id: 1, icon: '💰', label: 'Deposit', action: () => navigate('/deposit') },
     { id: 2, icon: '🏦', label: 'Withdraw', action: () => navigate('/withdraw') },
+    { id: 3, icon: '📝', label: 'Account Information', action: () => navigate('/account') },
+    { id: 4, icon: '🔒', label: 'Change Password', action: () => navigate('/change-password') },
     { id: 8, icon: '🚪', label: 'Logout', action: handleLogout }
   ];
 
@@ -62,10 +64,10 @@ const Profile = () => {
           <span className="stat-number">₹{balance}</span>
           <span className="stat-label">Wallet Balance</span>
         </div>
-        <div className="stat-item">
+        {/* <div className="stat-item">
           <span className="stat-number">{user?.gameHistory?.length || '0'}</span>
           <span className="stat-label">Games Played</span>
-        </div>
+        </div> */}
         
         {/* <div className="stat-item">
           <span className="stat-number">{user?.gameHistory?.filter(game => game.isWon).length || '0'}</span>

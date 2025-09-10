@@ -33,10 +33,11 @@ const Login = ({ onLogin, onSwitchToRegister, onSwitchToAgent, showAgentOption }
 
   return (
     <div className="login">
+      <div className='header-top'>KL & DEAR LOTTERY BOOKING</div>
       {/* Disclaimer Box */}
       <div style={{
         position: 'fixed',
-        top: '10px',
+        top: '60px',
         left: '10px',
         right: '10px',
         height: '80px',
@@ -52,7 +53,7 @@ const Login = ({ onLogin, onSwitchToRegister, onSwitchToAgent, showAgentOption }
         <strong>Disclaimer:</strong> This gaming platform is for entertainment purposes only. Please play responsibly and within your means. Users must be 18+ years old to participate. Gambling can be addictive - seek help if needed from professional counseling services. By using this platform, you agree to our terms and conditions. We are not responsible for any financial losses. This platform operates under applicable gaming regulations. Please verify local laws before participating. Set spending limits and take regular breaks. If you feel you have a gambling problem, contact support immediately for assistance and resources.
       </div>
 
-      <div className="login-container" style={{ marginTop: '100px', marginBottom: '120px' }}>
+      <div className="login-container" style={{ marginTop: '0px', marginBottom: '20px' }}>
         <h2>Player Login</h2>
         
         {showAgentOption && (
@@ -97,35 +98,20 @@ const Login = ({ onLogin, onSwitchToRegister, onSwitchToAgent, showAgentOption }
         </p>
       </div>
 
-      {/* Note Box */}
-      <div style={{
-        position: 'fixed',
-        bottom: '10px',
-        left: '10px',
-        right: '10px',
-        height: '100px',
-        backgroundColor: '#d1ecf1',
-        border: '1px solid #bee5eb',
-        borderRadius: '8px',
-        padding: '10px',
-        overflowY: 'auto',
-        fontSize: '12px',
-        zIndex: 1000,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-      }}>
-        <strong>Important Notes:</strong><br/>
-        • Ensure stable internet connection for smooth gameplay experience<br/>
-        • Keep your login credentials secure and confidential at all times<br/>
-        • Contact our 24/7 support team for any technical issues or queries<br/>
-        • Read and understand all game rules before participating in any games<br/>
-        • Withdraw winnings only through verified and secure payment methods<br/>
-        • Account verification may be required for withdrawals above certain limits<br/>
-        • Bonus terms and conditions apply to all promotional offers<br/>
-        • Multiple accounts per user are strictly prohibited<br/>
-        • We reserve the right to suspend accounts for suspicious activities<br/>
-        • Regular system maintenance may temporarily affect service availability<br/>
-        • All transactions are encrypted and secured with latest technology
+      <div className="feature-cards">
+        <div className="feature-card">
+          <div className="feature-icon">⚡</div>
+          <h3>Instant Withdrawal</h3>
+          <p>Quick and hassle-free withdrawals</p>
+        </div>
+        <div className="feature-card">
+          <div className="feature-icon">🔒</div>
+          <h3>Secure Platform</h3>
+          <p>100% safe and encrypted transactions</p>
+        </div>
       </div>
+
+      <div className='header-bottom'>KL & DEAR LOTTERY BOOKING</div>
     </div>
   );
 };

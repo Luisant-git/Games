@@ -11,9 +11,10 @@ import { TimingModule } from './timing/timing.module';
 import { UploadModule } from './upload/upload.module';
 import { DepositModule } from './deposit/deposit.module';
 import { GameHistoryModule } from './game-history/game-history.module';
+import { SupportModule } from './support/support.module';
 
 @Module({
-  imports: [AuthModule, GamesModule, AgentModule, PlayerModule, CategoryModule, TimingModule, UploadModule, DepositModule, GameHistoryModule],
+  imports: [AuthModule, GamesModule, AgentModule, PlayerModule, CategoryModule, TimingModule, UploadModule, DepositModule, GameHistoryModule, SupportModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })

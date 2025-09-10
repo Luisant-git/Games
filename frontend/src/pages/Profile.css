@@ -78,7 +78,7 @@
 .stat-number {
   font-size: 18px;
   font-weight: bold;
-  color: #2874f0;
+  color: var(--success-color);
   margin-bottom: 4px;
 }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -106,6 +106,25 @@ export class PlayerService {
         gameHistory: true,
       },
     });
+  }
+
+  async changePassword(playerId: number, currentPassword: string, newPassword: string) {
+    const player = await this.prisma.player.findUnique({
+      where: { id: playerId },
+    });
+
+    if (!player || !(await bcrypt.compare(currentPassword, player.password))) {
+      throw new BadRequestException('Current password is incorrect');
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    
+    await this.prisma.player.update({
+      where: { id: playerId },
+      data: { password: hashedNewPassword },
+    });
+
+    return { success: true, message: 'Password changed successfully' };
   }
 
   async findAll() {

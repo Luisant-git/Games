@@ -34,4 +34,9 @@ export class CreateDepositDto {
   @IsNumber()
   @IsOptional()
   ticket?: number;
+
+  @ApiProperty({ example: 'https://example.com/screenshot.jpg', description: 'Screenshot URL of payment proof', required: false })
+  @IsString()
+  @IsOptional()
+  screenshot?: string;
 }

@@ -1,5 +1,6 @@
 .login {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
@@ -126,4 +127,66 @@
 
 .password-toggle:hover {
   color: var(--text-color);
+}
+
+.header-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--hover-color);
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-weight: bold;
+  font-size: 18px;
+  z-index: 1001;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.header-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--hover-color);
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-weight: bold;
+  font-size: 18px;
+  z-index: 1001;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+}
+.feature-cards {
+  display: flex;
+  gap: 16px;
+  margin-top: 0px;
+  max-width: 400px;
+}
+
+.feature-card {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+}
+
+.feature-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.feature-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.feature-card p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
 }

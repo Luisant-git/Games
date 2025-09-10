@@ -50,6 +50,7 @@ model Player {
   wallet      PlayerWallet?
   gameHistory GameHistory[]
   deposits    Deposit[]
+  supportTickets Support[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }
@@ -169,6 +170,7 @@ model Deposit {
   transferDetails Json
   amount          Float
   ticket          Int?
+  screenshot      String?
   status          DepositStatus
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -190,4 +192,23 @@ enum DepositStatus {
   COMPLETED
   FAILED
   CANCELLED
+}
+
+model Support {
+  id        Int      @id @default(autoincrement())
+  playerId  Int
+  subject   String
+  message   String
+  image     String?
+  status    SupportStatus @default(OPEN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  player    Player   @relation(fields: [playerId], references: [id])
+}
+
+enum SupportStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
 }

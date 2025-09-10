@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Get, Put, Body, Param, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { PlayerService } from './player.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -75,6 +75,26 @@ export class PlayerController {
   @ApiResponse({ status: 200, description: 'Login successful' })
   async login(@Body() body: { username: string; password: string }) {
     return this.playerService.login(body.username, body.password);
+  }
+
+  @Put('change-password')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Change player password' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        currentPassword: { type: 'string' },
+        newPassword: { type: 'string' }
+      },
+      required: ['currentPassword', 'newPassword']
+    }
+  })
+  @ApiResponse({ status: 200, description: 'Password changed successfully' })
+  async changePassword(@Request() req, @Body() body: { currentPassword: string; newPassword: string }) {
+    const playerId = req.user.id;
+    return this.playerService.changePassword(playerId, body.currentPassword, body.newPassword);
   }
 
   @Post('game-win')

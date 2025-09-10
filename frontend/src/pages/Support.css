@@ -1,0 +1,203 @@
+.screen-pad{
+  padding: 14px 14px 80px; /* bottom space for bottom nav */
+  background: var(--background-color);
+  min-height: 100dvh;
+}
+
+/* Small “page label” like in the screenshot header strip */
+.page-title{
+  display:none; /* page chrome header likely exists already */
+}
+
+/* Card */
+.card{
+  background: var(--background-light-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+/* Title bar (purple text with subtle top accent) */
+.card-title{
+  font-weight: 700;
+  font-size: 18px;
+  color: #5a3ff0;
+  text-align: center;
+  padding: 10px 8px 14px;
+  position: relative;
+}
+.card-title::before{
+  content:"";
+  position:absolute;
+  top:-14px;
+  left:-14px;
+  right:-14px;
+  height:8px;
+  border-top-left-radius: calc(var(--radius) - 2px);
+  border-top-right-radius: calc(var(--radius) - 2px);
+  opacity:.9;
+}
+
+/* Form */
+.ticket-form{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.field-label{
+  font-size:14px;
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.input, .textarea{
+  width:100%;
+  border:1px solid var(--border-color);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:15px;
+  outline:none;
+  background:#fff;
+}
+.input:focus, .textarea:focus{
+  border-color:#c9c6ff;
+  box-shadow: 0 0 0 3px rgba(104,92,255,.12);
+}
+
+/* Upload */
+.upload-row{
+  margin-top:4px;
+}
+.upload-label{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border:1px dashed #cfcff6;
+  background:#fafaff;
+  color: var(--success-color-dark);
+  padding:12px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:600;
+}
+.upload-icon{ font-size:18px; }
+.upload-input{ display:none; }
+.upload-note{
+  margin-top:6px;
+  font-size:13px;
+  color: var(--muted);
+}
+
+/* Button */
+.btn-primary{
+  margin-top:10px;
+  width:100%;
+  border:none;
+  border-radius:12px;
+  padding:14px 16px;
+  font-weight:800;
+  letter-spacing:.4px;
+  color:#fff;
+  background: linear-gradient(90deg, var(--primary), var(--primary-2));
+  box-shadow: 0 8px 18px rgba(90, 63, 240, .25);
+}
+.btn-primary:active{
+  transform: translateY(1px);
+  box-shadow: 0 6px 14px rgba(90,63,240,.2);
+}
+
+/* Empty state for Recent Tickets */
+.empty-state{
+  text-align:center;
+  color:#a1a1b5;
+  font-size:15px;
+  padding: 14px 6px 6px;
+}
+
+/* Tickets List */
+.tickets-list{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ticket-item{
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+}
+
+.ticket-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.ticket-header h4{
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.status{
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status.open{
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.status.in_progress{
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.status.resolved{
+  background: #e8f5e8;
+  color: #388e3c;
+}
+
+.status.closed{
+  background: #fafafa;
+  color: #616161;
+}
+
+.ticket-message{
+  margin: 0 0 8px 0;
+  color: var(--text-color);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.ticket-date{
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Responsiveness */
+@media (min-width:420px){
+  .card{ padding:16px; }
+  .card-title{ font-size:19px; }
+}
+@media (min-width:540px){
+  .screen-pad{ padding: 16px 18px 96px; }
+  .card{ max-width:520px; margin: 0 auto 18px; }
+}
+
+/* safe area for sticky bottom nav bars */
+.safe-area{ height: 8px; }
+@media (min-width:540px){
+  .safe-area{ height: 0; }
+}

@@ -61,12 +61,12 @@ const History = () => {
           <span className="stat-number">₹{stats.totalWinnings}</span>
           <span className="stat-label">Total Winnings</span>
         </div> */}
-        {stats.totalCommissions > 0 && (
+        {/* {stats.totalCommissions > 0 && (
           <div className="stat-card commission">
             <span className="stat-number">₹{stats.totalCommissions}</span>
             <span className="stat-label">Agent Commission</span>
           </div>
-        )}
+        )} */}
       </div>
 
       <div className="history-list">
@@ -103,10 +103,10 @@ const History = () => {
                     <span>Potential Win</span>
                     <span>₹{game.totalWinAmount}</span>
                   </div>
-                  <div className='win-amount'>
+                  {/* <div className='win-amount'>
                     <span>Agent commission</span>
                     <span>₹{game.agentCommission}</span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

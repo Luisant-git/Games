@@ -9,8 +9,8 @@ const Home = ({
   onGameStateChange,
   onCategoryChange,
   selectedCategory,
-  disclaimerText = "Dear player, this involves financial risk, so please play responsibly",
-  noticeText = "Your money will be credited to the bank within 5 minutes. Our agency is 100% genuine 🏆"
+  disclaimerText = "இது உங்கள் நிதி அபாயத்தை இலக்கவாம் பொருப்புடன் விளையாடவும் நண்பா",
+  noticeText = "உங்கள் பணம் 5-நிமிடத்தில் வங்கியில் வந்து சேரும் நண்பா .. நம்ம எஜென்சி 100% உண்மையான எஜென்சி 🏆"
 }) => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);

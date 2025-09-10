@@ -60,17 +60,7 @@ export class GamesService {
       throw new BadRequestException('Game is not available for play at this time');
     }
 
-    // Check if player has already played for this showtime
-    const existingPlay = await this.prisma.gameHistory.findFirst({
-      where: {
-        playerId,
-        showtimeId,
-      },
-    });
 
-    if (existingPlay) {
-      throw new BadRequestException('You have already played for this showtime');
-    }
     
     const totalBetAmount = gameplay.reduce((sum, game) => sum + game.amount, 0);
     const totalWinAmount = gameplay.reduce((sum, game) => sum + game.winAmount, 0);
