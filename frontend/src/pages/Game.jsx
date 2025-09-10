@@ -417,6 +417,7 @@ const Game = ({ category, games }) => {
                 {bets.map((bet, index) => (
                   <div key={index} className="confirm-bet-item">
                     <span className="board">{bet.board}</span>
+                    <span className="numbers">{['TRIPLE_DIGIT', 'FOUR_DIGIT'].includes(bet.betType) ? bet.numbers.join('') : bet.numbers}</span>
                     <span className="qty">×{bet.qty}</span>
                     <button className="remove-bet" onClick={() => {
                       const newBets = bets.filter((_, i) => i !== index);
