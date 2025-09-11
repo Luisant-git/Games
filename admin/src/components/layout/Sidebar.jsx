@@ -13,6 +13,7 @@ import {
   PayCircleOutlined,
   HistoryOutlined,
 } from "@ant-design/icons";
+import { Children } from "react";
 
 const Sidebar = ({ isOpen, onClose, isMobile }) => {
   const location = useLocation();
@@ -76,9 +77,21 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
       ],
     },
     {
-      key: "/game-history",
+      key: "/game-play",
       icon: <HistoryOutlined />,
-      label: "Game History",
+      label: "Game Play",
+      children: [
+        {
+          key: "/results",
+          icon: <HistoryOutlined />,
+          label: "Results",
+        },
+        {
+          key: "/game-history",
+          icon: <HistoryOutlined />,
+          label: "Game History",
+        },
+      ],
     }
   ];
 

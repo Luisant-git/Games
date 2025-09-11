@@ -65,7 +65,6 @@ const Timing = () => {
   const handleEdit = (timing) => {
     setEditingTiming(timing)
     form.setFieldsValue({
-      name: timing.name,
       categoryId: timing.categoryId,
       showTimes: timing.showTimes.map(st => ({
         playStart: dayjs(st.playStart).format('YYYY-MM-DDTHH:mm'),
@@ -98,11 +97,7 @@ const Timing = () => {
       key: 'id',
       width: 60,
     },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-    },
+
     {
       title: 'Category',
       dataIndex: ['category', 'name'],
@@ -213,13 +208,7 @@ const Timing = () => {
             showTimes: [{ playStart: null, playEnd: null, showTime: null }]
           }}
         >
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: 'Please input timing name!' }]}
-          >
-            <Input />
-          </Form.Item>
+
           <Form.Item
             label="Category"
             name="categoryId"

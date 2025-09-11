@@ -89,6 +89,22 @@ body {
   flex: 1;
 }
 
+.countdown-item.full-width {
+  width: 100%;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.countdown-item.full-width .info-label {
+  justify-content: center;
+}
+
+.countdown-item.full-width .info-value {
+  text-align: center;
+}
+
 .info-label {
   font-size: 12px;
   color: #6c757d;
@@ -107,7 +123,7 @@ body {
 }
 
 .countdown-item {
-  border-left: 2px solid #ff9800;
+  /* border-left: 2px solid #ff9800; */
   padding-left: 12px;
 }
 
@@ -202,6 +218,15 @@ body {
   padding: 0 10px;
   min-width: 20px;
   text-align: center;
+}
+
+.qty input {
+  width: 40px;
+  padding: 4px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  font-size: 14px;
 }
 
 /* ADD BUTTON */
@@ -628,6 +653,10 @@ body {
   border-radius: 8px;
   font-size: 13px;
   margin-bottom: 8px;
+}
+
+.confirm-bet-item .numbers + .qty {
+  margin-left: -38px;
 }
 
 .confirm-bet-item .board {

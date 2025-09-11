@@ -13,10 +13,6 @@ export class CreateShowTimeDto {
 }
 
 export class CreateTimingDto {
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
   @IsInt()
   categoryId: number;
 

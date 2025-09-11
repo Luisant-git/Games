@@ -7,7 +7,7 @@ export class GameHistoryService {
   constructor(private prisma: PrismaService) {}
 
   async findAll(filterDto: GameHistoryFilterDto) {
-    const { board, minAmount, maxAmount, playerId, page = 1, limit = 10 } = filterDto;
+    const { board, quantity, page = 1, limit = 10 } = filterDto;
     
     const pageNum = Number(page);
     const limitNum = Number(limit);
@@ -73,27 +73,26 @@ export class GameHistoryService {
     let playerStatsArray = Array.from(playerStats.values());
     
     // Apply filters on aggregated data
-    if (minAmount !== undefined || maxAmount !== undefined) {
-      playerStatsArray = playerStatsArray.filter(stats => {
-        if (minAmount !== undefined && stats.totalBetAmount < Number(minAmount)) return false;
-        if (maxAmount !== undefined && stats.totalBetAmount > Number(maxAmount)) return false;
-        return true;
-      });
-    }
-    
-    if (board) {
-      playerStatsArray = playerStatsArray.filter(stats => 
-        stats.gameplay.some(game => 
+    playerStatsArray = playerStatsArray.map(stats => {
+      let filteredGameplay = stats.gameplay;
+      
+      if (board) {
+        filteredGameplay = filteredGameplay.filter(game => 
           game.board.toLowerCase() === board.toLowerCase()
-        )
-      );
-    }
-    
-    if (playerId) {
-      playerStatsArray = playerStatsArray.filter(stats => 
-        stats.player.id === Number(playerId)
-      );
-    }
+        );
+      }
+      
+      if (quantity) {
+        filteredGameplay = filteredGameplay.filter(game => 
+          game.qty >= Number(quantity)
+        );
+      }
+      
+      return {
+        ...stats,
+        gameplay: filteredGameplay
+      };
+    }).filter(stats => stats.gameplay.length > 0);
 
     const total = playerStatsArray.length;
     const skip = (pageNum - 1) * limitNum;

@@ -18,6 +18,7 @@ import Deposit from './pages/Deposit';
 import Withdraw from './pages/Withdraw';
 import ChangePassword from './pages/ChangePassword';
 import Account from './pages/Account';
+import Result from './pages/Result';
 
 const AppContent = () => {
   const navigate = useNavigate();
@@ -90,6 +91,8 @@ const AppContent = () => {
           <Route path="/withdraw" element={isLoggedIn ? <Withdraw /> : <Navigate to="/login" />} />
           <Route path="/change-password" element={isLoggedIn ? <ChangePassword /> : <Navigate to="/login" />} />
           <Route path="/account" element={isLoggedIn ? <Account /> : <Navigate to="/login" />} />
+          <Route path="/results" element={isLoggedIn ? <Result /> : <Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to={isLoggedIn ? "/" : "/login"} />} />
         </Routes>
       </main>
       {showBottomNav && <BottomNavigation activeTab={getActiveTab()} />}

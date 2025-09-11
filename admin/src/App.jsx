@@ -15,6 +15,7 @@ import Timing from './pages/Timing'
 import Deposit from './pages/Deposit'
 import './App.css'
 import GameHistory from './pages/GameHistory'
+import Result from './pages/Result'
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
             <Route path="agents/:agentId/commission" element={<Commission />} />
             <Route path="settings" element={<Settings />} />
             <Route path="deposit" element={<Deposit />} />
+            <Route path='results' element={<Result />}></Route>
             <Route path='game-history' element={<GameHistory />}></Route>
           </Route>
         </Routes>

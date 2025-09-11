@@ -27,12 +27,12 @@ enum BetType {
 model Game {
   id                    Int           @id @default(autoincrement())
   betType               BetType?
-  board                 String?       // Store as comma-separated values (e.g., "A,B" or "A,B,C")
-  winningAmount         Int?          // Winning amount for this entry
-  ticket                Int?          // Ticket rate
-  singleDigitMatching   Int?          // Single digit matching amount
-  doubleDigitMatching   Int?          // Double digit matching amount
-  tripleDigitMatching   Int?          // Triple digit matching amount
+  board                 String?       
+  winningAmount         Int?         
+  ticket                Int?         
+  singleDigitMatching   Int?         
+  doubleDigitMatching   Int?          
+  tripleDigitMatching   Int?          
   isActive              Boolean       @default(true)
   agentCommissions      AgentCommission[]
   createdAt             DateTime      @default(now())
@@ -131,7 +131,6 @@ model Category {
 
 model Timing {
   id             Int        @id @default(autoincrement())
-  name           String     // Name/description of the timing slot
   categoryId     Int
   category       Category   @relation(fields: [categoryId], references: [id])
   showTimes      ShowTime[]
@@ -211,4 +210,13 @@ enum SupportStatus {
   IN_PROGRESS
   RESOLVED
   CLOSED
+}
+
+model Result {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  time      String
+  numbers   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

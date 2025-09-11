@@ -21,7 +21,7 @@ const Game = ({ category, games }) => {
   const updateQuantity = (gameId, change) => {
     setQuantities(prev => ({
       ...prev,
-      [gameId]: Math.max(0, (prev[gameId] || 0) + change)
+      [gameId]: Math.max(0, (parseInt(prev[gameId]) || 0) + change)
     }));
   };
 
@@ -39,14 +39,16 @@ const Game = ({ category, games }) => {
       const playStart = new Date(selectedShow.playStart);
       const playEnd = new Date(selectedShow.playEnd);
 
-      if (now >= playStart && now <= playEnd) {
+      if (now < playStart) {
+        setTimeLeft("Game not started yet");
+      } else if (now >= playStart && now <= playEnd) {
         const remaining = playEnd - now;
         const hours = Math.floor(remaining / (1000 * 60 * 60));
         const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
         setTimeLeft(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
       } else {
-        setTimeLeft("");
+        setTimeLeft("Game ended");
       }
     }, 1000);
 
@@ -63,7 +65,7 @@ const Game = ({ category, games }) => {
 
   const addBet = (game, numbers) => {
     if (!isGameActive()) return;
-    const currentQty = quantities[game.id] || 0;
+    const currentQty = parseInt(quantities[game.id]) || 0;
     if (currentQty === 0) return;
     
     const existingBetIndex = bets.findIndex(bet => bet.gameId === game.id);
@@ -152,7 +154,7 @@ const Game = ({ category, games }) => {
           {selectedShow && (
             <div className="show-info">
               <div className="info-card">
-                <div className="info-item">
+                {/* <div className="info-item">
                   <span className="info-label">🎮 Play Time</span>
                   <span className="info-value">
                     {new Date(selectedShow.playStart).toLocaleTimeString([], {
@@ -163,15 +165,13 @@ const Game = ({ category, games }) => {
                       minute: "2-digit",
                     })}
                   </span>
+                </div> */}
+                <div className="info-item countdown-item full-width">
+                  <span className="info-label">
+                    <span className="sand-clock">⏳</span> {timeLeft === "Game not started yet" ? "Game Status" : timeLeft === "Game ended" ? "Game Status" : "Time Left"}
+                  </span>
+                  <span className="info-value countdown-value">{timeLeft}</span>
                 </div>
-                {timeLeft && (
-                  <div className="info-item countdown-item">
-                    <span className="info-label">
-                      <span className="sand-clock">⏳</span> Time Left
-                    </span>
-                    <span className="info-value countdown-value">{timeLeft}</span>
-                  </div>
-                )}
               </div>
             </div>
           )}
@@ -207,7 +207,13 @@ const Game = ({ category, games }) => {
               />
               <div className="qty">
                 <button onClick={() => updateQuantity(game.id, -1)} disabled={!isGameActive()}>-</button>
-                <span>{quantities[game.id] || 0}</span>
+                <input 
+                  type="number" 
+                  min="0" 
+                  value={quantities[game.id] || 0}
+                  onChange={(e) => setQuantities(prev => ({...prev, [game.id]: Math.max(0, parseInt(e.target.value) || 0)}))}
+                  disabled={!isGameActive()}
+                />
                 <button onClick={() => updateQuantity(game.id, 1)} disabled={!isGameActive()}>+</button>
               </div>
               <button className="add-btn" onClick={() => {
@@ -249,7 +255,13 @@ const Game = ({ category, games }) => {
               />
               <div className="qty">
                 <button onClick={() => updateQuantity(game.id, -1)} disabled={!isGameActive()}>-</button>
-                <span>{quantities[game.id] || 0}</span>
+                <input 
+                  type="number" 
+                  min="0" 
+                  value={quantities[game.id] || 0}
+                  onChange={(e) => setQuantities(prev => ({...prev, [game.id]: Math.max(0, parseInt(e.target.value) || 0)}))}
+                  disabled={!isGameActive()}
+                />
                 <button onClick={() => updateQuantity(game.id, 1)} disabled={!isGameActive()}>+</button>
               </div>
               <button className="add-btn" onClick={() => {
@@ -289,7 +301,13 @@ const Game = ({ category, games }) => {
               <div className="controls-section">
                 <div className="qty">
                   <button onClick={() => updateQuantity(game.id, -1)} disabled={!isGameActive()}>-</button>
-                  <span>{quantities[game.id] || 0}</span>
+                  <input 
+                    type="number" 
+                    min="0" 
+                    value={quantities[game.id] || 0}
+                    onChange={(e) => setQuantities(prev => ({...prev, [game.id]: Math.max(0, parseInt(e.target.value) || 0)}))}
+                    disabled={!isGameActive()}
+                  />
                   <button onClick={() => updateQuantity(game.id, 1)} disabled={!isGameActive()}>+</button>
                 </div>
                 <button
@@ -336,7 +354,13 @@ const Game = ({ category, games }) => {
               <div className="controls-section">
                 <div className="qty">
                   <button onClick={() => updateQuantity(game.id, -1)} disabled={!isGameActive()}>-</button>
-                  <span>{quantities[game.id] || 0}</span>
+                  <input 
+                    type="number" 
+                    min="0" 
+                    value={quantities[game.id] || 0}
+                    onChange={(e) => setQuantities(prev => ({...prev, [game.id]: Math.max(0, parseInt(e.target.value) || 0)}))}
+                    disabled={!isGameActive()}
+                  />
                   <button onClick={() => updateQuantity(game.id, 1)} disabled={!isGameActive()}>+</button>
                 </div>
                 <button
@@ -468,7 +492,7 @@ const Game = ({ category, games }) => {
             setLoadingHistory(false);
           }
         }}>View Bets</button>
-        <button className="history-btn" onClick={()=>navigate('/history')}>Bet History</button>
+        <button className="history-btn" onClick={()=>navigate('/results')}>Bet Results</button>
         <button className="pay-btn" onClick={() => setShowConfirm(true)}>Pay Now</button>
       </div>
     </div>

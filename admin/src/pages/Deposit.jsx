@@ -130,7 +130,7 @@ const Deposit = () => {
           return (
             <Input.Group compact style={{ display: 'flex', width: '100%' }}>
               <Input
-                style={{ flex: 1, minWidth: '50px' }}
+                style={{ flex: 1, minWidth: '80px' }}
                 placeholder="0"
                 type="number"
                 min="0"

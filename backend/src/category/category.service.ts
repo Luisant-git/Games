@@ -50,6 +50,19 @@ export class CategoryService {
   }
 
   async remove(id: number) {
+    // Delete related records first to avoid foreign key constraint violation
+    await this.prisma.showTime.deleteMany({
+      where: {
+        timing: {
+          categoryId: id
+        }
+      }
+    });
+    
+    await this.prisma.timing.deleteMany({
+      where: { categoryId: id }
+    });
+    
     return this.prisma.category.delete({
       where: { id },
     });

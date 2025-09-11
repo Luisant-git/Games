@@ -1,0 +1,164 @@
+.result-container {
+  padding: 16px;
+  padding-bottom: 80px;
+  background: var(--background-color);
+  min-height: 100vh;
+}
+
+.result-header h2 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  color: var(--heading-color);
+  text-align: center;
+}
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.result-card {
+  background: var(--background-light-color);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+}
+
+.result-date {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--heading-color);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.result-time {
+  font-size: 16px;
+  color: var(--primary-color);
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.result-numbers {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.number-digit {
+  font-size: 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  min-width: 40px;
+  text-align: center;
+}
+
+.board-results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.board-row {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.board-item {
+  background: #f8fafc;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--heading-color);
+  border: 1px solid #e2e8f0;
+  text-align: center;
+  min-width: 60px;
+}
+
+.loading, .no-results {
+  text-align: center;
+  padding: 40px;
+  color: var(--secondary-color);
+}
+
+.no-results p {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .result-container {
+    padding: 12px;
+    padding-bottom: 80px;
+  }
+
+  .result-header h2 {
+    font-size: 18px;
+  }
+
+  .result-card {
+    padding: 12px;
+  }
+
+  .result-date {
+    font-size: 16px;
+  }
+
+  .result-time {
+    font-size: 14px;
+  }
+
+  .number-digit {
+    font-size: 20px;
+    padding: 6px 10px;
+    min-width: 35px;
+  }
+
+  .board-item {
+    font-size: 12px;
+    padding: 4px 8px;
+    min-width: 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .result-container {
+    padding: 8px;
+  }
+
+  .result-card {
+    padding: 10px;
+  }
+
+  .result-numbers {
+    gap: 4px;
+  }
+
+  .number-digit {
+    font-size: 18px;
+    padding: 4px 8px;
+    min-width: 30px;
+  }
+
+  .board-row {
+    gap: 4px;
+  }
+
+  .board-item {
+    font-size: 11px;
+    padding: 3px 6px;
+    min-width: 45px;
+  }
+}

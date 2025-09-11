@@ -154,12 +154,28 @@ export class GamesService {
 
 
   async getPlayerHistory(playerId: number) {
-    return this.prisma.gameHistory.findMany({
+    const histories = await this.prisma.gameHistory.findMany({
       where: { playerId },
       include: {
         gameplay: true,
       },
       orderBy: { createdAt: 'desc' },
     });
+
+    // Get category names for each history
+    const historiesWithCategory = await Promise.all(
+      histories.map(async (history) => {
+        const category = await this.prisma.category.findUnique({
+          where: { id: history.categoryId },
+          select: { name: true }
+        });
+        return {
+          ...history,
+          categoryName: category?.name || 'Unknown'
+        };
+      })
+    );
+
+    return historiesWithCategory;
   }
 }

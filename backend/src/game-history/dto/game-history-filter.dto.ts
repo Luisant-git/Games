@@ -8,25 +8,12 @@ export class GameHistoryFilterDto {
   @IsString()
   board?: string;
 
-  @ApiPropertyOptional({ description: 'Minimum bet amount' })
+  @ApiPropertyOptional({ description: 'Filter by quantity' })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  @Min(0)
-  minAmount?: number;
-
-  @ApiPropertyOptional({ description: 'Maximum bet amount' })
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @Min(0)
-  maxAmount?: number;
-
-  @ApiPropertyOptional({ description: 'Filter by player ID' })
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  playerId?: number;
+  @Min(1)
+  quantity?: number;
 
   @ApiPropertyOptional({ description: 'Page number', default: 1 })
   @IsOptional()

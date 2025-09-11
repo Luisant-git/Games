@@ -11,9 +11,7 @@ const GameHistory = () => {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
     board: '',
-    minAmount: '',
-    maxAmount: '',
-    playerId: '',
+    quantity: '',
     page: 1,
     limit: 10
   });
@@ -125,27 +123,13 @@ const GameHistory = () => {
             prefix={<SearchOutlined />}
           />
           <Input
-            placeholder="Min amount"
+            placeholder="Quantity"
             type="number"
-            value={filters.minAmount}
-            onChange={(e) => handleFilterChange('minAmount', e.target.value)}
+            value={filters.quantity}
+            onChange={(e) => handleFilterChange('quantity', e.target.value)}
             style={{ width: 120 }}
           />
-          <Input
-            placeholder="Max amount"
-            type="number"
-            value={filters.maxAmount}
-            onChange={(e) => handleFilterChange('maxAmount', e.target.value)}
-            style={{ width: 120 }}
-          />
-          <Input
-            placeholder="Player ID"
-            type="number"
-            value={filters.playerId}
-            onChange={(e) => handleFilterChange('playerId', e.target.value)}
-            style={{ width: 120 }}
-          />
-          <Button onClick={() => setFilters({ board: '', minAmount: '', maxAmount: '', playerId: '', page: 1, limit: 10 })}>
+          <Button onClick={() => setFilters({ board: '', quantity: '', page: 1, limit: 10 })}>
             Clear
           </Button>
         </Space>
@@ -198,7 +182,13 @@ const GameHistory = () => {
               const gameplayColumns = [
                 { title: 'Board', dataIndex: 'board', key: 'board', width: 80 },
                 { title: 'Type', dataIndex: 'betType', key: 'betType', width: 120 },
-                { title: 'Numbers', dataIndex: 'numbers', key: 'numbers', width: 100 },
+                { title: 'Numbers', dataIndex: 'numbers', key: 'numbers', width: 100, render: (numbers) => {
+                  try {
+                    return JSON.parse(numbers).join('');
+                  } catch {
+                    return numbers;
+                  }
+                }},
                 { title: 'Qty', dataIndex: 'qty', key: 'qty', width: 60 },
                 { title: 'Amount', dataIndex: 'amount', key: 'amount', width: 80, render: (amount) => `₹${amount}` },
                 { title: 'Win', dataIndex: 'winAmount', key: 'winAmount', width: 80, render: (amount) => `₹${amount}` }
