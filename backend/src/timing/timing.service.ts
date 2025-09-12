@@ -60,6 +60,11 @@ export class TimingService {
   }
 
   async remove(id: number) {
+    // Delete related ShowTime records first to avoid foreign key constraint violation
+    await this.prisma.showTime.deleteMany({
+      where: { timingId: id }
+    });
+    
     return this.prisma.timing.delete({
       where: { id },
     });
