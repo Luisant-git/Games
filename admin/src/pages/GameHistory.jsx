@@ -91,13 +91,13 @@ const GameHistory = () => {
       width: 100,
       render: (amount) => `₹${amount}`,
     },
-    {
-      title: 'Total Win',
-      dataIndex: 'totalWinAmount',
-      key: 'totalWinAmount',
-      width: 100,
-      render: (amount) => `₹${amount}`,
-    },
+    // {
+    //   title: 'Total Win',
+    //   dataIndex: 'totalWinAmount',
+    //   key: 'totalWinAmount',
+    //   width: 100,
+    //   render: (amount) => `₹${amount}`,
+    // },
     {
       title: 'Last Played',
       dataIndex: 'lastPlayed',
@@ -191,7 +191,7 @@ const GameHistory = () => {
                 }},
                 { title: 'Qty', dataIndex: 'qty', key: 'qty', width: 60 },
                 { title: 'Amount', dataIndex: 'amount', key: 'amount', width: 80, render: (amount) => `₹${amount}` },
-                { title: 'Win', dataIndex: 'winAmount', key: 'winAmount', width: 80, render: (amount) => `₹${amount}` }
+                // { title: 'Win', dataIndex: 'winAmount', key: 'winAmount', width: 80, render: (amount) => `₹${amount}` }
               ];
               
               return (
