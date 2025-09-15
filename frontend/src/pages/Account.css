@@ -65,6 +65,9 @@
   .input#username {
     margin-bottom: 20px;
   }
+  .input#name {
+    margin-bottom: 20px;
+  }
 }
 
 .input {

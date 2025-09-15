@@ -10,7 +10,7 @@ export class PlayerService {
     private jwtService: JwtService,
   ) {}
 
-  async register(data: { username: string; phone?: string; password: string; referalCode?: string }) {
+  async register(data: { name: string; username: string; phone?: string; password: string; referalCode?: string }) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
     
     let agentId: number | undefined = undefined;

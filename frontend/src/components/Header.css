@@ -18,9 +18,22 @@
   max-width: 100%;
 }
 
+.logo {
+  flex: 1;
+  display: flex;
+}
+
 .logo-text {
   font-size: 18px;
   font-weight: bold;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.back-btn span {
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
 }
 
 .header-actions {

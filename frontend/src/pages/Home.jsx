@@ -9,7 +9,7 @@ const Home = ({
   onGameStateChange,
   onCategoryChange,
   selectedCategory,
-  disclaimerText = "இது உங்கள் நிதி அபாயத்தை இலக்கவாம் பொருப்புடன் விளையாடவும் நண்பா",
+  disclaimerText = "இது உங்கள் நிதி அபாயத்தை இலக்கவாம் பொருப்புடன் விளையாடவும்",
   noticeText = "உங்கள் பணம் 5-நிமிடத்தில் வங்கியில் வந்து சேரும் நண்பா .. நம்ம எஜென்சி 100% உண்மையான எஜென்சி 🏆"
 }) => {
   const navigate = useNavigate();
@@ -109,10 +109,10 @@ const Home = ({
       </section>
 
       {/* Notice */}
-      <section className="info-box info-notice" role="status">
+      {/* <section className="info-box info-notice" role="status">
         <h4 className="info-title">⚠️ Notice</h4>
         <p className="info-text">{noticeText}</p>
-      </section>
+      </section> */}
 
       {/* Bottom padding for fixed tab bars */}
       <div className="tabbar-spacer" />

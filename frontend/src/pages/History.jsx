@@ -58,26 +58,26 @@ const History = () => {
         <h2>📊 Game History</h2>
       </div>
 
-      <div className="stats-grid">
+      {/* <div className="stats-grid">
         <div className="stat-card">
           <span className="stat-number">{stats.totalGames}</span>
           <span className="stat-label">Total Games</span>
         </div>
-        {/* <div className="stat-card wins">
+        <div className="stat-card wins">
           <span className="stat-number">{stats.totalWon}</span>
           <span className="stat-label">Games Won</span>
         </div>
         <div className="stat-card earnings">
           <span className="stat-number">₹{stats.totalWinnings}</span>
           <span className="stat-label">Total Winnings</span>
-        </div> */}
-        {/* {stats.totalCommissions > 0 && (
+        </div>
+        {stats.totalCommissions > 0 && (
           <div className="stat-card commission">
             <span className="stat-number">₹{stats.totalCommissions}</span>
             <span className="stat-label">Agent Commission</span>
           </div>
-        )} */}
-      </div>
+        )}
+      </div> */}
 
       <div className="history-list">
         {loading ? (

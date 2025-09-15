@@ -1,11 +1,43 @@
+/* Page wrapper */
 .register {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   min-height: 100vh;
   padding: 20px;
 }
 
+/* Fixed header & footer — matches Login.css */
+.header-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--hover-color);
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-weight: bold;
+  font-size: 18px;
+  z-index: 1001;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.header-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--hover-color);
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-weight: bold;
+  font-size: 18px;
+  z-index: 1001;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Main card */
 .register-container {
   background: var(--background-light-color);
   padding: 32px;
@@ -13,6 +45,8 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
+  margin-top: 0;    /* same spacing style as login inline */
+  margin-bottom: 20px;
 }
 
 .register-container h2 {
@@ -21,6 +55,7 @@
   color: var(--heading-color);
 }
 
+/* Player/Agent toggle — identical to Login.css */
 .user-type-toggle {
   display: flex;
   margin-bottom: 24px;
@@ -28,7 +63,6 @@
   overflow: hidden;
   border: 1px solid var(--border-color);
 }
-
 .user-type-toggle button {
   flex: 1;
   padding: 12px;
@@ -38,12 +72,12 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
-
 .user-type-toggle button.active {
   background: var(--primary-color);
   color: white;
 }
 
+/* Form + Inputs — identical to Login.css */
 .register-container form {
   display: flex;
   flex-direction: column;
@@ -58,7 +92,6 @@
   background: var(--background-color);
   color: var(--text-color);
 }
-
 .register-container input:focus {
   outline: none;
   border-color: var(--primary-color);
@@ -74,7 +107,6 @@
   cursor: pointer;
   transition: background 0.2s ease;
 }
-
 .register-container button[type="submit"]:hover {
   background: var(--hover-color);
 }
@@ -85,6 +117,7 @@
   color: var(--text-color);
 }
 
+/* Link button — same as Login.css */
 .link-button {
   background: none;
   border: none;
@@ -93,19 +126,17 @@
   text-decoration: underline;
   font-size: inherit;
 }
-
 .link-button:hover {
   color: var(--hover-color);
 }
 
+/* Password toggle — same as Login.css */
 .password-input {
   position: relative;
 }
-
 .password-input input {
   padding-right: 40px;
 }
-
 .password-toggle {
   position: absolute;
   right: 10px;
@@ -123,7 +154,75 @@
   align-items: center;
   justify-content: center;
 }
-
 .password-toggle:hover {
   color: var(--text-color);
+}
+
+/* Category banner & cards — copied from Login.css so visuals match exactly */
+.category-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 20px 0;
+  justify-content: center;
+}
+.category-card {
+  background: #f7f7f7;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 12px;
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.2s, background 0.2s;
+  cursor: pointer;
+}
+.category-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  background: #e9f5ff;
+}
+.category-card img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background: #eee;
+}
+@media (max-width: 600px) {
+  .category-banner { gap: 10px; }
+  .category-card { width: 180px; padding: 2px; }
+  .category-card img { width: 150px; height: 100px; }
+}
+
+/* Feature cards — copied from Login.css */
+.feature-cards {
+  display: flex;
+  gap: 16px;
+  margin-top: 0px;
+  max-width: 400px;
+}
+.feature-card {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+}
+.feature-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+.feature-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #333;
+}
+.feature-card p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
 }

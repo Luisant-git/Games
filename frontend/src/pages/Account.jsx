@@ -15,7 +15,7 @@ const getPlayerProfile = async () => {
 };
 
 const Account = () => {
-  const [profile, setProfile] = useState({ username: "", phone: "", wallet: { balance: 0 } });
+  const [profile, setProfile] = useState({ name: "", username: "", phone: "", wallet: { balance: 0 } });
   console.log(profile, '<--- profile');
   
 
@@ -39,6 +39,15 @@ const Account = () => {
           <span className="currency">₹</span>
           <span className="amount">{Number(profile.wallet?.balance || 0).toFixed(2)}</span>
         </div>
+
+        <label className="field-label" htmlFor="name">Full Name</label>
+        <input
+          id="name"
+          className="input"
+          type="text"
+          defaultValue={profile.name}
+          disabled
+        />
 
         <label className="field-label" htmlFor="username">Username</label>
         <input

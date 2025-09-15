@@ -68,26 +68,20 @@ const Game = ({ category, games }) => {
     const currentQty = parseInt(quantities[game.id]) || 0;
     if (currentQty === 0) return;
     
-    const existingBetIndex = bets.findIndex(bet => bet.gameId === game.id);
+    const newBet = {
+      gameId: game.id,
+      board: game.board,
+      betType: game.betType,
+      numbers,
+      qty: currentQty,
+      amount: game.ticket * currentQty,
+      winAmount: game.winningAmount,
+    };
+    setBets([...bets, newBet]);
     
-    if (existingBetIndex !== -1) {
-      const updatedBets = [...bets];
-      updatedBets[existingBetIndex].qty = currentQty;
-      updatedBets[existingBetIndex].amount = game.ticket * currentQty;
-      updatedBets[existingBetIndex].numbers = numbers;
-      setBets(updatedBets);
-    } else {
-      const newBet = {
-        gameId: game.id,
-        board: game.board,
-        betType: game.betType,
-        numbers,
-        qty: currentQty,
-        amount: game.ticket * currentQty,
-        winAmount: game.winningAmount,
-      };
-      setBets([...bets, newBet]);
-    }
+    // Clear inputs after adding bet
+    setInputValues(prev => ({...prev, [game.id]: ''}));
+    setQuantities(prev => ({...prev, [game.id]: ''}));
   };
 
   const totalAmount = bets.reduce((sum, b) => sum + b.amount, 0);
@@ -134,21 +128,29 @@ const Game = ({ category, games }) => {
 
   return (
     <div className="lottery">
+      {/* Category Name */}
+      {category?.name && (
+        <div className="category-name">
+          {category.name}
+        </div>
+      )}
+      
       {/* Game Timings */}
       {category?.timing?.[0]?.showTimes && (
         <div className="timings">
           <div>
             {category.timing[0].showTimes.map((t) => (
-              <button 
-                key={t.id} 
-                className={`time-btn ${selectedShow?.id === t.id ? 'selected' : ''}`}
-                onClick={() => setSelectedShow(t)}
-              >
-                {new Date(t.showTime).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </button>
+              <div key={t.id}>
+                <button
+                  className={`time-btn ${selectedShow?.id === t.id ? 'selected' : ''}`}
+                  onClick={() => setSelectedShow(t)}
+                >
+                  {new Date(t.showTime).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </button>
+              </div>
             ))}
           </div>
           {selectedShow && (
@@ -210,8 +212,18 @@ const Game = ({ category, games }) => {
                 <input 
                   type="number" 
                   min="0" 
-                  value={quantities[game.id] || 0}
-                  onChange={(e) => setQuantities(prev => ({...prev, [game.id]: Math.max(0, parseInt(e.target.value) || 0)}))}
+                  value={quantities[game.id] || ''}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '' || value === '0') {
+                      setQuantities(prev => ({...prev, [game.id]: value === '' ? '' : 0}));
+                    } else {
+                      const numValue = parseInt(value);
+                      if (!isNaN(numValue) && numValue > 0) {
+                        setQuantities(prev => ({...prev, [game.id]: numValue}));
+                      }
+                    }
+                  }}
                   disabled={!isGameActive()}
                 />
                 <button onClick={() => updateQuantity(game.id, 1)} disabled={!isGameActive()}>+</button>
@@ -258,8 +270,18 @@ const Game = ({ category, games }) => {
                 <input 
                   type="number" 
                   min="0" 
-                  value={quantities[game.id] || 0}
-                  onChange={(e) => setQuantities(prev => ({...prev, [game.id]: Math.max(0, parseInt(e.target.value) || 0)}))}
+                  value={quantities[game.id] || ''}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '' || value === '0') {
+                      setQuantities(prev => ({...prev, [game.id]: value === '' ? '' : 0}));
+                    } else {
+                      const numValue = parseInt(value);
+                      if (!isNaN(numValue) && numValue > 0) {
+                        setQuantities(prev => ({...prev, [game.id]: numValue}));
+                      }
+                    }
+                  }}
                   disabled={!isGameActive()}
                 />
                 <button onClick={() => updateQuantity(game.id, 1)} disabled={!isGameActive()}>+</button>
@@ -304,8 +326,18 @@ const Game = ({ category, games }) => {
                   <input 
                     type="number" 
                     min="0" 
-                    value={quantities[game.id] || 0}
-                    onChange={(e) => setQuantities(prev => ({...prev, [game.id]: Math.max(0, parseInt(e.target.value) || 0)}))}
+                    value={quantities[game.id] || ''}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '' || value === '0') {
+                        setQuantities(prev => ({...prev, [game.id]: value === '' ? '' : 0}));
+                      } else {
+                        const numValue = parseInt(value);
+                        if (!isNaN(numValue) && numValue > 0) {
+                          setQuantities(prev => ({...prev, [game.id]: numValue}));
+                        }
+                      }
+                    }}
                     disabled={!isGameActive()}
                   />
                   <button onClick={() => updateQuantity(game.id, 1)} disabled={!isGameActive()}>+</button>
@@ -313,9 +345,10 @@ const Game = ({ category, games }) => {
                 <button
                   className="add-btn"
                   onClick={(e) => {
-                    const inputs = e.target.closest('.bet-row').querySelectorAll('input');
+                    const inputs = e.target.closest('.bet-row').querySelectorAll('.top-row input');
                     const numbers = Array.from(inputs).map(input => parseInt(input.value) || 0);
                     addBet(game, numbers);
+                    inputs.forEach(input => input.value = '');
                   }}
                   disabled={!isGameActive()}
                 >
@@ -357,8 +390,18 @@ const Game = ({ category, games }) => {
                   <input 
                     type="number" 
                     min="0" 
-                    value={quantities[game.id] || 0}
-                    onChange={(e) => setQuantities(prev => ({...prev, [game.id]: Math.max(0, parseInt(e.target.value) || 0)}))}
+                    value={quantities[game.id] || ''}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '' || value === '0') {
+                        setQuantities(prev => ({...prev, [game.id]: value === '' ? '' : 0}));
+                      } else {
+                        const numValue = parseInt(value);
+                        if (!isNaN(numValue) && numValue > 0) {
+                          setQuantities(prev => ({...prev, [game.id]: numValue}));
+                        }
+                      }
+                    }}
                     disabled={!isGameActive()}
                   />
                   <button onClick={() => updateQuantity(game.id, 1)} disabled={!isGameActive()}>+</button>
@@ -366,9 +409,10 @@ const Game = ({ category, games }) => {
                 <button
                   className="add-btn"
                   onClick={(e) => {
-                    const inputs = e.target.closest('.bet-row').querySelectorAll('input');
+                    const inputs = e.target.closest('.bet-row').querySelectorAll('.top-row input');
                     const numbers = Array.from(inputs).map(input => parseInt(input.value) || 0);
                     addBet(game, numbers);
+                    inputs.forEach(input => input.value = '');
                   }}
                   disabled={!isGameActive()}
                 >
@@ -397,26 +441,40 @@ const Game = ({ category, games }) => {
               </div>
             ) : (
               <div className="bets-list">
-                {historyBets.map((history, index) => (
-                  <div key={index} className="history-item">
-                    <div className="history-header">
-                      <span className="game-date">{new Date(history.createdAt).toLocaleDateString()}</span>
-                    </div>
-                    {history.gameplay?.map((bet, betIndex) => (
-                      <div key={betIndex} className="bet-item">
-                        <span className="board">{bet.board}</span>
-                        <span className="bet-type">{bet.betType?.replace('_', ' ') || 'Bet'}</span>
-                        <span className="numbers">{['TRIPLE_DIGIT', 'FOUR_DIGIT'].includes(bet.betType) ? JSON.parse(bet.numbers).join('') : bet.numbers}</span>
-                        <span className="qty">×{bet.qty}</span>
-                        <span className="amount">₹{bet.amount}</span>
+                {historyBets.map((history, index) => {
+                  const betsByType = history.gameplay?.reduce((acc, bet) => {
+                    const type = bet.betType || 'UNKNOWN';
+                    if (!acc[type]) acc[type] = [];
+                    acc[type].push(bet);
+                    return acc;
+                  }, {}) || {};
+                  
+                  return (
+                    <div key={index} className="history-item">
+                      {/* <div className="history-header">
+                        <span className="game-date">{new Date(history.createdAt).toLocaleDateString()}</span>
+                      </div> */}
+                      {Object.entries(betsByType).map(([betType, bets]) => (
+                        <div key={betType} className="bet-type-section">
+                          <h4 className="bet-type-title">{betType.replace('_', ' ')}</h4>
+                          {bets.map((bet, betIndex) => (
+                            <div key={betIndex} className="bet-item">
+                              <span className="board">{bet.board}</span>
+                              <span className="qty">{['TRIPLE_DIGIT', 'FOUR_DIGIT'].includes(bet.betType) ? JSON.parse(bet.numbers).join('') : bet.numbers}</span>
+                              <span className="qty">×</span>
+                              <span className="qty">{bet.qty}</span>
+                              <span className="amount">₹{bet.amount}</span>
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                      <div className="history-total">
+                        <span>Total: ₹{history.totalBetAmount}</span>
+                        {history.isWon && <span className="win-amount">Won: ₹{history.totalWinAmount}</span>}
                       </div>
-                    ))}
-                    <div className="history-total">
-                      <span>Total: ₹{history.totalBetAmount}</span>
-                      {history.isWon && <span className="win-amount">Won: ₹{history.totalWinAmount}</span>}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
             <button className="close-btn" onClick={() => setShowBets(false)}>Close</button>
@@ -438,15 +496,24 @@ const Game = ({ category, games }) => {
               </div>
             ) : (
               <div className="bets-list">
-                {bets.map((bet, index) => (
-                  <div key={index} className="confirm-bet-item">
-                    <span className="board">{bet.board}</span>
-                    <span className="numbers">{['TRIPLE_DIGIT', 'FOUR_DIGIT'].includes(bet.betType) ? bet.numbers.join('') : bet.numbers}</span>
-                    <span className="qty">×{bet.qty}</span>
-                    <button className="remove-bet" onClick={() => {
-                      const newBets = bets.filter((_, i) => i !== index);
-                      setBets(newBets);
-                    }}>×</button>
+                {Object.entries(bets.reduce((acc, bet, index) => {
+                  if (!acc[bet.board]) acc[bet.board] = [];
+                  acc[bet.board].push({...bet, originalIndex: index});
+                  return acc;
+                }, {})).map(([board, boardBets]) => (
+                  <div key={board} className="board-group">
+                    <div className="board-title">{board}</div>
+                    {boardBets.map((bet) => (
+                      <div key={bet.originalIndex} className="confirm-bet-item">
+                        <span className="qty">{['TRIPLE_DIGIT', 'FOUR_DIGIT'].includes(bet.betType) ? bet.numbers.join('') : bet.numbers}</span>
+                        <span className="qty">×</span>
+                        <span className="qty">{bet.qty}</span>
+                        <button className="remove-bet" onClick={() => {
+                          const newBets = bets.filter((_, i) => i !== bet.originalIndex);
+                          setBets(newBets);
+                        }}>×</button>
+                      </div>
+                    ))}
                   </div>
                 ))}
                 <div className="confirm-total">

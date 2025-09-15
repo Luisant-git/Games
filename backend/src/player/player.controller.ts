@@ -47,16 +47,17 @@ export class PlayerController {
     schema: {
       type: 'object',
       properties: {
+        name: { type: 'string' },
         username: { type: 'string' },
         phone: { type: 'string' },
         password: { type: 'string' },
         referalCode: { type: 'string' }
       },
-      required: ['username', 'password']
+      required: ['name', 'username', 'password']
     }
   })
   @ApiResponse({ status: 201, description: 'Player registered successfully' })
-  async register(@Body() body: { username: string; phone?: string; password: string; referalCode?: string }) {
+  async register(@Body() body: { name: string; username: string; phone?: string; password: string; referalCode?: string }) {
     return this.playerService.register(body);
   }
 

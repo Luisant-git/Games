@@ -85,7 +85,6 @@
 }
 
 .game-info h4::before {
-  content: '🎮';
   font-size: 14px;
 }
 
