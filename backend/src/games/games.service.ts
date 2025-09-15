@@ -51,12 +51,19 @@ export class GamesService {
   async playGame(playerId: number, playGameDto: PlayGameDto) {
     const { categoryId, category, showtimeId, showTime, playStart, playEnd, gameplay } = playGameDto;
     
-    // Check if current time is within play window
+    // Check if current time is within play window (time only, not date)
     const now = new Date();
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+    
     const playStartTime = new Date(playStart);
     const playEndTime = new Date(playEnd);
+    const startMinutes = playStartTime.getHours() * 60 + playStartTime.getMinutes();
+    const endMinutes = playEndTime.getHours() * 60 + playEndTime.getMinutes();
     
-    if (now < playStartTime || now > playEndTime) {
+    console.log(`Current time: ${now.getHours()}:${now.getMinutes()} (${currentTime} minutes)`);
+    console.log(`Play window: ${playStartTime.getHours()}:${playStartTime.getMinutes()} - ${playEndTime.getHours()}:${playEndTime.getMinutes()} (${startMinutes}-${endMinutes} minutes)`);
+    
+    if (currentTime < startMinutes || currentTime > endMinutes) {
       throw new BadRequestException('Game is not available for play at this time');
     }
 

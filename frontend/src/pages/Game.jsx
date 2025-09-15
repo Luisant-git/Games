@@ -17,6 +17,8 @@ const Game = ({ category, games }) => {
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   console.log('GAME GAMES', games);
+  console.log('view bets', historyBets);
+  
 
   const updateQuantity = (gameId, change) => {
     setQuantities(prev => ({
@@ -36,8 +38,10 @@ const Game = ({ category, games }) => {
 
     const interval = setInterval(() => {
       const now = new Date();
-      const playStart = new Date(selectedShow.playStart);
-      const playEnd = new Date(selectedShow.playEnd);
+      const today = now.toISOString().split('T')[0];
+      
+      const playStart = new Date(`${today}T${selectedShow.playStart}:00`);
+      const playEnd = new Date(`${today}T${selectedShow.playEnd}:00`);
 
       if (now < playStart) {
         setTimeLeft("Game not started yet");
@@ -58,8 +62,10 @@ const Game = ({ category, games }) => {
   const isGameActive = () => {
     if (!selectedShow) return false;
     const now = new Date();
-    const playStart = new Date(selectedShow.playStart);
-    const playEnd = new Date(selectedShow.playEnd);
+    const today = now.toISOString().split('T')[0];
+    
+    const playStart = new Date(`${today}T${selectedShow.playStart}:00`);
+    const playEnd = new Date(`${today}T${selectedShow.playEnd}:00`);
     return now >= playStart && now <= playEnd;
   };
 
@@ -93,13 +99,18 @@ const Game = ({ category, games }) => {
     }
     
     try {
+      const now = new Date();
+      const istOffset = 5.5 * 60 * 60 * 1000;
+      const istDate = new Date(now.getTime() + istOffset);
+      const today = istDate.toISOString().split('T')[0];
+      
       const response = await playGame({
         categoryId: category.id,
         category: category.name,
         showtimeId: selectedShow?.id,
-        showTime: selectedShow?.showTime,
-        playStart: selectedShow?.playStart,
-        playEnd: selectedShow?.playEnd,
+        showTime: `${today}T${selectedShow?.showTime}:00+05:30`,
+        playStart: `${today}T${selectedShow?.playStart}:00+05:30`,
+        playEnd: `${today}T${selectedShow?.playEnd}:00+05:30`,
         gameplay: bets
       });
       console.log('Submit response:', response);
@@ -145,10 +156,7 @@ const Game = ({ category, games }) => {
                   className={`time-btn ${selectedShow?.id === t.id ? 'selected' : ''}`}
                   onClick={() => setSelectedShow(t)}
                 >
-                  {new Date(t.showTime).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  {new Date(`2000-01-01T${t.showTime}:00`).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
                 </button>
               </div>
             ))}
@@ -428,7 +436,7 @@ const Game = ({ category, games }) => {
         <div className="bets-modal" onClick={() => setShowBets(false)}>
           <div className="bets-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>{selectedShow?.showTime ? new Date(selectedShow.showTime).toLocaleString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'}) : 'Recent'} Bets</h3>
+              <h3>Today Bets</h3>
               <button className="close-x" onClick={() => setShowBets(false)}>×</button>
             </div>
             {loadingHistory ? (
@@ -451,9 +459,9 @@ const Game = ({ category, games }) => {
                   
                   return (
                     <div key={index} className="history-item">
-                      {/* <div className="history-header">
-                        <span className="game-date">{new Date(history.createdAt).toLocaleDateString()}</span>
-                      </div> */}
+                      <div className="history-header">
+                        <span className="show-time">Show Time: {new Date(history.showTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</span>
+                      </div>
                       {Object.entries(betsByType).map(([betType, bets]) => (
                         <div key={betType} className="bet-type-section">
                           <h4 className="bet-type-title">{betType.replace('_', ' ')}</h4>
@@ -546,10 +554,9 @@ const Game = ({ category, games }) => {
             if (response.ok) {
               const data = await response.json();
               const filteredBets = data.filter(history => {
-                if (!selectedShow) return false;
-                const historyShowTime = new Date(history.showTime).getTime();
-                const selectedShowTime = new Date(selectedShow.showTime).getTime();
-                return historyShowTime === selectedShowTime;
+                const historyDate = new Date(history.createdAt).toDateString();
+                const todayDate = new Date().toDateString();
+                return historyDate === todayDate;
               });
               setHistoryBets(filteredBets);
             }

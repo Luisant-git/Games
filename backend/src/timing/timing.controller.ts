@@ -16,6 +16,11 @@ export class TimingController {
     return this.timingService.findAll();
   }
 
+  @Get('today')
+  getTodayShowTimes() {
+    return this.timingService.getTodayShowTimes();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.timingService.findOne(+id);

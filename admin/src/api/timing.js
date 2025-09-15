@@ -6,6 +6,11 @@ export const timingAPI = {
     return response.json()
   },
 
+  getTodayShowTimes: async () => {
+    const response = await fetch(`${API_BASE_URL}/timing/today`)
+    return response.json()
+  },
+
   create: async (timingData) => {
     const response = await fetch(`${API_BASE_URL}/timing`, {
       method: 'POST',

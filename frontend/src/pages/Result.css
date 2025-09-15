@@ -15,10 +15,10 @@
 .results-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
-.result-card {
+.date-group {
   background: var(--background-light-color);
   border-radius: 12px;
   padding: 16px;
@@ -26,39 +26,35 @@
   border: 1px solid #e5e7eb;
 }
 
-.result-date {
+.date-header {
   font-size: 18px;
   font-weight: bold;
   color: var(--heading-color);
-  margin-bottom: 8px;
-  text-align: center;
+  margin-bottom: 12px;
+  text-align: left;
 }
 
-.result-time {
+.result-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+.result-row:last-child {
+  margin-bottom: 0;
+}
+
+.time-label {
   font-size: 16px;
   color: var(--primary-color);
   font-weight: 600;
-  text-align: center;
-  margin-bottom: 12px;
+  min-width: 60px;
 }
 
-.result-numbers {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
-.number-digit {
-  font-size: 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-weight: bold;
-  min-width: 40px;
-  text-align: center;
+.number-display {
+  font-size: 20px;
+  letter-spacing: 2px;
 }
 
 .board-results {
@@ -108,22 +104,21 @@
     font-size: 18px;
   }
 
-  .result-card {
+  .date-group {
     padding: 12px;
   }
 
-  .result-date {
+  .date-header {
     font-size: 16px;
   }
 
-  .result-time {
+  .time-label {
     font-size: 14px;
+    min-width: 50px;
   }
 
-  .number-digit {
-    font-size: 20px;
-    padding: 6px 10px;
-    min-width: 35px;
+  .number-display {
+    font-size: 18px;
   }
 
   .board-item {
@@ -138,18 +133,18 @@
     padding: 8px;
   }
 
-  .result-card {
+  .date-group {
     padding: 10px;
   }
 
-  .result-numbers {
-    gap: 4px;
+  .time-label {
+    font-size: 13px;
+    min-width: 45px;
   }
 
-  .number-digit {
-    font-size: 18px;
-    padding: 4px 8px;
-    min-width: 30px;
+  .number-display {
+    font-size: 16px;
+    letter-spacing: 1px;
   }
 
   .board-row {

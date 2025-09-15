@@ -30,6 +30,12 @@ const AppContent = () => {
   
   const isAgentMode = new URLSearchParams(location.search).get('agent') !== null;
 
+  useEffect(() => {
+    if (location.pathname !== '/game') {
+      setIsInGame(false);
+    }
+  }, [location.pathname]);
+
   const handleLogin = () => {
     setIsLoggedIn(true);
     setUserType(localStorage.getItem('userType') || 'player');
@@ -57,11 +63,12 @@ const AppContent = () => {
     if (path === '/game') return 'game';
     if (path === '/history') return 'history';
     if (path === '/profile') return 'profile';
+    if (path === '/results') return 'support';
     return 'home';
   };
 
   const showHeader = isLoggedIn && userType !== 'agent' && !['/login', '/register', '/agent-login', '/agent-register'].includes(location.pathname);
-  const showBottomNav = isLoggedIn && userType !== 'agent' && !isInGame && !['/login', '/register', '/agent-login', '/agent-register', '/deposit', '/withdraw'].includes(location.pathname);
+  const showBottomNav = isLoggedIn && userType !== 'agent' && !isInGame && !['/login', '/register', '/agent-login', '/agent-register'].includes(location.pathname);
 
   return (
     <div className="app">

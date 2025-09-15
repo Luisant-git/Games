@@ -2,14 +2,17 @@ import { IsString, IsNotEmpty, IsInt, IsArray, ValidateNested } from 'class-vali
 import { Type } from 'class-transformer';
 
 export class CreateShowTimeDto {
+  @IsString()
   @IsNotEmpty()
-  playStart: Date;
+  playStart: string;
 
+  @IsString()
   @IsNotEmpty()
-  playEnd: Date;
+  playEnd: string;
 
+  @IsString()
   @IsNotEmpty()
-  showTime: Date;
+  showTime: string;
 }
 
 export class CreateTimingDto {

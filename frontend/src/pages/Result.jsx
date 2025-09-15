@@ -22,11 +22,32 @@ const Result = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('en-GB', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
     });
+  };
+
+  const formatNumber = (number) => {
+    return number.toString().split('').map(digit => {
+      const emojiMap = {
+        '0': '0️⃣', '1': '1️⃣', '2': '2️⃣', '3': '3️⃣', '4': '4️⃣',
+        '5': '5️⃣', '6': '6️⃣', '7': '7️⃣', '8': '8️⃣', '9': '9️⃣'
+      };
+      return emojiMap[digit] || digit;
+    }).join('');
+  };
+
+  const groupResultsByDate = (results) => {
+    return results.reduce((groups, result) => {
+      const date = formatDate(result.date);
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(result);
+      return groups;
+    }, {});
   };
 
   if (loading) {
@@ -45,39 +66,15 @@ const Result = () => {
 
       <div className="results-list">
         {results.length > 0 ? (
-          results.map((result) => (
-            <div key={result.id} className="result-card">
-              <div className="result-date">
-                {formatDate(result.date)}
-              </div>
-              <div className="result-time">
-                {result.time}
-              </div>
-              <div className="result-numbers">
-                {result.numbers.split('').map((num, index) => (
-                  <span key={index} className="number-digit">
-                    {num}️⃣
-                  </span>
-                ))}
-              </div>
-              <div className="board-results">
-                <div className="board-row">
-                  <span className="board-item">A: {result.boards?.A}</span>
-                  <span className="board-item">B: {result.boards?.B}</span>
-                  <span className="board-item">C: {result.boards?.C}</span>
+          Object.entries(groupResultsByDate(results)).map(([date, dateResults]) => (
+            <div key={date} className="date-group">
+              <div className="date-header">{date}</div>
+              {dateResults.map((result) => (
+                <div key={result.id} className="result-row">
+                  <span className="time-label">{result.time} =</span>
+                  <span className="number-display">{formatNumber(result.numbers)}</span>
                 </div>
-                <div className="board-row">
-                  <span className="board-item">AB: {result.boards?.AB}</span>
-                  <span className="board-item">AC: {result.boards?.AC}</span>
-                    <span className="board-item">BC: {result.boards?.BC}</span>
-                </div>
-                <div className="board-row">
-                  <span className="board-item">ABC: {result.boards?.ABC}</span>
-                </div>
-                <div className="board-row">
-                  <span className="board-item">ABCD: {result.boards?.ABCD}</span>
-                </div>
-              </div>
+              ))}
             </div>
           ))
         ) : (

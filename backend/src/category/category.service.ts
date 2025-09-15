@@ -22,6 +22,7 @@ export class CategoryService {
             },
           },
         },
+        orderBy: { createdAt: 'desc' },
       }),
       this.prisma.game.findMany({ where: { isActive: true }, orderBy: { createdAt: 'asc' } })
     ]);

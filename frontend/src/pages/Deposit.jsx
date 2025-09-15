@@ -288,7 +288,7 @@ const Deposit = () => {
               className="verify-button"
               disabled={isVerifying || uploading}
             >
-              {uploading ? "Uploading..." : isVerifying ? "Verifying..." : "VERIFY DEPOSIT"}
+              {uploading ? "Uploading..." : isVerifying ? "Verifying..." : "DEPOSIT"}
             </button>
 
             {status === "success" && (

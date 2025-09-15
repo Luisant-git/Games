@@ -141,9 +141,9 @@ model Timing {
 
 model ShowTime {
   id        Int      @id @default(autoincrement())
-  playStart DateTime
-  playEnd   DateTime
-  showTime  DateTime
+  playStart String
+  playEnd   String
+  showTime  String
   timingId  Int
   timing    Timing   @relation(fields: [timingId], references: [id])
   createdAt DateTime @default(now())

@@ -3,7 +3,6 @@ import { Table, Button, Modal, Form, Input, Select, Space, Popconfirm, DatePicke
 import { EditOutlined, DeleteOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons'
 import { timingAPI } from '../api/timing'
 import { categoryAPI } from '../api/category'
-import dayjs from 'dayjs'
 import { useMediaQuery } from 'react-responsive'
 
 const Timing = () => {
@@ -16,6 +15,14 @@ const Timing = () => {
   const isMobile = useMediaQuery({ maxWidth: 1024 })
   console.log(categories, "<--- categories-time");
   
+  const formatTimeToAMPM = (time24) => {
+    if (!time24) return '';
+    const [hours, minutes] = time24.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+  };
 
   useEffect(() => {
     fetchData()
@@ -44,9 +51,9 @@ const Timing = () => {
         ...values,
         categoryId: parseInt(values.categoryId),
         showTimes: values.showTimes.map(st => ({
-          playStart: new Date(st.playStart),
-          playEnd: new Date(st.playEnd),
-          showTime: new Date(st.showTime)
+          playStart: st.playStart,
+          playEnd: st.playEnd,
+          showTime: st.showTime
         }))
       }
       
@@ -67,9 +74,9 @@ const Timing = () => {
     form.setFieldsValue({
       categoryId: timing.categoryId,
       showTimes: timing.showTimes.map(st => ({
-        playStart: dayjs(st.playStart).format('YYYY-MM-DDTHH:mm'),
-        playEnd: dayjs(st.playEnd).format('YYYY-MM-DDTHH:mm'),
-        showTime: dayjs(st.showTime).format('YYYY-MM-DDTHH:mm')
+        playStart: st.playStart,
+        playEnd: st.playEnd,
+        showTime: st.showTime
       }))
     })
     setIsModalOpen(true)
@@ -111,19 +118,14 @@ const Timing = () => {
         <div>
           {showTimes?.map((st, i) => (
             <div key={i}>
-              Show: {dayjs(st.showTime).format('hh:mm A')}<br/>
-              Play: {dayjs(st.playStart).format('hh:mm A')} - {dayjs(st.playEnd).format('hh:mm A')}
+              Show: {formatTimeToAMPM(st.showTime)}<br/>
+              Play: {formatTimeToAMPM(st.playStart)} - {formatTimeToAMPM(st.playEnd)}
             </div>
           ))}
         </div>
       ),
     },
-    {
-      title: 'Created At',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (date) => new Date(date).toLocaleDateString(),
-    },
+
     {
       title: 'Actions',
       key: 'actions',
@@ -235,7 +237,7 @@ const Timing = () => {
                           style={{ marginBottom: 0 }}
                         >
                           <Input
-                            type="datetime-local"
+                            type="time"
                             placeholder="Show Time"
                             style={{ width: '100%', fontSize: isMobile ? '16px' : '14px' }}
                           />
@@ -249,7 +251,7 @@ const Timing = () => {
                           style={{ marginBottom: 0 }}
                         >
                           <Input
-                            type="datetime-local"
+                            type="time"
                             placeholder="Play Start Time"
                             style={{ width: '100%', fontSize: isMobile ? '16px' : '14px' }}
                           />
@@ -263,7 +265,7 @@ const Timing = () => {
                           style={{ marginBottom: 0 }}
                         >
                           <Input
-                            type="datetime-local"
+                            type="time"
                             placeholder="Play End Time"
                             style={{ width: '100%', fontSize: isMobile ? '16px' : '14px' }}
                           />
