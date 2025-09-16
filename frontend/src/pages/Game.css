@@ -46,21 +46,26 @@ body {
   border-bottom: 1px solid #ddd;
 }
 
+.show-times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
 .category-name {
   font-size: 16px;
   font-weight: bold;
   color: #333;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
   padding: 16px;
-  background: #fff;
-  border-radius: 8px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.timings > div:first-child {
+.timings > div:nth-child(2) {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -238,7 +243,8 @@ body {
   width: 40px;
   padding: 4px;
   text-align: center;
-  border: none;
+  border: 1px solid #938d8d;
+  border-radius: 6px;
   background: transparent;
   font-size: 14px;
 }

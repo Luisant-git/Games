@@ -93,19 +93,26 @@ const History = () => {
                     <span>📅 {formatDate(game.showTime)}</span>
                   </div>
                   <div className="gameplay-details">
-                    {game.gameplay.map((play) => (
-                      <div key={play.id} className="play-item">
-                        <span className="board">{play.board}</span>
-                        <span className="bet-type">
-                          {play.betType.replace("_", " ")}
-                        </span>
-                        <span className="numbers">
-                          {["TRIPLE_DIGIT", "FOUR_DIGIT"].includes(play.betType)
-                            ? JSON.parse(play.numbers).join("")
-                            : play.numbers}
-                        </span>
-                        <span className="qty">×{play.qty}</span>
-                        <span className="amount">₹{play.amount}</span>
+                    {Object.entries(game.gameplay.reduce((acc, play) => {
+                      const board = play.board || 'UNKNOWN';
+                      if (!acc[board]) acc[board] = [];
+                      acc[board].push(play);
+                      return acc;
+                    }, {})).map(([board, plays]) => (
+                      <div key={board} className="board-group">
+                        <div className="board-title">{board}</div>
+                        {plays.map((play) => (
+                          <div key={play.id} className="play-item">
+                            <span className="pre-amount">
+                              {["TRIPLE_DIGIT", "FOUR_DIGIT"].includes(play.betType)
+                                ? JSON.parse(play.numbers).join("")
+                                : play.numbers}
+                            </span>
+                            <span className="pre-amount">x</span>
+                            <span className="pre-amount">{play.qty}</span>
+                            <span className="amount">₹{play.amount}</span>
+                          </div>
+                        ))}
                       </div>
                     ))}
                   </div>

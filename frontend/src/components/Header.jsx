@@ -29,7 +29,8 @@ const Header = ({ selectedCategory }) => {
         <div className="logo">
           {showBackButton ? (
             <button className="back-btn" onClick={() => selectedCategory ? window.location.reload() : navigate(-1)}>
-              <span>⬅</span>
+              <div>⬅</div>
+              <div>🪙{balance}</div>
             </button>
           ) : <span className="logo-text" onClick={() => navigate('/')}>KL & DEAR LOTTERY BOOKING</span>}
         </div>

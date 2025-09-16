@@ -161,10 +161,12 @@
 /* Category banner & cards — copied from Login.css so visuals match exactly */
 .category-banner {
   display: flex;
-  flex-wrap: wrap;
   gap: 16px;
   margin: 20px 0;
   justify-content: center;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  max-width: 400px;
 }
 .category-card {
   background: #f7f7f7;
@@ -191,9 +193,20 @@
   background: #eee;
 }
 @media (max-width: 600px) {
-  .category-banner { gap: 10px; }
-  .category-card { width: 180px; padding: 2px; }
-  .category-card img { width: 150px; height: 100px; }
+  .category-banner {
+    gap: 10px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  .category-card {
+    width: 120px;
+    padding: 8px;
+    flex-shrink: 0;
+  }
+  .category-card img {
+    width: 100px;
+    height: 80px;
+  }
 }
 
 /* Feature cards — copied from Login.css */

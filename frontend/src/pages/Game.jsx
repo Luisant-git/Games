@@ -23,7 +23,7 @@ const Game = ({ category, games }) => {
   const updateQuantity = (gameId, change) => {
     setQuantities(prev => ({
       ...prev,
-      [gameId]: Math.max(0, (parseInt(prev[gameId]) || 0) + change)
+      [gameId]: Math.max(1, (parseInt(prev[gameId]) || 1) + change)
     }));
   };
 
@@ -71,8 +71,11 @@ const Game = ({ category, games }) => {
 
   const addBet = (game, numbers) => {
     if (!isGameActive()) return;
-    const currentQty = parseInt(quantities[game.id]) || 0;
-    if (currentQty === 0) return;
+    const currentQty = quantities[game.id] === '' || quantities[game.id] === undefined ? 1 : parseInt(quantities[game.id]) || 1;
+    if (currentQty === 0 || currentQty < 1) {
+      toast.error('Not valid quantity');
+      return;
+    }
     
     const newBet = {
       gameId: game.id,
@@ -87,7 +90,7 @@ const Game = ({ category, games }) => {
     
     // Clear inputs after adding bet
     setInputValues(prev => ({...prev, [game.id]: ''}));
-    setQuantities(prev => ({...prev, [game.id]: ''}));
+    setQuantities(prev => ({...prev, [game.id]: 1}));
   };
 
   const totalAmount = bets.reduce((sum, b) => sum + b.amount, 0);
@@ -139,19 +142,17 @@ const Game = ({ category, games }) => {
 
   return (
     <div className="lottery">
-      {/* Category Name */}
-      {category?.name && (
-        <div className="category-name">
-          {category.name}
-        </div>
-      )}
-      
       {/* Game Timings */}
       {category?.timing?.[0]?.showTimes && (
         <div className="timings">
+          {category?.name && (
+            <div className="category-name">
+              {category.name}
+            </div>
+          )}
           <div>
             {category.timing[0].showTimes.map((t) => (
-              <div key={t.id}>
+              <div key={t.id} className="show-times">
                 <button
                   className={`time-btn ${selectedShow?.id === t.id ? 'selected' : ''}`}
                   onClick={() => setSelectedShow(t)}
@@ -212,25 +213,22 @@ const Game = ({ category, games }) => {
                 max="9" 
                 placeholder="0-9" 
                 value={inputValues[game.id] || ''}
-                onChange={(e) => setInputValues(prev => ({...prev, [game.id]: e.target.value}))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === '' || (parseInt(value) >= 0 && parseInt(value) <= 9)) {
+                    setInputValues(prev => ({...prev, [game.id]: value}));
+                  }
+                }}
                 disabled={!isGameActive()} 
               />
               <div className="qty">
                 <button onClick={() => updateQuantity(game.id, -1)} disabled={!isGameActive()}>-</button>
                 <input 
                   type="number" 
-                  min="0" 
-                  value={quantities[game.id] || ''}
+                  min="1" 
+                  value={quantities[game.id] === undefined ? 1 : quantities[game.id]}
                   onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === '' || value === '0') {
-                      setQuantities(prev => ({...prev, [game.id]: value === '' ? '' : 0}));
-                    } else {
-                      const numValue = parseInt(value);
-                      if (!isNaN(numValue) && numValue > 0) {
-                        setQuantities(prev => ({...prev, [game.id]: numValue}));
-                      }
-                    }
+                    setQuantities(prev => ({...prev, [game.id]: e.target.value}));
                   }}
                   disabled={!isGameActive()}
                 />
@@ -270,25 +268,22 @@ const Game = ({ category, games }) => {
                 max="99" 
                 placeholder="00-99" 
                 value={inputValues[game.id] || ''}
-                onChange={(e) => setInputValues(prev => ({...prev, [game.id]: e.target.value}))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === '' || (parseInt(value) >= 0 && parseInt(value) <= 99)) {
+                    setInputValues(prev => ({...prev, [game.id]: value}));
+                  }
+                }}
                 disabled={!isGameActive()} 
               />
               <div className="qty">
                 <button onClick={() => updateQuantity(game.id, -1)} disabled={!isGameActive()}>-</button>
                 <input 
                   type="number" 
-                  min="0" 
-                  value={quantities[game.id] || ''}
+                  min="1" 
+                  value={quantities[game.id] === undefined ? 1 : quantities[game.id]}
                   onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === '' || value === '0') {
-                      setQuantities(prev => ({...prev, [game.id]: value === '' ? '' : 0}));
-                    } else {
-                      const numValue = parseInt(value);
-                      if (!isNaN(numValue) && numValue > 0) {
-                        setQuantities(prev => ({...prev, [game.id]: numValue}));
-                      }
-                    }
+                    setQuantities(prev => ({...prev, [game.id]: e.target.value}));
                   }}
                   disabled={!isGameActive()}
                 />
@@ -324,27 +319,34 @@ const Game = ({ category, games }) => {
             <div key={game.id} className="bet-row triple-digit">
               <div className="top-row">
                 <span className={`board ${game.board}`}>{game.board}</span>
-                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} />
-                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} />
-                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} />
+                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} onChange={(e) => {
+                  const value = e.target.value;
+                  if (value !== '' && (parseInt(value) < 0 || parseInt(value) > 9)) {
+                    e.target.value = '';
+                  }
+                }} />
+                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} onChange={(e) => {
+                  const value = e.target.value;
+                  if (value !== '' && (parseInt(value) < 0 || parseInt(value) > 9)) {
+                    e.target.value = '';
+                  }
+                }} />
+                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} onChange={(e) => {
+                  const value = e.target.value;
+                  if (value !== '' && (parseInt(value) < 0 || parseInt(value) > 9)) {
+                    e.target.value = '';
+                  }
+                }} />
               </div>
               <div className="controls-section">
                 <div className="qty">
                   <button onClick={() => updateQuantity(game.id, -1)} disabled={!isGameActive()}>-</button>
                   <input 
                     type="number" 
-                    min="0" 
-                    value={quantities[game.id] || ''}
+                    min="1" 
+                    value={quantities[game.id] === undefined ? 1 : quantities[game.id]}
                     onChange={(e) => {
-                      const value = e.target.value;
-                      if (value === '' || value === '0') {
-                        setQuantities(prev => ({...prev, [game.id]: value === '' ? '' : 0}));
-                      } else {
-                        const numValue = parseInt(value);
-                        if (!isNaN(numValue) && numValue > 0) {
-                          setQuantities(prev => ({...prev, [game.id]: numValue}));
-                        }
-                      }
+                      setQuantities(prev => ({...prev, [game.id]: e.target.value}));
                     }}
                     disabled={!isGameActive()}
                   />
@@ -387,28 +389,40 @@ const Game = ({ category, games }) => {
             <div key={game.id} className="bet-row four-digit">
               <div className="top-row">
                 <span className={`board ${game.board}`}>{game.board}</span>
-                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} />
-                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} />
-                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} />
-                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} />
+                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} onChange={(e) => {
+                  const value = e.target.value;
+                  if (value !== '' && (parseInt(value) < 0 || parseInt(value) > 9)) {
+                    e.target.value = '';
+                  }
+                }} />
+                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} onChange={(e) => {
+                  const value = e.target.value;
+                  if (value !== '' && (parseInt(value) < 0 || parseInt(value) > 9)) {
+                    e.target.value = '';
+                  }
+                }} />
+                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} onChange={(e) => {
+                  const value = e.target.value;
+                  if (value !== '' && (parseInt(value) < 0 || parseInt(value) > 9)) {
+                    e.target.value = '';
+                  }
+                }} />
+                <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} onChange={(e) => {
+                  const value = e.target.value;
+                  if (value !== '' && (parseInt(value) < 0 || parseInt(value) > 9)) {
+                    e.target.value = '';
+                  }
+                }} />
               </div>
               <div className="controls-section">
                 <div className="qty">
                   <button onClick={() => updateQuantity(game.id, -1)} disabled={!isGameActive()}>-</button>
                   <input 
                     type="number" 
-                    min="0" 
-                    value={quantities[game.id] || ''}
+                    min="1" 
+                    value={quantities[game.id] === undefined ? 1 : quantities[game.id]}
                     onChange={(e) => {
-                      const value = e.target.value;
-                      if (value === '' || value === '0') {
-                        setQuantities(prev => ({...prev, [game.id]: value === '' ? '' : 0}));
-                      } else {
-                        const numValue = parseInt(value);
-                        if (!isNaN(numValue) && numValue > 0) {
-                          setQuantities(prev => ({...prev, [game.id]: numValue}));
-                        }
-                      }
+                      setQuantities(prev => ({...prev, [game.id]: e.target.value}));
                     }}
                     disabled={!isGameActive()}
                   />
@@ -450,26 +464,26 @@ const Game = ({ category, games }) => {
             ) : (
               <div className="bets-list">
                 {historyBets.map((history, index) => {
-                  const betsByType = history.gameplay?.reduce((acc, bet) => {
-                    const type = bet.betType || 'UNKNOWN';
-                    if (!acc[type]) acc[type] = [];
-                    acc[type].push(bet);
+                  const betsByBoard = history.gameplay?.reduce((acc, bet) => {
+                    const board = bet.board || 'UNKNOWN';
+                    if (!acc[board]) acc[board] = [];
+                    acc[board].push(bet);
                     return acc;
                   }, {}) || {};
                   
                   return (
                     <div key={index} className="history-item">
                       <div className="history-header">
+                        <span className="show-time">{history?.categoryName || ''}</span>
                         <span className="show-time">Show Time: {new Date(history.showTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</span>
                       </div>
-                      {Object.entries(betsByType).map(([betType, bets]) => (
-                        <div key={betType} className="bet-type-section">
-                          <h4 className="bet-type-title">{betType.replace('_', ' ')}</h4>
+                      {Object.entries(betsByBoard).map(([board, bets]) => (
+                        <div key={board} className="board-group">
+                          <div className="board-title">{board}</div>
                           {bets.map((bet, betIndex) => (
                             <div key={betIndex} className="bet-item">
-                              <span className="board">{bet.board}</span>
                               <span className="qty">{['TRIPLE_DIGIT', 'FOUR_DIGIT'].includes(bet.betType) ? JSON.parse(bet.numbers).join('') : bet.numbers}</span>
-                              <span className="qty">×</span>
+                              <span className="qty">x</span>
                               <span className="qty">{bet.qty}</span>
                               <span className="amount">₹{bet.amount}</span>
                             </div>
@@ -544,7 +558,7 @@ const Game = ({ category, games }) => {
       {/* FOOTER */}
       <div className="footer">
         <span>
-          ₹{totalAmount} ({bets.length} numbers)
+          ₹{totalAmount} ({bets.length})
         </span>
         <button className="view-btn" onClick={async () => {
           setLoadingHistory(true);

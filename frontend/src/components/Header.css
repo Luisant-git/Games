@@ -30,10 +30,13 @@
   cursor: pointer;
 }
 
-.back-btn span {
-  font-weight: bold;
+.back-btn {
+  font-weight: bolder;
   font-size: 1rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .header-actions {
@@ -52,7 +55,9 @@
   transition: background 0.2s ease;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 16px;
 }
 
 .back-btn:hover {
