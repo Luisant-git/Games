@@ -13,6 +13,7 @@ import Profile from './pages/Profile';
 import AgentHistory from './pages/AgentHistory';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import AgentRegister from './pages/AgentRegister';
 import ReferalCode from './pages/ReferalCode';
 
 import Deposit from './pages/Deposit';
@@ -30,6 +31,7 @@ const AppContent = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   
   const isAgentMode = new URLSearchParams(location.search).get('agent') !== null;
+  console.log('Current URL:', location.pathname + location.search, 'Agent Mode:', isAgentMode);
 
   useEffect(() => {
     if (location.pathname !== '/game') {
@@ -72,7 +74,13 @@ const AppContent = () => {
       <main className="main-content">
         <Routes>
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
-          <Route path="/register" element={<Register onRegister={handleRegister} />} />
+          <Route path="/register" element={
+            isAgentMode ? (
+              <AgentRegister onRegister={handleRegister} />
+            ) : (
+              <Register onRegister={handleRegister} />
+            )
+          } />
           <Route path="/" element={
             isLoggedIn ? (
               <Home onGameStateChange={setIsInGame} onCategoryChange={setSelectedCategory} selectedCategory={selectedCategory} />
