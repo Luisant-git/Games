@@ -2,7 +2,10 @@ import { API_BASE_URL } from './config';
 
 export const changePassword = async (passwordData) => {
   const token = localStorage.getItem('token');
-  const response = await fetch(`${API_BASE_URL}/player/change-password`, {
+  const userType = localStorage.getItem('userType');
+  const endpoint = userType === 'agent' ? '/agent/change-password' : '/player/change-password';
+  
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: 'PUT',
     headers: {
       'Authorization': `Bearer ${token}`,

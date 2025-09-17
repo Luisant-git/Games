@@ -10,23 +10,37 @@ import { DepositValidation } from './deposit.validation';
 export class DepositService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createDepositDto: CreateDepositDto, playerId: number) {
+  async create(createDepositDto: CreateDepositDto, userId: number, userType: string = 'player') {
     DepositValidation.validateTransferDetails(createDepositDto.transferType, createDepositDto.transferDetails);
 
+    const depositData: any = {
+      ...createDepositDto,
+      status: DepositStatus.PENDING,
+    };
+
+    if (userType === 'agent') {
+      depositData.agentId = userId;
+    } else {
+      depositData.playerId = userId;
+    }
+
     const deposit = await this.prisma.deposit.create({
-      data: {
-        ...createDepositDto,
-        playerId,
-        status: DepositStatus.PENDING,
-      },
+      data: depositData,
       include: {
-        player: {
+        player: userType === 'player' ? {
           select: {
             id: true,
             username: true,
             phone: true,
           },
-        },
+        } : undefined,
+        agent: userType === 'agent' ? {
+          select: {
+            id: true,
+            username: true,
+            name: true,
+          },
+        } : undefined,
       },
     });
 
@@ -105,6 +119,30 @@ export class DepositService {
     };
   }
 
+  async findByAgent(agentId: number) {
+    const deposits = await this.prisma.deposit.findMany({
+      where: { agentId },
+      include: {
+        agent: {
+          select: {
+            id: true,
+            username: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return {
+      success: true,
+      message: 'Agent deposits retrieved successfully',
+      data: deposits,
+    };
+  }
+
   async update(id: number, updateDepositDto: UpdateDepositDto) {
     const deposit = await this.findOne(id);
     
@@ -149,16 +187,27 @@ export class DepositService {
       },
     });
 
-    // Add ticket to player wallet when status changes to COMPLETED
+    // Add ticket to wallet when status changes to COMPLETED
     if (updateDepositStatusDto.status === 'COMPLETED' && updateDepositStatusDto.ticket && updateDepositStatusDto.ticket > 0) {
-      await this.prisma.playerWallet.update({
-        where: { playerId: deposit.playerId },
-        data: {
-          balance: {
-            increment: updateDepositStatusDto.ticket,
+      if (deposit.playerId) {
+        await this.prisma.playerWallet.update({
+          where: { playerId: deposit.playerId },
+          data: {
+            balance: {
+              increment: updateDepositStatusDto.ticket,
+            },
           },
-        },
-      });
+        });
+      } else if (deposit.agentId) {
+        await this.prisma.agentWallet.update({
+          where: { agentId: deposit.agentId },
+          data: {
+            balance: {
+              increment: updateDepositStatusDto.ticket,
+            },
+          },
+        });
+      }
     }
 
     return {

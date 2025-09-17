@@ -27,7 +27,7 @@ export class SupportController {
   @ApiOperation({ summary: 'Create a new support ticket' })
   @ApiResponse({ status: 201, description: 'Support ticket created successfully' })
   create(@Body() createSupportDto: CreateSupportDto, @Request() req) {
-    return this.supportService.create(createSupportDto, req.user.id);
+    return this.supportService.create(createSupportDto, req.user.id, req.user.type);
   }
 
   @Get()
@@ -35,7 +35,7 @@ export class SupportController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get support tickets for authenticated user' })
   @ApiResponse({ status: 200, description: 'Support tickets found' })
-  findByPlayer(@Request() req) {
-    return this.supportService.findByPlayer(req.user.id);
+  findByUser(@Request() req) {
+    return this.supportService.findByUser(req.user.id, req.user.type);
   }
 }

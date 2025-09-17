@@ -62,6 +62,11 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
           icon: <AntDesignOutlined />,
           label: "Agents",
         },
+        {
+          key: "/agent-overview",
+          icon: <PlayCircleOutlined />,
+          label: "Agent Games",
+        },
       ],
     },
     {
@@ -89,7 +94,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
         {
           key: "/game-history",
           icon: <HistoryOutlined />,
-          label: "Game History",
+          label: "Player History",
         },
       ],
     }

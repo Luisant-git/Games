@@ -55,22 +55,22 @@ const GameHistory = () => {
 
   const columns = [
     {
-      title: 'Player ID',
-      key: 'playerId',
+      title: 'User ID',
+      key: 'userId',
       width: 80,
-      render: (record) => record.player?.id || 'N/A',
+      render: (record) => record.player?.id || record.agent?.id || 'N/A',
     },
     {
-      title: 'Player',
-      key: 'player',
+      title: 'User',
+      key: 'user',
       width: 120,
-      render: (record) => record.player?.username || 'N/A',
+      render: (record) => record.player?.username || record.agent?.username || 'N/A',
     },
     {
       title: 'Phone',
       key: 'phone',
       width: 120,
-      render: (record) => record.player?.phone || 'N/A',
+      render: (record) => record.player?.phone || record.agent?.phone || 'N/A',
     },
     {
       title: 'Total Sessions',
@@ -147,7 +147,7 @@ const GameHistory = () => {
         <Table
           columns={columns}
           dataSource={gameHistory}
-          rowKey={(record) => record.player.id}
+          rowKey={(record) => record.player?.id || record.agent?.id || record.id}
           loading={loading}
           pagination={{
             ...pagination,

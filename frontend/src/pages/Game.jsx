@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { playGame, getPlayerGameHistory } from "../api/games";
+import { playGame, getPlayerGameHistory, playAgentGame, getAgentGameHistory } from "../api/games";
 import "./Game.css";
 
 const Game = ({ category, games }) => {
@@ -107,7 +107,8 @@ const Game = ({ category, games }) => {
       const istDate = new Date(now.getTime() + istOffset);
       const today = istDate.toISOString().split('T')[0];
       
-      const response = await playGame({
+      const userType = localStorage.getItem('userType');
+      const gameData = {
         categoryId: category.id,
         category: category.name,
         showtimeId: selectedShow?.id,
@@ -115,7 +116,11 @@ const Game = ({ category, games }) => {
         playStart: `${today}T${selectedShow?.playStart}:00+05:30`,
         playEnd: `${today}T${selectedShow?.playEnd}:00+05:30`,
         gameplay: bets
-      });
+      };
+      
+      const response = userType === 'agent' ? 
+        await playAgentGame(gameData) : 
+        await playGame(gameData);
       console.log('Submit response:', response);
 
       if (response.ok) {
@@ -564,18 +569,18 @@ const Game = ({ category, games }) => {
           setLoadingHistory(true);
           setShowBets(true);
           try {
-            const response = await getPlayerGameHistory();
+            const userType = localStorage.getItem('userType');
+            const response = userType === 'agent' ? 
+              await getAgentGameHistory(JSON.parse(localStorage.getItem('user') || '{}').id) : 
+              await getPlayerGameHistory();
             if (response.ok) {
               const data = await response.json();
-              const filteredBets = data.filter(history => {
-                const historyDate = new Date(history.createdAt).toDateString();
-                const todayDate = new Date().toDateString();
-                return historyDate === todayDate;
-              });
-              setHistoryBets(filteredBets);
+              const gameData = userType === 'agent' ? data.data : data.data;
+              setHistoryBets(gameData || []);
             }
           } catch (error) {
-            console.error('Error fetching history:', error);
+            console.error('Error fetching game history:', error);
+            setHistoryBets([]);
           } finally {
             setLoadingHistory(false);
           }

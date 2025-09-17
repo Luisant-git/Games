@@ -48,3 +48,28 @@ export const getGame = async (id) => {
   });
   return response;
 };
+
+export const playAgentGame = async (gameData) => {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_BASE_URL}/agent/play`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(gameData),
+  });
+  return response;
+};
+
+export const getAgentGameHistory = async (agentId) => {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_BASE_URL}/game-history/agent/${agentId}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+  return response;
+};

@@ -63,9 +63,13 @@ model Agent {
   password  String
   referCode String        @unique @default(cuid())
   isActive  Boolean       @default(false)
+  canPlay   Boolean       @default(true)
   players   Player[]
   wallet    AgentWallet?
   commissions AgentCommission[]
+  gameHistory GameHistory[]
+  deposits  Deposit[]
+  supportTickets Support[]
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 }
@@ -90,8 +94,10 @@ model AgentWallet {
 
 model GameHistory {
   id              Int      @id @default(autoincrement())
-  player          Player   @relation(fields: [playerId], references: [id])
-  playerId        Int
+  player          Player?  @relation(fields: [playerId], references: [id])
+  playerId        Int?
+  agent           Agent?   @relation(fields: [agentId], references: [id])
+  agentId         Int?
   categoryId      Int
   showtimeId      Int
   showTime        DateTime
@@ -155,6 +161,10 @@ model AgentCommission {
   agentId       Int
   gameId        Int
   commissionRate Float
+  commissionType CommissionType @default(PLAYER_REFERRAL)
+  amount        Float   @default(0)
+  fromPlayerId  Int?
+  fromAgentId   Int?
   agent         Agent   @relation(fields: [agentId], references: [id])
   game          Game    @relation(fields: [gameId], references: [id])
   createdAt     DateTime @default(now())
@@ -163,9 +173,15 @@ model AgentCommission {
   @@unique([agentId, gameId])
 }
 
+enum CommissionType {
+  PLAYER_REFERRAL
+  GAMEPLAY_BONUS
+}
+
 model Deposit {
   id              Int           @id @default(autoincrement())
-  playerId        Int
+  playerId        Int?
+  agentId         Int?
   transferType    TransferType
   transferDetails Json
   amount          Float
@@ -174,7 +190,8 @@ model Deposit {
   status          DepositStatus
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
-  player          Player        @relation(fields: [playerId], references: [id])
+  player          Player?       @relation(fields: [playerId], references: [id])
+  agent           Agent?        @relation(fields: [agentId], references: [id])
 }
 
 enum TransferType {
@@ -196,14 +213,16 @@ enum DepositStatus {
 
 model Support {
   id        Int      @id @default(autoincrement())
-  playerId  Int
+  playerId  Int?
+  agentId   Int?
   subject   String
   message   String
   image     String?
   status    SupportStatus @default(OPEN)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  player    Player   @relation(fields: [playerId], references: [id])
+  player    Player?  @relation(fields: [playerId], references: [id])
+  agent     Agent?   @relation(fields: [agentId], references: [id])
 }
 
 enum SupportStatus {
@@ -212,6 +231,8 @@ enum SupportStatus {
   RESOLVED
   CLOSED
 }
+
+
 
 model Result {
   id        Int      @id @default(autoincrement())

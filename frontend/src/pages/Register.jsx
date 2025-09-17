@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { registerPlayer } from "../api/auth";
 import { getCategories } from "../api/category";
@@ -7,6 +7,7 @@ import "./Register.css";
 
 const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOption }) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -49,7 +50,13 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
 
   useEffect(() => {
     getAllCategories();
-  }, []);
+    
+    // Auto-populate referral code from URL
+    const refCode = searchParams.get('ref');
+    if (refCode) {
+      setFormData(prev => ({ ...prev, referalCode: refCode }));
+    }
+  }, [searchParams]);
 
   return (
     <div className="register">

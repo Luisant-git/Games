@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getPlayerGameHistory } from "../api/games";
+import { getPlayerGameHistory, getAgentGameHistory } from "../api/games";
 import "./History.css";
 
 const History = () => {
@@ -19,9 +19,17 @@ const History = () => {
 
   const fetchHistory = async () => {
     try {
-      const response = await getPlayerGameHistory();
+      const userType = localStorage.getItem('userType');
+      let response;
+      if (userType === 'agent') {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const agentId = user?.id;
+        response = await getAgentGameHistory(agentId);
+      } else {
+        response = await getPlayerGameHistory();
+      }
       const historyData = await response.json();
-      setHistory(historyData);
+      setHistory(userType === 'agent' ? historyData.data || [] : historyData);
 
       const totalGames = historyData.length;
       const totalWon = historyData.filter((game) => game.isWon).length;

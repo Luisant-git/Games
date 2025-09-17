@@ -9,11 +9,12 @@ import Support from './pages/Support';
 import Game from './pages/Game';
 import History from './pages/History';
 import Profile from './pages/Profile';
-import AgentProfile from './pages/AgentProfile';
+
+import AgentHistory from './pages/AgentHistory';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import AgentLogin from './pages/AgentLogin';
-import AgentRegister from './pages/AgentRegister';
+import ReferalCode from './pages/ReferalCode';
+
 import Deposit from './pages/Deposit';
 import Withdraw from './pages/Withdraw';
 import ChangePassword from './pages/ChangePassword';
@@ -39,21 +40,13 @@ const AppContent = () => {
   const handleLogin = () => {
     setIsLoggedIn(true);
     setUserType(localStorage.getItem('userType') || 'player');
-    if (localStorage.getItem('userType') === 'agent') {
-      navigate('/agent-profile');
-    } else {
-      navigate('/');
-    }
+    navigate('/');
   };
 
   const handleRegister = () => {
     setIsLoggedIn(true);
     setUserType(localStorage.getItem('userType') || 'player');
-    if (localStorage.getItem('userType') === 'agent') {
-      navigate('/agent-profile');
-    } else {
-      navigate('/');
-    }
+    navigate('/');
   };
 
   const getActiveTab = () => {
@@ -67,8 +60,8 @@ const AppContent = () => {
     return 'home';
   };
 
-  const showHeader = isLoggedIn && userType !== 'agent' && !['/login', '/register', '/agent-login', '/agent-register'].includes(location.pathname);
-  const showBottomNav = isLoggedIn && userType !== 'agent' && !isInGame && !['/login', '/register', '/agent-login', '/agent-register'].includes(location.pathname);
+  const showHeader = isLoggedIn && !['/login', '/register', '/agent-history'].includes(location.pathname);
+  const showBottomNav = isLoggedIn && !isInGame && !['/login', '/register', '/agent-history'].includes(location.pathname);
 
   return (
     <div className="app">
@@ -80,20 +73,20 @@ const AppContent = () => {
         <Routes>
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route path="/register" element={<Register onRegister={handleRegister} />} />
-          <Route path="/agent-login" element={<AgentLogin onLogin={handleLogin} />} />
-          <Route path="/agent-register" element={<AgentRegister onRegister={handleRegister} />} />
           <Route path="/" element={
             isLoggedIn ? (
               <Home onGameStateChange={setIsInGame} onCategoryChange={setSelectedCategory} selectedCategory={selectedCategory} />
             ) : (
-              isAgentMode ? <AgentLogin onLogin={handleLogin} /> : <Navigate to="/login" />
+              <Navigate to="/login" />
             )
           } />
           <Route path="/support" element={isLoggedIn ? <Support /> : <Navigate to="/login" />} />
           <Route path="/game" element={isLoggedIn ? <Game /> : <Navigate to="/login" />} />
           <Route path="/history" element={isLoggedIn ? <History /> : <Navigate to="/login" />} />
           <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/login" />} />
-          <Route path="/agent-profile" element={isLoggedIn && userType === 'agent' ? <AgentProfile /> : <Navigate to="/login" />} />
+
+          <Route path="/agent-history" element={isLoggedIn && userType === 'agent' ? <AgentHistory /> : <Navigate to="/login" />} />
+          <Route path="/referral-code" element={isLoggedIn && userType === 'agent' ? <ReferalCode /> : <Navigate to="/login" />} />
           <Route path="/deposit" element={isLoggedIn ? <Deposit /> : <Navigate to="/login" />} />
           <Route path="/withdraw" element={isLoggedIn ? <Withdraw /> : <Navigate to="/login" />} />
           <Route path="/change-password" element={isLoggedIn ? <ChangePassword /> : <Navigate to="/login" />} />

@@ -7,6 +7,8 @@ import {
   UseGuards,
   Request,
   Patch,
+  Put,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -127,5 +129,50 @@ export class AgentController {
     @Body() body: { commissionRate: number },
   ) {
     return this.agentService.updateCommission(+agentId, +gameId, body.commissionRate);
+  }
+
+  @Post('play')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Agent play game' })
+  @ApiResponse({ status: 201, description: 'Game played successfully' })
+  async playGame(@Request() req, @Body() gameData: any) {
+    return this.agentService.playGame(req.user.id, gameData);
+  }
+
+  @Get('game-history')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get agent game history' })
+  @ApiResponse({ status: 200, description: 'Game history retrieved' })
+  async getGameHistory(@Request() req, @Query('page') page?: string, @Query('limit') limit?: string) {
+    return this.agentService.getAgentGameHistory(req.user.id, page ? +page : 1, limit ? +limit : 10);
+  }
+
+  @Patch(':id/toggle-play')
+  @ApiOperation({ summary: 'Toggle agent play permission' })
+  @ApiResponse({ status: 200, description: 'Play permission updated' })
+  async togglePlayPermission(@Param('id') id: string) {
+    return this.agentService.togglePlayPermission(+id);
+  }
+
+  @Put('change-password')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Change agent password' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        currentPassword: { type: 'string' },
+        newPassword: { type: 'string' }
+      },
+      required: ['currentPassword', 'newPassword']
+    }
+  })
+  @ApiResponse({ status: 200, description: 'Password changed successfully' })
+  async changePassword(@Request() req, @Body() body: { currentPassword: string; newPassword: string }) {
+    const agentId = req.user.id;
+    return this.agentService.changePassword(agentId, body.currentPassword, body.newPassword);
   }
 }

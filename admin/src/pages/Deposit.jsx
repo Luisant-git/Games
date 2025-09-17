@@ -52,14 +52,20 @@ const Deposit = () => {
       fixed: isMobile ? false : 'left',
     },
     {
-      title: 'Player',
-      key: 'player',
-      width: 120,
-      render: (record) => record.player?.username || 'N/A',
+      title: 'User Type',
+      key: 'userType',
+      width: 100,
+      render: (record) => record.playerId ? 'Player' : 'Agent',
     },
     {
-      title: 'Player Phone',
-      key: 'playerPhone',
+      title: 'Username',
+      key: 'username',
+      width: 120,
+      render: (record) => record.player?.username || (record.agentId ? 'Agent' : 'N/A'),
+    },
+    {
+      title: 'Phone',
+      key: 'phone',
       width: 180,
       render: (record) => record.player?.phone || 'N/A',
     },
@@ -137,6 +143,7 @@ const Deposit = () => {
                 step="1"
                 size="small"
                 id={`ticket-${record.id}`}
+                defaultValue={record.amount}
               />
               <Button
                 type="primary"

@@ -229,19 +229,6 @@ const Timing = () => {
                   {fields.map(({ key, name, ...restField }) => (
                     <Card key={key} size="small" style={{ marginBottom: 8 }}>
                       <div style={{ display: isMobile ? 'flex' : 'grid', flexDirection: 'column', gridTemplateColumns: isMobile ? 'none' : '1fr 1fr 1fr', gap: '8px', alignItems: 'start' }}>
-                        <Form.Item
-                          {...restField}
-                          name={[name, 'showTime']}
-                          rules={[{ required: true, message: 'Missing show time' }]}
-                          label="Show Time"
-                          style={{ marginBottom: 0 }}
-                        >
-                          <Input
-                            type="time"
-                            placeholder="Show Time"
-                            style={{ width: '100%', fontSize: isMobile ? '16px' : '14px' }}
-                          />
-                        </Form.Item>
 
                         <Form.Item
                           {...restField}
@@ -267,6 +254,20 @@ const Timing = () => {
                           <Input
                             type="time"
                             placeholder="Play End Time"
+                            style={{ width: '100%', fontSize: isMobile ? '16px' : '14px' }}
+                          />
+                        </Form.Item>
+
+                        <Form.Item
+                          {...restField}
+                          name={[name, 'showTime']}
+                          rules={[{ required: true, message: 'Missing show time' }]}
+                          label="Show Time"
+                          style={{ marginBottom: 0 }}
+                        >
+                          <Input
+                            type="time"
+                            placeholder="Show Time"
                             style={{ width: '100%', fontSize: isMobile ? '16px' : '14px' }}
                           />
                         </Form.Item>

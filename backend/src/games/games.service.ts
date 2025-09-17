@@ -3,10 +3,14 @@ import { PrismaService } from '../prisma.service';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
 import { PlayGameDto } from './dto/play-game.dto';
+import { CommissionService } from '../commission/commission.service';
 
 @Injectable()
 export class GamesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private commissionService: CommissionService
+  ) {}
 
   create(createGameDto: CreateGameDto) {
     return this.prisma.game.create({
@@ -143,13 +147,8 @@ export class GamesService {
       },
     });
 
-    if (agentCommission > 0 && player.agent) {
-      await this.prisma.agentWallet.update({
-        where: { agentId: player.agentId as number },
-        data: {
-          balance: { increment: agentCommission },
-        },
-      });
+    if (player.agent && agentCommission > 0) {
+      await this.commissionService.calculatePlayerReferralCommission(playerId, agentCommission);
     }
 
     return {

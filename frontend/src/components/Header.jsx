@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Header.css";
-import { getPlayerWallet } from "../api/wallet";
+import { getPlayerWallet, getAgentWallet } from "../api/wallet";
 
 const Header = ({ selectedCategory }) => {
   const navigate = useNavigate();
@@ -16,7 +16,8 @@ const Header = ({ selectedCategory }) => {
 
   const fetchBalance = async () => {
     try {
-      const response = await getPlayerWallet();
+      const userType = localStorage.getItem('userType');
+      const response = userType === 'agent' ? await getAgentWallet() : await getPlayerWallet();
       const data = await response.json();
       setBalance(data.balance);
     } catch (error) {

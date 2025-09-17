@@ -1,0 +1,222 @@
+.referral-code {
+  padding: 14px 14px 80px;
+  background: var(--background-color);
+  min-height: 100dvh;
+}
+
+.referral-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.referral-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  color: var(--heading-color);
+}
+
+.referral-header p {
+  margin: 0;
+  color: var(--secondary-color);
+  font-size: 14px;
+}
+
+.referral-card {
+  background: var(--background-light-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.code-display {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.code-label {
+  display: block;
+  font-size: 12px;
+  color: var(--secondary-color);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.code-value {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  display: inline-block;
+  min-width: 120px;
+}
+
+.referral-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.stat {
+  text-align: center;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.stat-number {
+  display: block;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--secondary-color);
+}
+
+.share-section {
+  background: var(--background-light-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.share-section h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  color: var(--heading-color);
+  text-align: center;
+}
+
+.share-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.share-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 12px;
+  border: none;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.share-btn:active {
+  transform: translateY(1px);
+}
+
+.share-icon {
+  font-size: 20px;
+}
+
+.share-btn.whatsapp {
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: white;
+}
+
+.share-btn.whatsapp:hover {
+  background: linear-gradient(135deg, #128c7e, #075e54);
+}
+
+.share-btn.telegram {
+  background: linear-gradient(135deg, #0088cc, #005580);
+  color: white;
+}
+
+.share-btn.telegram:hover {
+  background: linear-gradient(135deg, #005580, #003d5c);
+}
+
+.share-btn.copy {
+  background: linear-gradient(135deg, #6c757d, #495057);
+  color: white;
+}
+
+.share-btn.copy:hover {
+  background: linear-gradient(135deg, #495057, #343a40);
+}
+
+.share-btn.more {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-color-dark));
+  color: white;
+}
+
+.share-btn.more:hover {
+  background: linear-gradient(135deg, var(--primary-color-dark), var(--primary-color));
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  color: var(--secondary-color);
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .referral-code {
+    padding: 12px 12px 80px;
+  }
+
+  .referral-header h2 {
+    font-size: 20px;
+  }
+
+  .code-value {
+    font-size: 18px;
+    padding: 10px 16px;
+  }
+
+  .share-buttons {
+    gap: 10px;
+  }
+
+  .share-btn {
+    padding: 14px 10px;
+    font-size: 11px;
+  }
+
+  .share-icon {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .referral-card {
+    padding: 16px;
+  }
+
+  .share-section {
+    padding: 16px;
+  }
+
+  .referral-stats {
+    gap: 12px;
+  }
+
+  .stat {
+    padding: 10px;
+  }
+
+  .stat-number {
+    font-size: 16px;
+  }
+}

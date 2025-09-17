@@ -12,7 +12,8 @@ const Withdraw = () => {
 
   const fetchBalance = async () => {
     try {
-      const response = await getPlayerWallet();
+      const userType = localStorage.getItem('userType');
+      const response = userType === 'agent' ? await getAgentWallet() : await getPlayerWallet();
       const data = await response.json();
       setBalance(data.balance);
     } catch (error) {

@@ -25,4 +25,18 @@ export const agentAPI = {
     })
     return response.json()
   },
+  togglePlayPermission: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/agent/${id}/toggle-play`, {
+      method: 'PATCH',
+    })
+    return response.json()
+  },
+  getAgentGameHistory: async () => {
+    const response = await fetch(`${API_BASE_URL}/game-history/agents`)
+    return response.json()
+  },
+  getAgentGameHistoryById: async (agentId) => {
+    const response = await fetch(`${API_BASE_URL}/game-history/agent/${agentId}`)
+    return response.json()
+  },
 }

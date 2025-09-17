@@ -37,7 +37,8 @@ export class DepositController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   create(@Body() createDepositDto: CreateDepositDto, @Request() req) {
-    return this.depositService.create(createDepositDto, req.user.id);
+    const userType = req.user.type || 'player';
+    return this.depositService.create(createDepositDto, req.user.id, userType);
   }
 
   @Get()
@@ -55,7 +56,10 @@ export class DepositController {
   @ApiResponse({ status: 200, description: 'Deposit history found', type: [Deposit] })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   getHistory(@Request() req) {
-    return this.depositService.findByPlayer(req.user.id);
+    const userType = req.user.type || 'player';
+    return userType === 'agent' ? 
+      this.depositService.findByAgent(req.user.id) : 
+      this.depositService.findByPlayer(req.user.id);
   }
 
   @Get(':id')

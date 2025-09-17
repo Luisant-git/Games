@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { loginPlayer } from "../api/auth";
+import { loginPlayer, loginAgent } from "../api/auth";
 import "./Login.css";
 import { getCategories } from "../api/category";
 
@@ -18,16 +18,32 @@ const Login = ({
   });
   const [showPassword, setShowPassword] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [userType, setUserType] = useState("player");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await loginPlayer(formData);
-      const data = await response.json();
+      // Try player login first
+      let response = await loginPlayer(formData);
+      let data = await response.json();
+      
       if (response.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.player));
         localStorage.setItem("userType", "player");
+        navigate("/");
+        if (onLogin) onLogin();
+        return;
+      }
+      
+      // If player login fails, try agent login
+      response = await loginAgent(formData);
+      data = await response.json();
+      
+      if (response.ok) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.agent));
+        localStorage.setItem("userType", "agent");
         navigate("/");
         if (onLogin) onLogin();
       } else {
@@ -90,12 +106,7 @@ const Login = ({
       >
         <h2>Login</h2>
 
-        {showAgentOption && (
-          <div className="user-type-toggle">
-            <button className="active">Player</button>
-            <button onClick={onSwitchToAgent}>Agent</button>
-          </div>
-        )}
+
 
         <form onSubmit={handleSubmit}>
           <input

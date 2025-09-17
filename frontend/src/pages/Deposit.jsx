@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./Deposit.css";
 import QRCODE from "../assets/scan_me_qr_code.jpg";
-import { getPlayerWallet } from "../api/wallet";
+import { getPlayerWallet, getAgentWallet } from "../api/wallet";
 import { createDeposit, getDepositHistory } from "../api/deposit";
 import { uploadFile } from "../api/upload";
 import toast from "react-hot-toast";
@@ -36,7 +36,8 @@ const Deposit = () => {
 
   const fetchBalance = async () => {
     try {
-      const response = await getPlayerWallet();
+      const userType = localStorage.getItem('userType');
+      const response = userType === 'agent' ? await getAgentWallet() : await getPlayerWallet();
       const data = await response.json();
       setBalance(data.balance);
     } catch (error) {

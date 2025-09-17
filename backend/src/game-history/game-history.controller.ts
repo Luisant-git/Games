@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { GameHistoryService } from './game-history.service';
 import { GameHistoryFilterDto } from './dto/game-history-filter.dto';
@@ -17,5 +17,28 @@ export class GameHistoryController {
   @ApiResponse({ status: 200, description: 'Game history retrieved successfully' })
   findAll(@Query() filterDto: GameHistoryFilterDto) {
     return this.gameHistoryService.findAll(filterDto);
+  }
+
+  @Get('agents')
+  @ApiOperation({ summary: 'Get all agent game history with filters' })
+  @ApiQuery({ name: 'board', required: false, description: 'Filter by board name' })
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
+  @ApiResponse({ status: 200, description: 'Agent game history retrieved successfully' })
+  findAllAgents(@Query() filterDto: { board?: string; page?: number; limit?: number }) {
+    return this.gameHistoryService.findAllAgents(filterDto);
+  }
+
+  @Get('agent/:agentId')
+  @ApiOperation({ summary: 'Get specific agent game history' })
+  @ApiQuery({ name: 'board', required: false, description: 'Filter by board name' })
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
+  @ApiResponse({ status: 200, description: 'Agent game history retrieved successfully' })
+  findByAgent(
+    @Param('agentId') agentId: string,
+    @Query() filterDto: { board?: string; page?: number; limit?: number }
+  ) {
+    return this.gameHistoryService.findByAgent(+agentId, filterDto);
   }
 }

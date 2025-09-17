@@ -1,9 +1,37 @@
+import { useState, useEffect } from 'react'
+import { agentAPI } from '../api/agent'
+
 const Dashboard = () => {
+  const [agentStats, setAgentStats] = useState({
+    totalAgents: 0,
+    activeAgents: 0,
+    playingAgents: 0,
+    totalCommissions: 0
+  })
+
+  useEffect(() => {
+    fetchAgentStats()
+  }, [])
+
+  const fetchAgentStats = async () => {
+    try {
+      const agents = await agentAPI.getAll()
+      const totalAgents = agents.length
+      const activeAgents = agents.filter(agent => agent.isActive).length
+      const playingAgents = agents.filter(agent => agent.canPlay).length
+      const totalCommissions = agents.reduce((sum, agent) => sum + (agent.wallet?.balance || 0), 0)
+      
+      setAgentStats({ totalAgents, activeAgents, playingAgents, totalCommissions })
+    } catch (error) {
+      console.error('Error fetching agent stats:', error)
+    }
+  }
+
   const stats = [
-    { label: 'Total Users', value: '1,234', change: '+12%', color: 'success' },
-    { label: 'Revenue', value: '$45,678', change: '+8%', color: 'success' },
-    { label: 'Orders', value: '567', change: '-3%', color: 'danger' },
-    { label: 'Products', value: '89', change: '+5%', color: 'success' }
+    { label: 'Total Agents', value: agentStats.totalAgents, change: '+12%', color: 'success' },
+    { label: 'Active Agents', value: agentStats.activeAgents, change: '+8%', color: 'success' },
+    { label: 'Playing Agents', value: agentStats.playingAgents, change: '+5%', color: 'success' },
+    { label: 'Total Commissions', value: `₹${agentStats.totalCommissions}`, change: '+15%', color: 'success' }
   ]
 
   return (

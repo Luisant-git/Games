@@ -1,6 +1,7 @@
 .history {
-  padding: 16px;
-  padding-bottom: 80px;
+  padding: 14px 14px 80px;
+  background: var(--background-color);
+  min-height: 100dvh;
 }
 
 .history-header h2 {
@@ -18,10 +19,11 @@
 
 .stat-card {
   background: var(--background-light-color);
-  padding: 16px;
-  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-left: 4px solid var(--hover-color);
 }
 
@@ -62,16 +64,17 @@
 
 .history-item {
   background: var(--background-light-color);
-  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
   margin-bottom: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e5e7eb;
   overflow: hidden;
 }
 
 .game-info {
-  padding: 16px;
-  border-bottom: 1px solid #f3f4f6;
+  padding: 0 0 12px 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .game-info h4 {
@@ -176,8 +179,8 @@
 }
 
 .game-result {
-  padding: 16px;
-  background: #f8fafc;
+  padding: 12px 0 0 0;
+  background: transparent;
   display: flex;
   justify-content: space-between;
   align-items: center;

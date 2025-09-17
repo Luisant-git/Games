@@ -45,17 +45,24 @@ export class PlayerService {
   }
 
   async login(username: string, password: string) {
-    const player = await this.prisma.player.findUnique({
-      where: { username },
-      include: { wallet: true, agent: true },
-    });
+    try {
+      const player = await this.prisma.player.findUnique({
+        where: { username },
+        include: { wallet: true, agent: true },
+      });
 
-    if (!player || !(await bcrypt.compare(password, player.password))) {
-      throw new Error('Invalid credentials');
+      if (!player || !(await bcrypt.compare(password, player.password))) {
+        throw new BadRequestException('Invalid credentials');
+      }
+
+      const token = this.jwtService.sign({ id: player.id, username: player.username, type: 'player' }, { expiresIn: '999y' });
+      return { player: { ...player, password: undefined }, token };
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException('Login failed');
     }
-
-    const token = this.jwtService.sign({ id: player.id, username: player.username, type: 'player' }, { expiresIn: '999y' });
-    return { player: { ...player, password: undefined }, token };
   }
 
   async gameWin(playerId: number, amount: number) {

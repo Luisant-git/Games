@@ -35,6 +35,16 @@ const Agent = () => {
     }
   }
 
+  const handleTogglePlayPermission = async (agentId) => {
+    try {
+      await agentAPI.togglePlayPermission(agentId)
+      message.success('Agent play permission updated successfully')
+      fetchAgents()
+    } catch (error) {
+      message.error('Failed to update agent play permission')
+    }
+  }
+
   return (
     <div style={{ width: '100vw', marginLeft: '-1.5rem', marginRight: '-1.5rem', padding: '0 1rem' }}>
       <div className="section-header" style={{ padding: '0 0.5rem' }}>
@@ -64,6 +74,7 @@ const Agent = () => {
                     <th>Username</th>
                     <th>Refer Code</th>
                     <th>Status</th>
+                    <th>Can Play</th>
                     <th>Wallet Balance</th>
                     <th>Players</th>
                     <th>Created At</th>
@@ -93,17 +104,42 @@ const Agent = () => {
                           </Tag>
                         </Popconfirm>
                       </td>
-                      <td>₹{agent.wallet?.balance || 0}</td>
+                      <td>
+                        <Popconfirm
+                          title="Change Play Permission"
+                          description={`Are you sure you want to ${agent.canPlay ? 'disable' : 'enable'} gameplay for this agent?`}
+                          onConfirm={() => handleTogglePlayPermission(agent.id)}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <Tag 
+                            color={agent.canPlay ? 'blue' : 'orange'} 
+                            style={{ cursor: 'pointer' }}
+                          >
+                            {agent.canPlay ? 'Can Play' : 'No Play'}
+                          </Tag>
+                        </Popconfirm>
+                      </td>
+                      <td>₹{Math.round((agent.wallet?.balance || 0) * 100) / 100}</td>
                       <td>{agent.players?.length || 0}</td>
                       <td>{new Date(agent.createdAt).toLocaleDateString()}</td>
                       <td>
-                        <Button
-                          type="primary"
-                          size="small"
-                          onClick={() => navigate(`/agents/${agent.id}/commission`)}
-                        >
-                          Manage
-                        </Button>
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                          <Button
+                            type="primary"
+                            size="small"
+                            onClick={() => navigate(`/agents/${agent.id}/commission`)}
+                          >
+                            Commission
+                          </Button>
+                          <Button
+                            type="default"
+                            size="small"
+                            onClick={() => navigate(`/agents/${agent.id}/game-history`)}
+                          >
+                            Games
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}

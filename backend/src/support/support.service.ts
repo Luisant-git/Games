@@ -6,14 +6,22 @@ import { CreateSupportDto } from './dto/create-support.dto';
 export class SupportService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createSupportDto: CreateSupportDto, playerId: number) {
+  async create(createSupportDto: CreateSupportDto, userId: number, userType: string) {
+    const data = {
+      ...createSupportDto,
+      ...(userType === 'player' ? { playerId: userId } : { agentId: userId }),
+    };
+
     return this.prisma.support.create({
-      data: {
-        ...createSupportDto,
-        playerId,
-      },
+      data,
       include: {
         player: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        agent: {
           select: {
             id: true,
             username: true,
@@ -23,12 +31,20 @@ export class SupportService {
     });
   }
 
-  async findByPlayer(playerId: number) {
+  async findByUser(userId: number, userType: string) {
+    const where = userType === 'player' ? { playerId: userId } : { agentId: userId };
+    
     return this.prisma.support.findMany({
-      where: { playerId },
+      where,
       orderBy: { createdAt: 'desc' },
       include: {
         player: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        agent: {
           select: {
             id: true,
             username: true,

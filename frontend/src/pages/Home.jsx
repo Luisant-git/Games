@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCategories } from "../api/category";
 import { getPlayerWallet } from "../api/wallet";
+import { getAgentWallet } from "../api/auth";
 import Game from "./Game";
 import "./Home.css";
 
@@ -25,9 +26,10 @@ const Home = ({
   useEffect(() => {
     (async () => {
       try {
+        const userType = localStorage.getItem('userType');
         const [categoryData, walletResponse] = await Promise.all([
           getCategories(),
-          getPlayerWallet()
+          userType === 'agent' ? getAgentWallet() : getPlayerWallet()
         ]);
         
         setCategories(categoryData?.categories || []);

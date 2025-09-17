@@ -22,6 +22,13 @@ export class GameHistoryService {
             phone: true
           }
         },
+        agent: {
+          select: {
+            id: true,
+            username: true,
+            name: true
+          }
+        },
         gameplay: {
           select: {
             id: true,
@@ -39,15 +46,19 @@ export class GameHistoryService {
       }
     });
 
-    // Group by player and aggregate data
-    const playerStats = new Map();
+    // Group by user (player or agent) and aggregate data
+    const userStats = new Map();
     
     allGameHistories.forEach(gameHistory => {
-      const playerId = gameHistory.playerId;
+      const userId = gameHistory.playerId || gameHistory.agentId;
+      const userType = gameHistory.playerId ? 'player' : 'agent';
+      const user = gameHistory.player || gameHistory.agent;
+      const uniqueKey = `${userType}_${userId}`; // Prevent mixing player and agent with same ID
       
-      if (!playerStats.has(playerId)) {
-        playerStats.set(playerId, {
-          player: gameHistory.player,
+      if (!userStats.has(uniqueKey)) {
+        userStats.set(uniqueKey, {
+          player: userType === 'player' ? user : null,
+          agent: userType === 'agent' ? user : null,
           totalSessions: 0,
           totalBetAmount: 0,
           totalWinAmount: 0,
@@ -57,7 +68,7 @@ export class GameHistoryService {
         });
       }
       
-      const stats = playerStats.get(playerId);
+      const stats = userStats.get(uniqueKey);
       stats.totalSessions += 1;
       stats.totalBetAmount += gameHistory.totalBetAmount;
       stats.totalWinAmount += gameHistory.totalWinAmount;
@@ -70,10 +81,10 @@ export class GameHistoryService {
     });
 
     // Convert to array and apply additional filters on aggregated data
-    let playerStatsArray = Array.from(playerStats.values());
+    let userStatsArray = Array.from(userStats.values());
     
     // Apply filters on aggregated data
-    playerStatsArray = playerStatsArray.map(stats => {
+    userStatsArray = userStatsArray.map(stats => {
       let filteredGameplay = stats.gameplay;
       
       if (board) {
@@ -94,14 +105,15 @@ export class GameHistoryService {
       };
     }).filter(stats => stats.gameplay.length > 0);
 
-    const total = playerStatsArray.length;
+    const total = userStatsArray.length;
     const skip = (pageNum - 1) * limitNum;
-    const paginatedData = playerStatsArray.slice(skip, skip + limitNum);
+    const paginatedData = userStatsArray.slice(skip, skip + limitNum);
 
     return {
       success: true,
       data: paginatedData.map(stats => ({
         player: stats.player,
+        agent: stats.agent,
         totalSessions: stats.totalSessions,
         totalBetAmount: stats.totalBetAmount,
         totalWinAmount: stats.totalWinAmount,
@@ -114,6 +126,111 @@ export class GameHistoryService {
         limit: limitNum,
         total,
         totalPages: Math.ceil(total / limitNum)
+      }
+    };
+  }
+
+  async findAllAgents(filterDto: { board?: string; page?: number; limit?: number }) {
+    const { board, page = 1, limit = 10 } = filterDto;
+    const skip = (page - 1) * limit;
+
+    const where = {
+      agentId: { not: null },
+      ...(board && {
+        gameplay: {
+          some: {
+            board: {
+              contains: board,
+              mode: 'insensitive' as any
+            }
+          }
+        }
+      })
+    };
+
+    const [gameHistories, total] = await Promise.all([
+      this.prisma.gameHistory.findMany({
+        where,
+        include: {
+          agent: {
+            select: {
+              id: true,
+              username: true,
+              name: true
+            }
+          },
+          gameplay: true
+        },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit
+      }),
+      this.prisma.gameHistory.count({ where })
+    ]);
+
+    return {
+      success: true,
+      data: gameHistories,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
+    };
+  }
+
+  async findByAgent(agentId: number, filterDto: { board?: string; page?: number; limit?: number }) {
+    const { board, page = 1, limit = 10 } = filterDto;
+    const skip = (page - 1) * limit;
+
+    const where = {
+      agentId,
+      ...(board && {
+        gameplay: {
+          some: {
+            board: {
+              contains: board,
+              mode: 'insensitive' as any
+            }
+          }
+        }
+      })
+    };
+
+    const [gameHistories, total] = await Promise.all([
+      this.prisma.gameHistory.findMany({
+        where,
+        include: { gameplay: true },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit
+      }),
+      this.prisma.gameHistory.count({ where })
+    ]);
+
+    // Get category names for the histories
+    const categoryIds = [...new Set(gameHistories.map(h => h.categoryId))];
+    const categories = await this.prisma.category.findMany({
+      where: { id: { in: categoryIds } },
+      select: { id: true, name: true }
+    });
+    const categoryMap = categories.reduce((acc, cat) => {
+      acc[cat.id] = cat.name;
+      return acc;
+    }, {});
+
+    return {
+      success: true,
+      data: gameHistories.map(history => ({
+        ...history,
+        categoryName: categoryMap[history.categoryId] || 'Unknown'
+      })),
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
       }
     };
   }
