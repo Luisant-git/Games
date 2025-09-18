@@ -234,4 +234,118 @@ export class GameHistoryService {
       }
     };
   }
+
+  async todayGameHistroyByShowTime(showTime: string) {
+    const decodedShowTime = decodeURIComponent(showTime);
+    console.log('=== BACKEND TIMEZONE DEBUG ===');
+    console.log('Raw showTime parameter:', showTime);
+    console.log('Decoded showTime:', decodedShowTime);
+    console.log('Server timezone:', process.env.TZ || 'Not set');
+    console.log('Server current time:', new Date().toISOString());
+    console.log('Server local time:', new Date().toLocaleString());
+    
+    // Convert showTime to match database format (local timezone)
+    const gameHistories = await this.prisma.$queryRaw`
+      SELECT gh.*, 
+             json_build_object(
+               'id', p.id,
+               'username', p.username,
+               'phone', p.phone
+             ) as player,
+             json_build_object(
+               'id', a.id,
+               'username', a.username,
+               'name', a.name
+             ) as agent
+      FROM "GameHistory" gh
+      LEFT JOIN "Player" p ON gh."playerId" = p.id
+      LEFT JOIN "Agent" a ON gh."agentId" = a.id
+      WHERE to_char(gh."showTime" AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Kolkata', 'YYYY-MM-DD HH24:MI:SS') = ${decodedShowTime}
+      ORDER BY gh."createdAt" DESC
+    ` as any[];
+    
+    console.log('Found game histories:', gameHistories.length);
+    if (gameHistories.length > 0) {
+      console.log('Sample showTime from DB:', gameHistories[0].showTime);
+    } else {
+      const allShowTimes = await this.prisma.$queryRaw`
+        SELECT DISTINCT gh."showTime" 
+        FROM "GameHistory" gh 
+        ORDER BY gh."showTime" DESC 
+        LIMIT 10
+      ` as any[];
+      console.log('Available showTimes in DB:', allShowTimes.map(row => row.showTime));
+    }
+    
+    // Get gameplay for each history
+    const enrichedHistories = await Promise.all(
+      gameHistories.map(async (history: any) => {
+        const gameplay = await this.prisma.gamePlay.findMany({
+          where: { gameHistoryId: history.id }
+        });
+        return { ...history, gameplay };
+      })
+    );
+    
+    // Get category names
+    const categoryIds = [...new Set(enrichedHistories.map((h: any) => h.categoryId).filter(id => id))] as number[];
+    console.log('Category IDs found:', categoryIds);
+    
+    const categories = await this.prisma.category.findMany({
+      where: { id: { in: categoryIds } },
+      select: { id: true, name: true }
+    });
+    console.log('Categories fetched:', categories);
+    
+    const categoryMap = categories.reduce((acc, cat) => {
+      acc[cat.id] = cat.name;
+      return acc;
+    }, {} as Record<number, string>);
+    console.log('Category map:', categoryMap);
+
+    // Group by category and calculate totals
+    const categoryTotals = new Map();
+    
+    enrichedHistories.forEach((history: any) => {
+      const categoryId = history.categoryId;
+      const categoryName = categoryMap[categoryId] || `Unknown (ID: ${categoryId})`;
+      console.log(`History ID: ${history.id}, Category ID: ${categoryId}, Category Name: ${categoryName}`);
+      
+      if (!categoryTotals.has(categoryId)) {
+        categoryTotals.set(categoryId, {
+          categoryId,
+          categoryName,
+          showTime: history.showTime,
+          playStart: history.playStart,
+          playEnd: history.playEnd,
+          totalBetAmount: 0,
+          totalAgentCommissionAmount: 0,
+          recordCount: 0
+        });
+      }
+      
+      const totals = categoryTotals.get(categoryId);
+      totals.totalBetAmount += Number(history.totalBetAmount) || 0;
+      totals.totalAgentCommissionAmount += Number(history.agentCommission) || 0;
+      totals.recordCount += 1;
+    });
+    
+    const summary = Array.from(categoryTotals.values());
+    
+    // Calculate grand totals
+    const grandTotals = {
+      totalBetAmount: summary.reduce((sum, cat) => sum + cat.totalBetAmount, 0),
+      totalAgentCommissionAmount: summary.reduce((sum, cat) => sum + cat.totalAgentCommissionAmount, 0),
+      totalRecords: enrichedHistories.length,
+      totalCategories: summary.length
+    };
+    
+    return {
+      summary,
+      details: enrichedHistories.map((history: any) => ({
+        ...history,
+        categoryName: categoryMap[history.categoryId] || 'Unknown'
+      }))
+    };
+  }
 }

@@ -34,6 +34,13 @@ export class ResultController {
     return this.resultService.findAll();
   }
 
+  @Get('analyze/:showTime')
+  @ApiOperation({ summary: 'Analyze optimal result for maximum profit' })
+  @ApiResponse({ status: 200, description: 'Analysis completed successfully' })
+  analyzeOptimalResult(@Param('showTime') showTime: string) {
+    return this.resultService.analyzeOptimalResult(showTime);
+  }
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete result' })
   @ApiResponse({ status: 200, description: 'Result deleted successfully' })

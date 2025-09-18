@@ -462,7 +462,7 @@ const Game = ({ category, games }) => {
               <div className="empty-bets">
                 <p>Loading bets...</p>
               </div>
-            ) : historyBets.length === 0 ? (
+            ) : historyBets.length === 0 || historyBets.every(history => !history.gameplay || history.gameplay.length === 0) ? (
               <div className="empty-bets">
                 <p>No bets have been placed for the chosen show time</p>
               </div>
@@ -504,7 +504,7 @@ const Game = ({ category, games }) => {
                 })}
               </div>
             )}
-            <button className="close-btn" onClick={() => setShowBets(false)}>Close</button>
+            <button className="view-close-btn" onClick={() => setShowBets(false)}>Close</button>
           </div>
         </div>
       )}
@@ -570,13 +570,24 @@ const Game = ({ category, games }) => {
           setShowBets(true);
           try {
             const userType = localStorage.getItem('userType');
+            console.log('userType',userType);
+            
             const response = userType === 'agent' ? 
               await getAgentGameHistory(JSON.parse(localStorage.getItem('user') || '{}').id) : 
               await getPlayerGameHistory();
             if (response.ok) {
               const data = await response.json();
-              const gameData = userType === 'agent' ? data.data : data.data;
-              setHistoryBets(gameData || []);
+              console.log('-------',data);
+              const gameData = userType === 'agent' ? data : data;
+              
+              // Filter to show only today's bets
+              const today = new Date().toISOString().split('T')[0];
+              const todayBets = (gameData || []).filter(history => {
+                const betDate = new Date(history.createdAt).toISOString().split('T')[0];
+                return betDate === today;
+              });
+              
+              setHistoryBets(todayBets);
             }
           } catch (error) {
             console.error('Error fetching game history:', error);

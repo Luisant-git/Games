@@ -41,4 +41,11 @@ export class GameHistoryController {
   ) {
     return this.gameHistoryService.findByAgent(+agentId, filterDto);
   }
+
+  @Get('today/:showTime')
+  @ApiOperation({ summary: 'Get today game history by show time' })
+  @ApiResponse({ status: 200, description: 'Today game history by show time retrieved successfully' })
+  getTodayGameHistoryByShowTime(@Param('showTime') showTime: string) {
+    return this.gameHistoryService.todayGameHistroyByShowTime(showTime);
+  }
 }

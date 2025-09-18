@@ -74,7 +74,7 @@ export class GamesService {
 
     
     const totalBetAmount = gameplay.reduce((sum, game) => sum + game.amount, 0);
-    const totalWinAmount = gameplay.reduce((sum, game) => sum + game.winAmount, 0);
+    const totalWinAmount = 0; // Will be updated after result declaration
 
     const player = await this.prisma.player.findUnique({
       where: { id: playerId },
@@ -129,7 +129,7 @@ export class GamesService {
             numbers: typeof game.numbers === 'object' ? JSON.stringify(game.numbers) : game.numbers.toString(),
             qty: game.qty,
             amount: game.amount,
-            winAmount: game.winAmount,
+            winAmount: null,
           }))
         }
       },

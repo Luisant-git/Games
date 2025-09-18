@@ -126,7 +126,7 @@ model GamePlay {
   numbers       String      // Store as string or JSON
   qty           Int
   amount        Float
-  winAmount     Float       @default(0)
+  winAmount     Float?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
@@ -253,4 +253,11 @@ model Result {
   numbers   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model DashBoard {
+  id                   Int       @id @default(autoincrement())
+  totalBetAmount       Int    
+  totalAgentCommission Int
+  totalProfit          Int
 }
