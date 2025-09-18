@@ -46,12 +46,15 @@ model Player {
   phone       String?       @unique
   password    String
   referalCode String?
+  referCode   String        @unique @default(cuid())
+  referredBy  String?
   agent       Agent?        @relation(fields: [agentId], references: [id])
   agentId     Int?
   wallet      PlayerWallet?
   gameHistory GameHistory[]
   deposits    Deposit[]
   supportTickets Support[]
+  referralBonuses ReferralBonus[] @relation("ReferrerBonuses")
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }
@@ -77,6 +80,7 @@ model Agent {
 model PlayerWallet {
   id       Int     @id @default(autoincrement())
   balance  Float   @default(0)
+  bonusBalance Float @default(0)
   player   Player  @relation(fields: [playerId], references: [id])
   playerId Int     @unique
   createdAt DateTime @default(now())
@@ -232,7 +236,15 @@ enum SupportStatus {
   CLOSED
 }
 
-
+model ReferralBonus {
+  id          Int      @id @default(autoincrement())
+  referrerId  Int
+  referredId  Int
+  amount      Float    @default(100)
+  referrer    Player   @relation("ReferrerBonuses", fields: [referrerId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
 
 model Result {
   id        Int      @id @default(autoincrement())

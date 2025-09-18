@@ -1,0 +1,100 @@
+.share-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.share-modal {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.share-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.share-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.referral-code-display {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.referral-code-display span {
+  display: block;
+  margin-bottom: 8px;
+  color: #666;
+  font-size: 14px;
+}
+
+.code-box {
+  background: #f5f5f5;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  word-break: break-all;
+}
+
+.share-options {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.share-btn {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.share-btn.whatsapp {
+  background: #25D366;
+  color: white;
+}
+
+.share-btn.telegram {
+  background: #0088cc;
+  color: white;
+}
+
+.share-btn.copy {
+  background: #6c757d;
+  color: white;
+}
+
+.share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}

@@ -40,7 +40,7 @@ const Header = ({ onMenuToggle, isMobile }) => {
       '/deposit': 'Deposit',
       '/analytics': 'Analytics',
       '/settings': 'Settings',
-      '/game-history': 'Player Game History',
+      '/game-history': 'Game History',
       '/results': 'Results',
     }
     

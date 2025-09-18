@@ -15,6 +15,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AgentRegister from './pages/AgentRegister';
 import ReferalCode from './pages/ReferalCode';
+import ReferralCode from './pages/ReferralCode';
 
 import Deposit from './pages/Deposit';
 import Withdraw from './pages/Withdraw';
@@ -94,7 +95,7 @@ const AppContent = () => {
           <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/login" />} />
 
           <Route path="/agent-history" element={isLoggedIn && userType === 'agent' ? <AgentHistory /> : <Navigate to="/login" />} />
-          <Route path="/referral-code" element={isLoggedIn && userType === 'agent' ? <ReferalCode /> : <Navigate to="/login" />} />
+          <Route path="/referral-code" element={isLoggedIn ? <ReferralCode /> : <Navigate to="/login" />} />
           <Route path="/deposit" element={isLoggedIn ? <Deposit /> : <Navigate to="/login" />} />
           <Route path="/withdraw" element={isLoggedIn ? <Withdraw /> : <Navigate to="/login" />} />
           <Route path="/change-password" element={isLoggedIn ? <ChangePassword /> : <Navigate to="/login" />} />

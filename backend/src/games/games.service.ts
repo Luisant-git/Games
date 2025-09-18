@@ -85,7 +85,8 @@ export class GamesService {
       throw new BadRequestException('Player or wallet not found');
     }
 
-    if (player.wallet.balance < totalBetAmount) {
+    const totalAvailable = player.wallet.balance + player.wallet.bonusBalance;
+    if (totalAvailable < totalBetAmount) {
       throw new BadRequestException('Insufficient balance');
     }
 
@@ -137,12 +138,31 @@ export class GamesService {
       }
     });
 
-    const netChange = totalWinAmount - totalBetAmount;
+    // Deduct bet amount from wallet and bonus balance
+    let remainingAmount = totalBetAmount;
+    let walletDeduction = 0;
+    let bonusDeduction = 0;
+
+    if (player.wallet.balance >= remainingAmount) {
+      // Sufficient balance in main wallet
+      walletDeduction = remainingAmount;
+    } else {
+      // Use main wallet first, then bonus
+      walletDeduction = player.wallet.balance;
+      bonusDeduction = remainingAmount - player.wallet.balance;
+    }
+
+    // Calculate net change for main balance
+    const netBalanceChange = totalWinAmount - walletDeduction;
+    
     await this.prisma.playerWallet.update({
       where: { playerId },
       data: {
         balance: {
-          increment: netChange,
+          increment: netBalanceChange,
+        },
+        bonusBalance: {
+          decrement: bonusDeduction,
         },
       },
     });

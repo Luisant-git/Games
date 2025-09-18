@@ -94,7 +94,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
         {
           key: "/game-history",
           icon: <HistoryOutlined />,
-          label: "Player History",
+          label: "History",
         },
       ],
     }

@@ -56,37 +56,7 @@ const Profile = () => {
   
   const userType = localStorage.getItem('userType');
   
-  const shareReferralCode = (platform) => {
-    if (!user.referCode) return;
-    
-    const appUrl = window.location.origin;
-    const referralUrl = `${appUrl}/register?ref=${user.referCode}`;
-    const message = `🎮 Join our Gaming Platform!\n\n🔥 Use my referral code: ${user.referCode}\n🔗 Register here: ${referralUrl}\n\n💰 Start playing and winning today!`;
-    
-    switch (platform) {
-      case 'whatsapp':
-        window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-        break;
-      case 'telegram':
-        window.open(`https://t.me/share/url?url=${encodeURIComponent(referralUrl)}&text=${encodeURIComponent(message)}`, '_blank');
-        break;
-      case 'copy':
-        navigator.clipboard.writeText(message);
-        toast.success('Referral message copied to clipboard!');
-        break;
-      default:
-        if (navigator.share) {
-          navigator.share({
-            title: 'Gaming Platform Referral',
-            text: message,
-            url: referralUrl
-          });
-        } else {
-          navigator.clipboard.writeText(message);
-          toast.success('Referral message copied to clipboard!');
-        }
-    }
-  };
+
   
   const getMenuItems = () => {
     const baseItems = [
@@ -101,6 +71,13 @@ const Profile = () => {
         { id: 5, icon: '🔗', label: 'Referral Code', count: user.referCode, action: () => navigate('/referral-code') },
         { id: 6, icon: '📈', label: 'Commission', count: `₹${user.totalCommission || 0}` },
         { id: 7, icon: '👥', label: 'My Players', count: user.playerCount || 0 }
+      );
+    } else {
+      // Add referral features for players too
+      baseItems.push(
+        { id: 5, icon: '🔗', label: 'My Referral Code', count: user.referCode, action: () => navigate('/referral-code') },
+        { id: 6, icon: '🎁', label: 'Referral Bonus', count: `₹${user.wallet?.bonusBalance || 0}` },
+        { id: 7, icon: '👥', label: 'Referred Players', count: user.referredPlayersCount || 0 }
       );
     }
     

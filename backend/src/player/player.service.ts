@@ -14,12 +14,23 @@ export class PlayerService {
     const hashedPassword = await bcrypt.hash(data.password, 10);
     
     let agentId: number | undefined = undefined;
+    let referredBy: string | undefined = undefined;
+    
     if (data.referalCode) {
+      // Check if it's an agent referral code
       const agent = await this.prisma.agent.findUnique({
         where: { referCode: data.referalCode },
       });
       if (agent) {
         agentId = agent.id;
+      } else {
+        // Check if it's a player referral code
+        const referrer = await this.prisma.player.findUnique({
+          where: { referCode: data.referalCode },
+        });
+        if (referrer) {
+          referredBy = data.referalCode;
+        }
       }
     }
 
@@ -28,9 +39,11 @@ export class PlayerService {
         ...data,
         password: hashedPassword,
         agentId,
+        referredBy,
         wallet: {
           create: {
             balance: 0,
+            bonusBalance: 0,
           },
         },
       },
@@ -39,6 +52,35 @@ export class PlayerService {
         agent: true,
       },
     });
+
+    // If referred by another player, create referral bonus
+    if (referredBy) {
+      const referrer = await this.prisma.player.findUnique({
+        where: { referCode: referredBy },
+        include: { wallet: true },
+      });
+      
+      if (referrer) {
+        // Create referral bonus record
+        await this.prisma.referralBonus.create({
+          data: {
+            referrerId: referrer.id,
+            referredId: player.id,
+            amount: 100,
+          },
+        });
+        
+        // Add bonus to referrer's wallet
+        await this.prisma.playerWallet.update({
+          where: { playerId: referrer.id },
+          data: {
+            bonusBalance: {
+              increment: 100,
+            },
+          },
+        });
+      }
+    }
 
     const token = this.jwtService.sign({ id: player.id, username: player.username, type: 'player' }, { expiresIn: '999y' });
     return { player: { ...player, password: undefined }, token };
@@ -101,11 +143,15 @@ export class PlayerService {
     const wallet = await this.prisma.playerWallet.findUnique({
       where: { playerId },
     });
-    return { balance: wallet?.balance || 0 };
+    return { 
+      balance: wallet?.balance || 0,
+      bonusBalance: wallet?.bonusBalance || 0,
+      totalBalance: (wallet?.balance || 0) + (wallet?.bonusBalance || 0)
+    };
   }
 
-  getPlayerProfile(playerId: number) {
-    return this.prisma.player.findUnique({
+  async getPlayerProfile(playerId: number) {
+    const player = await this.prisma.player.findUnique({
       where: { id: playerId },
       include: {
         wallet: true,
@@ -113,6 +159,20 @@ export class PlayerService {
         gameHistory: true,
       },
     });
+
+    if (player) {
+      // Count referred players
+      const referredPlayersCount = await this.prisma.player.count({
+        where: { referredBy: player.referCode },
+      });
+
+      return {
+        ...player,
+        referredPlayersCount,
+      };
+    }
+
+    return player;
   }
 
   async changePassword(playerId: number, currentPassword: string, newPassword: string) {
