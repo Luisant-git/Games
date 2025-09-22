@@ -14,6 +14,7 @@ import {
   HistoryOutlined,
   TrophyOutlined,
   BarChartOutlined,
+  BankOutlined,
 } from "@ant-design/icons";
 
 const Sidebar = ({ isOpen, onClose, isMobile }) => {
@@ -79,6 +80,11 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
           key: "/deposit",
           icon: <DeliveredProcedureOutlined />,
           label: "Deposit",
+        },
+        {
+          key: "/withdraw",
+          icon: <BankOutlined />,
+          label: "Withdraw",
         },
       ],
     },

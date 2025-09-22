@@ -17,6 +17,7 @@ import Commission from './pages/Commission'
 import Category from './pages/Category'
 import Timing from './pages/Timing'
 import Deposit from './pages/Deposit'
+import Withdraw from './pages/Withdraw'
 import './App.css'
 import GameHistory from './pages/GameHistory'
 import Result from './pages/Result'
@@ -47,6 +48,7 @@ function App() {
             <Route path="agent-overview" element={<AgentOverview />} />
             <Route path="settings" element={<Settings />} />
             <Route path="deposit" element={<Deposit />} />
+            <Route path="withdraw" element={<Withdraw />} />
             <Route path='results' element={<Result />}></Route>
             <Route path='game-history' element={<GameHistory />}></Route>
             <Route path='history-showtime' element={<HistoryShowTime />}></Route>

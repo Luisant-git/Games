@@ -53,6 +53,7 @@ model Player {
   wallet      PlayerWallet?
   gameHistory GameHistory[]
   deposits    Deposit[]
+  withdraws   Withdraw[]
   supportTickets Support[]
   referralBonuses ReferralBonus[] @relation("ReferrerBonuses")
   createdAt   DateTime      @default(now())
@@ -72,6 +73,7 @@ model Agent {
   commissions AgentCommission[]
   gameHistory GameHistory[]
   deposits  Deposit[]
+  withdraws Withdraw[]
   supportTickets Support[]
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
@@ -198,6 +200,22 @@ model Deposit {
   agent           Agent?        @relation(fields: [agentId], references: [id])
 }
 
+model Withdraw {
+  id              Int            @id @default(autoincrement())
+  playerId        Int?
+  agentId         Int?
+  transferType    TransferType
+  transferDetails Json
+  amount          Float
+  ticket          Int?
+  screenshot      String?
+  status          WithdrawStatus
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  player          Player?        @relation(fields: [playerId], references: [id])
+  agent           Agent?         @relation(fields: [agentId], references: [id])
+}
+
 enum TransferType {
   BANK_TRANSFER
   UPI_TRANSFER
@@ -209,6 +227,13 @@ enum UpiAppName {
 }
 
 enum DepositStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum WithdrawStatus {
   PENDING
   COMPLETED
   FAILED
