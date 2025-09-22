@@ -130,6 +130,29 @@ export class GameHistoryService {
     };
   }
 
+  async rowData(){
+    const data = await this.prisma.gameHistory.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+
+    // Group by showTime
+    const groupedData = data.reduce((acc, item) => {
+      const showTimeKey = item.showTime.toISOString();
+      if (!acc[showTimeKey]) {
+        acc[showTimeKey] = [];
+      }
+      acc[showTimeKey].push(item);
+      return acc;
+    }, {} as Record<string, typeof data>);
+
+    return {
+      success: true,
+      data: groupedData
+    }
+  }
+
   async findAllAgents(filterDto: { board?: string; page?: number; limit?: number }) {
     const { board, page = 1, limit = 10 } = filterDto;
     const skip = (page - 1) * limit;

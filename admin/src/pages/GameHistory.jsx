@@ -91,13 +91,13 @@ const GameHistory = () => {
       width: 100,
       render: (amount) => `₹${amount}`,
     },
-    // {
-    //   title: 'Total Win',
-    //   dataIndex: 'totalWinAmount',
-    //   key: 'totalWinAmount',
-    //   width: 100,
-    //   render: (amount) => `₹${amount}`,
-    // },
+    {
+      title: 'Total Win',
+      dataIndex: 'totalWinAmount',
+      key: 'totalWinAmount',
+      width: 100,
+      render: (amount) => `₹${amount || 0}`,
+    },
     {
       title: 'Last Played',
       dataIndex: 'lastPlayed',
@@ -191,7 +191,7 @@ const GameHistory = () => {
                 }},
                 { title: 'Qty', dataIndex: 'qty', key: 'qty', width: 60 },
                 { title: 'Amount', dataIndex: 'amount', key: 'amount', width: 80, render: (amount) => `₹${amount}` },
-                // { title: 'Win', dataIndex: 'winAmount', key: 'winAmount', width: 80, render: (amount) => `₹${amount}` }
+                { title: 'Win Amount', dataIndex: 'winAmount', key: 'winAmount', width: 100, render: (amount) => `₹${amount || 0}` }
               ];
               
               return (
@@ -202,6 +202,9 @@ const GameHistory = () => {
                   pagination={false}
                   size="small"
                   style={{ margin: '8px 0' }}
+                  rowClassName={(gameplayRecord) => {
+                    return gameplayRecord.winAmount && gameplayRecord.winAmount > 0 ? 'winning-row' : '';
+                  }}
                 />
               );
             },

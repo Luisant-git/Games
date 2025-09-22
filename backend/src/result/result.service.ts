@@ -107,7 +107,7 @@ export class ResultService {
           if (isWinning) {
             winningBets++;
             // Calculate win amount based on game rules
-            const winAmount = this.calculateWinAmount(gameplay);
+            const winAmount = await this.calculateWinAmount(gameplay, boards);
             totalWinAmount += winAmount;
             totalProfit -= winAmount; // Loss for house
           } else {
@@ -187,21 +187,125 @@ export class ResultService {
     return betNumbers.some(betNum => betNum.toString() === winningNumber.toString());
   }
 
-  private calculateWinAmount(gameplay: any): number {
-    // Get game details to calculate win amount
-    const { gameId, amount, qty } = gameplay;
+  private async calculateWinAmount(gameplay: any, boards: any): Promise<number> {
+    const { gameId, amount, qty, board, numbers } = gameplay;
     
-    // This should be based on your game's winning multipliers
-    // For now, using a simple calculation - you should adjust based on actual game rules
-    const baseMultiplier = {
-      1: 10, // Single digit games
-      2: 90, // Double digit games  
-      3: 900, // Triple digit games
-      4: 9000 // Four digit games
-    };
+    // Get game configuration
+    const game = await this.prisma.game.findUnique({ where: { id: gameId } });
+    if (!game) return 0;
 
-    const multiplier = baseMultiplier[gameId] || 10;
-    return amount * qty * multiplier;
+    const winningNumber = boards[board];
+    const betNumbers = Array.isArray(numbers) ? numbers : [numbers];
+    
+    // Check if bet wins
+    const isWinning = betNumbers.some(betNum => betNum.toString() === winningNumber.toString());
+    if (!isWinning) return 0;
+
+    // For multi-digit games, check partial matches
+    if (game.betType === 'TRIPLE_DIGIT' || game.betType === 'FOUR_DIGIT') {
+      const betNum = betNumbers[0].toString();
+      const winNum = winningNumber.toString();
+      
+      // Check for exact match first
+      if (betNum === winNum) {
+        return (game.winningAmount || 0) * qty;
+      }
+      
+      // Check partial matches for multi-digit games
+      if (game.betType === 'TRIPLE_DIGIT') {
+        // Check last 2 digits match
+        if (betNum.slice(-2) === winNum.slice(-2)) {
+          return (game.doubleDigitMatching || 0) * qty;
+        }
+        // Check last digit match
+        if (betNum.slice(-1) === winNum.slice(-1)) {
+          return (game.singleDigitMatching || 0) * qty;
+        }
+      }
+      
+      if (game.betType === 'FOUR_DIGIT') {
+        // Check last 3 digits match
+        if (betNum.slice(-3) === winNum.slice(-3)) {
+          return (game.tripleDigitMatching || 0) * qty;
+        }
+        // Check last 2 digits match
+        if (betNum.slice(-2) === winNum.slice(-2)) {
+          return (game.doubleDigitMatching || 0) * qty;
+        }
+        // Check last digit match
+        if (betNum.slice(-1) === winNum.slice(-1)) {
+          return (game.singleDigitMatching || 0) * qty;
+        }
+      }
+    }
+    
+    // For exact matches or single/double digit games
+    return (game.winningAmount || 0) * qty;
+  }
+
+  async publishResult(id: number) {
+    const result = await this.prisma.result.findUnique({ where: { id } });
+    if (!result) {
+      throw new BadRequestException('Result not found');
+    }
+
+    const boards = this.mapNumbersToBoards(result.numbers);
+    
+    // Find all game histories for this result's date (comparing date part only)
+    const resultDate = new Date(result.date);
+    const startOfDay = new Date(resultDate.getFullYear(), resultDate.getMonth(), resultDate.getDate());
+    const endOfDay = new Date(resultDate.getFullYear(), resultDate.getMonth(), resultDate.getDate() + 1);
+    
+    const gameHistories = await this.prisma.gameHistory.findMany({
+      where: {
+        showTime: {
+          gte: startOfDay,
+          lt: endOfDay
+        }
+      },
+      include: {
+        gameplay: true
+      }
+    });
+    console.log('RESULT-DATE',result.date);
+    
+    console.log('game-histories',gameHistories);
+    
+    // Calculate winnings for each gameplay
+    for (const history of gameHistories) {
+      let totalWinAmount = 0;
+      
+      for (const gameplay of history.gameplay) {
+        const isWinning = this.checkIfBetWins(gameplay, boards);
+        
+        if (isWinning) {
+          const winAmount = await this.calculateWinAmount(gameplay, boards);
+          
+          // Update gameplay with win amount
+          await this.prisma.gamePlay.update({
+            where: { id: gameplay.id },
+            data: { winAmount }
+          });
+          
+          totalWinAmount += winAmount;
+        }
+      }
+      
+      // Update game history with total win amount and win status
+      await this.prisma.gameHistory.update({
+        where: { id: history.id },
+        data: {
+          totalWinAmount,
+          isWon: totalWinAmount > 0
+        }
+      });
+    }
+
+    return {
+      message: 'Result published successfully',
+      result: { ...result, boards },
+      affectedGameHistories: gameHistories.length
+    };
   }
 
   async remove(id: number) {

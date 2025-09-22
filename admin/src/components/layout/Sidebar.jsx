@@ -12,8 +12,9 @@ import {
   DeliveredProcedureOutlined,
   PayCircleOutlined,
   HistoryOutlined,
+  TrophyOutlined,
+  BarChartOutlined,
 } from "@ant-design/icons";
-import { Children } from "react";
 
 const Sidebar = ({ isOpen, onClose, isMobile }) => {
   const location = useLocation();
@@ -83,12 +84,12 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
     },
     {
       key: "/game-play",
-      icon: <HistoryOutlined />,
+      icon: <PlayCircleOutlined />,
       label: "Game Play",
       children: [
         {
           key: "/results",
-          icon: <HistoryOutlined />,
+          icon: <TrophyOutlined />,
           label: "Results",
         },
         {
@@ -96,6 +97,11 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
           icon: <HistoryOutlined />,
           label: "History",
         },
+        {
+          key: "/history-showtime",
+          icon: <BarChartOutlined />,
+          label: "Showtime History",
+        }
       ],
     }
   ];

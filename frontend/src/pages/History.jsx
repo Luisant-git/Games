@@ -91,9 +91,7 @@ const History = () => {
         {loading ? (
           <div className="loading">Loading history...</div>
         ) : history.length > 0 ? (
-          history
-            .filter((game) => !game.isWon)
-            .map((game, index) => (
+          history.map((game, index) => (
               <div key={game.id} className="history-item">
                 <div className="game-info">
                   <div className="game-meta">
@@ -110,7 +108,7 @@ const History = () => {
                       <div key={board} className="board-group">
                         <div className="board-title">{board}</div>
                         {plays.map((play) => (
-                          <div key={play.id} className="play-item">
+                          <div key={play.id} className={`play-item ${play.winAmount && play.winAmount > 0 ? 'winning-play' : ''}`}>
                             <span className="pre-amount">
                               {["TRIPLE_DIGIT", "FOUR_DIGIT"].includes(play.betType)
                                 ? JSON.parse(play.numbers).join("")
@@ -119,6 +117,9 @@ const History = () => {
                             <span className="pre-amount">x</span>
                             <span className="pre-amount">{play.qty}</span>
                             <span className="amount">₹{play.amount}</span>
+                            {play.winAmount && play.winAmount > 0 && (
+                              <span className="win-amount-display">Won: ₹{play.winAmount}</span>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -131,10 +132,10 @@ const History = () => {
                       <span>Total Bet</span>
                       <span>₹{game.totalBetAmount}</span>
                     </div>
-                    {/* <div className="win-amount">
-                      <span>Potential Win</span>
-                      <span>₹{game.totalWinAmount}</span>
-                    </div> */}
+                    <div className="win-amount">
+                      <span>Total Win</span>
+                      <span>₹{game.totalWinAmount || 0}</span>
+                    </div>
                     {/* <div className='win-amount'>
                     <span>Agent commission</span>
                     <span>₹{game.agentCommission}</span>

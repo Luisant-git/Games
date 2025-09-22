@@ -41,6 +41,13 @@ export class ResultController {
     return this.resultService.analyzeOptimalResult(showTime);
   }
 
+  @Post('publish/:id')
+  @ApiOperation({ summary: 'Publish result and calculate winnings' })
+  @ApiResponse({ status: 200, description: 'Result published successfully' })
+  publishResult(@Param('id', ParseIntPipe) id: number) {
+    return this.resultService.publishResult(id);
+  }
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete result' })
   @ApiResponse({ status: 200, description: 'Result deleted successfully' })

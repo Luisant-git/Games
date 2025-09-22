@@ -124,7 +124,7 @@
 
 .play-item {
   display: grid;
-  grid-template-columns: 60px 1fr 80px 60px 70px;
+  grid-template-columns: 60px 1fr 80px 60px 70px auto;
   gap: 12px;
   align-items: center;
   padding: 10px 12px;
@@ -272,7 +272,7 @@
   }
 
   .play-item {
-    grid-template-columns: 50px 1fr 70px 50px 60px;
+    grid-template-columns: 50px 1fr 70px 50px 60px auto;
     gap: 8px;
     padding: 8px 10px;
     font-size: 12px;
@@ -334,7 +334,7 @@
   }
 
   .play-item {
-    grid-template-columns: 35px 1fr 50px 40px 50px;
+    grid-template-columns: 35px 1fr 50px 40px 50px auto;
     gap: 4px;
     padding: 6px 8px;
     font-size: 10px;
@@ -378,4 +378,20 @@
   .status {
     align-self: center;
   }
+}
+
+/* Winning play styling */
+.winning-play {
+  background: #f6ffed !important;
+  border: 1px solid #b7eb8f !important;
+}
+
+.win-amount-display {
+  color: #52c41a;
+  font-weight: 700;
+  font-size: 12px;
+  background: #f6ffed;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #b7eb8f;
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, Space, Popconfirm } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { getResults, createResult, deleteResult } from '../api/result';
+import { getResults, createResult, deleteResult, publishResult } from '../api/result';
 
 const Result = () => {
   const [results, setResults] = useState([]);
@@ -48,6 +48,15 @@ const Result = () => {
     }
   };
 
+  const handlePublish = async (id) => {
+    try {
+      await publishResult(id);
+      fetchResults();
+    } catch (error) {
+      console.error('Error publishing result:', error);
+    }
+  };
+
   const handleCancel = () => {
     setIsModalOpen(false);
     form.resetFields();
@@ -86,17 +95,26 @@ const Result = () => {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <Popconfirm
-          title="Delete Result"
-          description="Are you sure you want to delete this result?"
-          onConfirm={() => handleDelete(record.id)}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button danger icon={<DeleteOutlined />} size="small">
-            Delete
+        <Space>
+          <Button 
+            type="primary" 
+            size="small"
+            onClick={() => handlePublish(record.id)}
+          >
+            Publish
           </Button>
-        </Popconfirm>
+          <Popconfirm
+            title="Delete Result"
+            description="Are you sure you want to delete this result?"
+            onConfirm={() => handleDelete(record.id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button danger icon={<DeleteOutlined />} size="small">
+              Delete
+            </Button>
+          </Popconfirm>
+        </Space>
       ),
     },
   ];

@@ -42,6 +42,7 @@ const Header = ({ onMenuToggle, isMobile }) => {
       '/settings': 'Settings',
       '/game-history': 'Game History',
       '/results': 'Results',
+      '/history-showtime': 'History Showtime',
     }
     
     // Handle dynamic routes
@@ -67,12 +68,12 @@ const Header = ({ onMenuToggle, isMobile }) => {
         <h1 className="page-title">{getPageTitle()}</h1>
       </div>
       <div className="header-actions">
-        <button 
+        {/* <button 
           className="notification-btn"
           aria-label="Notifications"
         >
           🔔
-        </button>
+        </button> */}
         <Dropdown
           menu={{ items: menuItems }}
           placement="bottomRight"

@@ -19,6 +19,13 @@ export class GameHistoryController {
     return this.gameHistoryService.findAll(filterDto);
   }
 
+  @Get('history-show-time')
+  @ApiOperation({ summary: 'Get row data for game history' })
+  @ApiResponse({ status: 200, description: 'Row data retrieved successfully' })
+  rowData() {
+    return this.gameHistoryService.rowData();
+  }
+
   @Get('agents')
   @ApiOperation({ summary: 'Get all agent game history with filters' })
   @ApiQuery({ name: 'board', required: false, description: 'Filter by board name' })

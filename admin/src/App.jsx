@@ -20,6 +20,7 @@ import Deposit from './pages/Deposit'
 import './App.css'
 import GameHistory from './pages/GameHistory'
 import Result from './pages/Result'
+import HistoryShowTime from './pages/HistoryShowTime'
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
             <Route path="deposit" element={<Deposit />} />
             <Route path='results' element={<Result />}></Route>
             <Route path='game-history' element={<GameHistory />}></Route>
+            <Route path='history-showtime' element={<HistoryShowTime />}></Route>
           </Route>
         </Routes>
       </Router>

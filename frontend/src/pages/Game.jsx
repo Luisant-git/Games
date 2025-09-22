@@ -578,7 +578,7 @@ const Game = ({ category, games }) => {
             if (response.ok) {
               const data = await response.json();
               console.log('-------',data);
-              const gameData = userType === 'agent' ? data : data;
+              const gameData = userType === 'agent' ? data.data : data;
               
               // Filter to show only today's bets
               const today = new Date().toISOString().split('T')[0];
