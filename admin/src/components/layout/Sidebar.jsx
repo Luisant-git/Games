@@ -65,6 +65,11 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
           label: "Agents",
         },
         {
+          key: "/game-history",
+          icon: <HistoryOutlined />,
+          label: "Player Games",
+        },
+        {
           key: "/agent-overview",
           icon: <PlayCircleOutlined />,
           label: "Agent Games",
@@ -97,11 +102,6 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
           key: "/results",
           icon: <TrophyOutlined />,
           label: "Results",
-        },
-        {
-          key: "/game-history",
-          icon: <HistoryOutlined />,
-          label: "History",
         },
         {
           key: "/history-showtime",
