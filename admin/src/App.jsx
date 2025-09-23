@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { ThemeProvider } from './contexts/ThemeContext'
 import Layout from './components/layout/Layout'
@@ -35,7 +35,7 @@ function App() {
               <Layout />
             </ProtectedRoute>
           }>
-            <Route index element={<Dashboard />} />
+            <Route index element={<Navigate to="/category" replace />} />
             <Route path='category' element={<Category />}></Route>
             <Route path='timing' element={<Timing />}></Route>
             <Route path="players" element={<Users />} />

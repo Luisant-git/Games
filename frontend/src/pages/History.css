@@ -124,13 +124,20 @@
 
 .play-item {
   display: grid;
-  grid-template-columns: 60px 1fr 80px 60px 70px auto;
+  grid-template-columns: 1fr auto auto;
   gap: 12px;
   align-items: center;
   padding: 10px 12px;
   background: #f8fafc;
   border-radius: 8px;
   font-size: 13px;
+}
+
+.bet-info {
+  padding-left: 20%;
+  display: flex;
+  align-items: center;
+  gap: 28px;
 }
 
 .board {
@@ -165,14 +172,14 @@
 }
 
 .pre-amount {
-  padding-right: 25%;
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 600;
-  text-align: right;
+  text-align: center;
 }
 
 .amount {
   padding-right: 25%;
+  font-size: 15px;
   color: var(--primary-color);
   font-weight: 600;
   text-align: right;
@@ -272,7 +279,7 @@
   }
 
   .play-item {
-    grid-template-columns: 50px 1fr 70px 50px 60px auto;
+    grid-template-columns: 1fr auto auto;
     gap: 8px;
     padding: 8px 10px;
     font-size: 12px;
@@ -334,7 +341,7 @@
   }
 
   .play-item {
-    grid-template-columns: 35px 1fr 50px 40px 50px auto;
+    grid-template-columns: 1fr auto auto;
     gap: 4px;
     padding: 6px 8px;
     font-size: 10px;
@@ -389,7 +396,7 @@
 .win-amount-display {
   color: #52c41a;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 15px;
   background: #f6ffed;
   padding: 2px 6px;
   border-radius: 4px;

@@ -29,7 +29,6 @@ const Header = ({ onMenuToggle, isMobile }) => {
 
   const getPageTitle = () => {
     const routes = {
-      '/': 'Dashboard',
       '/players': 'Players',
       '/category': 'Category',
       '/agents': 'Agents',
@@ -68,12 +67,6 @@ const Header = ({ onMenuToggle, isMobile }) => {
         <h1 className="page-title">{getPageTitle()}</h1>
       </div>
       <div className="header-actions">
-        {/* <button 
-          className="notification-btn"
-          aria-label="Notifications"
-        >
-          🔔
-        </button> */}
         <Dropdown
           menu={{ items: menuItems }}
           placement="bottomRight"

@@ -45,18 +45,3 @@ export const publishResult = async (id) => {
   
   return response.json();
 };
-
-export const deleteResult = async (id) => {
-  const response = await fetch(`${API_BASE_URL}/results/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  
-  if (!response.ok) {
-    throw new Error('Failed to delete result');
-  }
-  
-  return response.json();
-};

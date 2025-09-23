@@ -14,7 +14,7 @@ const Login = () => {
       if (values.username === 'admin' && values.password === 'admin123') {
         localStorage.setItem('adminToken', 'admin-logged-in')
         message.success('Login successful!')
-        navigate('/')
+        navigate('/category')
       } else {
         message.error('Invalid credentials')
       }

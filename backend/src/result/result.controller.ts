@@ -47,11 +47,4 @@ export class ResultController {
   publishResult(@Param('id', ParseIntPipe) id: number) {
     return this.resultService.publishResult(id);
   }
-
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete result' })
-  @ApiResponse({ status: 200, description: 'Result deleted successfully' })
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.resultService.remove(id);
-  }
 }

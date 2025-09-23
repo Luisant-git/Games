@@ -1,20 +1,21 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Menu } from "antd";
 import {
-  DashboardOutlined,
   FolderOutlined,
-  BookOutlined,
   ClockCircleOutlined,
-  PlayCircleOutlined,
   UserOutlined,
-  AntDesignOutlined,
   TeamOutlined,
-  DeliveredProcedureOutlined,
   PayCircleOutlined,
   HistoryOutlined,
   TrophyOutlined,
   BarChartOutlined,
-  BankOutlined,
+  UserSwitchOutlined,
+  FieldTimeOutlined,
+  RocketOutlined,
+  ExportOutlined,
+  MoneyCollectOutlined,
+  TagsOutlined,
+  AppstoreOutlined,
 } from "@ant-design/icons";
 
 const Sidebar = ({ isOpen, onClose, isMobile }) => {
@@ -22,98 +23,54 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
   const navigate = useNavigate();
 
   const menuItems = [
-    {
-      key: "/",
-      icon: <DashboardOutlined />,
-      label: "Dashboard",
-    },
-    {
-      key: "master",
-      icon: <FolderOutlined />,
-      label: "Master",
-      children: [
-        {
-          key: "/category",
-          icon: <BookOutlined />,
-          label: "Category",
-        },
-        {
-          key: "/timing",
-          icon: <ClockCircleOutlined />,
-          label: "Timing",
-        },
-        {
-          key: "/board",
-          icon: <PlayCircleOutlined />,
-          label: "Board",
-        },
-      ],
-    },
-    {
-      key: "users",
-      icon: <TeamOutlined />,
-      label: "Users",
-      children: [
-        {
-          key: "/players",
-          icon: <UserOutlined />,
-          label: "Players",
-        },
-        {
-          key: "/agents",
-          icon: <AntDesignOutlined />,
-          label: "Agents",
-        },
-        {
-          key: "/game-history",
-          icon: <HistoryOutlined />,
-          label: "Player Games",
-        },
-        {
-          key: "/agent-overview",
-          icon: <PlayCircleOutlined />,
-          label: "Agent Games",
-        },
-      ],
-    },
-    {
-      key: "payments",
-      icon: <PayCircleOutlined />,
-      label: "Payments",
-      children: [
-        {
-          key: "/deposit",
-          icon: <DeliveredProcedureOutlined />,
-          label: "Deposit",
-        },
-        {
-          key: "/withdraw",
-          icon: <BankOutlined />,
-          label: "Withdraw",
-        },
-      ],
-    },
-    {
-      key: "/game-play",
-      icon: <PlayCircleOutlined />,
-      label: "Game Play",
-      children: [
-        {
-          key: "/results",
-          icon: <TrophyOutlined />,
-          label: "Results",
-        },
-        {
-          key: "/history-showtime",
-          icon: <BarChartOutlined />,
-          label: "Showtime History",
-        }
-      ],
-    }
-  ];
+  {
+    key: "master",
+    icon: <FolderOutlined />,          
+    label: "Master",
+    children: [
+      { key: "/category", icon: <TagsOutlined />, label: "Category" },            
+      { key: "/timing",   icon: <ClockCircleOutlined />, label: "Timing" },       
+      { key: "/board",    icon: <AppstoreOutlined />, label: "Board" },           
+    ],
+  },
+  {
+    key: "users",
+    icon: <TeamOutlined />,            
+    label: "Users",
+    children: [
+      { key: "/players",        icon: <UserOutlined />,       label: "Players" },
+      { key: "/agents",         icon: <UserSwitchOutlined />, label: "Agents" },
+      { key: "/game-history",   icon: <HistoryOutlined />,    label: "Player Games" },
+      { key: "/agent-overview", icon: <BarChartOutlined />,   label: "Agent Games" },
+    ],
+  },
+  {
+    key: "payments",
+    icon: <PayCircleOutlined />,       
+    label: "Payments",
+    children: [
+      { key: "/deposit",  icon: <MoneyCollectOutlined />, label: "Deposit" },     
+      { key: "/withdraw", icon: <ExportOutlined />,       label: "Withdraw" },   
+    ],
+  },
+  {
+    key: "/game-play",
+    icon: <RocketOutlined />,          
+    label: "Game Play",
+    children: [
+      { key: "/results",          icon: <TrophyOutlined />,     label: "Results" },
+      { key: "/history-showtime", icon: <FieldTimeOutlined />,  label: "Showtime History" },
+    ],
+  },
+];
+
 
   const handleMenuClick = ({ key }) => {
-    navigate(key);
+    if (key === "/") {
+      navigate("/category");
+    } else {
+      navigate(key);
+    }
     if (isMobile) {
       onClose();
     }

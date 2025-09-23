@@ -51,13 +51,14 @@ const History = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
+    const date = new Date(dateString);
+    const time = date.toLocaleTimeString("en-US", {
+      hour: "numeric",
       minute: "2-digit",
+      hour12: true
     });
+    const formattedDate = date.toLocaleDateString("en-GB").replace(/\//g, '-');
+    return `${time}, ${formattedDate}`;
   };
 
   return (
@@ -65,27 +66,6 @@ const History = () => {
       <div className="history-header">
         <h2>📊 Game History</h2>
       </div>
-
-      {/* <div className="stats-grid">
-        <div className="stat-card">
-          <span className="stat-number">{stats.totalGames}</span>
-          <span className="stat-label">Total Games</span>
-        </div>
-        <div className="stat-card wins">
-          <span className="stat-number">{stats.totalWon}</span>
-          <span className="stat-label">Games Won</span>
-        </div>
-        <div className="stat-card earnings">
-          <span className="stat-number">₹{stats.totalWinnings}</span>
-          <span className="stat-label">Total Winnings</span>
-        </div>
-        {stats.totalCommissions > 0 && (
-          <div className="stat-card commission">
-            <span className="stat-number">₹{stats.totalCommissions}</span>
-            <span className="stat-label">Agent Commission</span>
-          </div>
-        )}
-      </div> */}
 
       <div className="history-list">
         {loading ? (
@@ -109,13 +89,15 @@ const History = () => {
                         <div className="board-title">{board}</div>
                         {plays.map((play) => (
                           <div key={play.id} className={`play-item ${play.winAmount && play.winAmount > 0 ? 'winning-play' : ''}`}>
-                            <span className="pre-amount">
-                              {["TRIPLE_DIGIT", "FOUR_DIGIT"].includes(play.betType)
-                                ? JSON.parse(play.numbers).join("")
-                                : play.numbers}
-                            </span>
-                            <span className="pre-amount">x</span>
-                            <span className="pre-amount">{play.qty}</span>
+                            <div className="bet-info">
+                              <span className="pre-amount">
+                                {["TRIPLE_DIGIT", "FOUR_DIGIT"].includes(play.betType)
+                                  ? JSON.parse(play.numbers).join("")
+                                  : play.numbers}
+                              </span>
+                              <span className="pre-amount">x</span>
+                              <span className="pre-amount">{play.qty}</span>
+                            </div>
                             <span className="amount">₹{play.amount}</span>
                             {play.winAmount && play.winAmount > 0 && (
                               <span className="win-amount-display">Won: ₹{play.winAmount}</span>
@@ -136,10 +118,6 @@ const History = () => {
                       <span>Total Win</span>
                       <span>₹{game.totalWinAmount || 0}</span>
                     </div>
-                    {/* <div className='win-amount'>
-                    <span>Agent commission</span>
-                    <span>₹{game.agentCommission}</span>
-                  </div> */}
                   </div>
                 </div>
               </div>

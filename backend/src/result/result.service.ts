@@ -78,7 +78,6 @@ export class ResultService {
       winRate: string | number;
     }> = [];
 
-    // Test all possible 5-digit combinations (11111 to 99999, excluding numbers with 0)
     for (let num = 11111; num < 100000; num++) {
       const fiveDigitNumber = num.toString();
       
@@ -95,18 +94,15 @@ export class ResultService {
       let winningBets = 0;
       let totalBets = 0;
 
-      // Calculate profit for this number combination
       for (const history of gameHistories) {
         for (const gameplay of history.gameplay) {
           totalBets++;
           totalBetAmount += gameplay.amount;
           
-          // Check if this bet wins with current number
           const isWinning = this.checkIfBetWins(gameplay, boards);
           
           if (isWinning) {
             winningBets++;
-            // Calculate win amount based on game rules
             const winAmount = await this.calculateWinAmount(gameplay, boards);
             totalWinAmount += winAmount;
             totalProfit -= winAmount; // Loss for house
@@ -121,7 +117,6 @@ export class ResultService {
         optimalNumber = fiveDigitNumber;
       }
 
-      // Store analysis for top results
       analysis.push({
         number: fiveDigitNumber,
         boards,
@@ -153,20 +148,16 @@ export class ResultService {
   private checkIfBetWins(gameplay: any, boards: any): boolean {
     const { board, numbers, betType } = gameplay;
     
-    // Get the winning number for the specific board
     const winningNumber = boards[board];
     
     if (!winningNumber) return false;
 
-    // Parse the bet numbers
     let betNumbers: string[];
     try {
       if (typeof numbers === 'string') {
-        // Try to parse as JSON first
         try {
-          betNumbers = JSON.parse(numbers);
+          betNumbers = JSON.parse(numbers).map(n => n.toString());
         } catch {
-          // If JSON parse fails, treat as single number
           betNumbers = [numbers];
         }
       } else if (Array.isArray(numbers)) {
@@ -178,69 +169,110 @@ export class ResultService {
       betNumbers = [numbers.toString()];
     }
 
-    // Ensure betNumbers is an array
-    if (!Array.isArray(betNumbers)) {
-      betNumbers = [String(betNumbers)];
+    if (betType === 'TRIPLE_DIGIT' || betType === 'FOUR_DIGIT') {
+      const combinedBetNumber = betNumbers.join('');
+      return combinedBetNumber === winningNumber.toString();
     }
 
-    // Check if any of the bet numbers match the winning number
     return betNumbers.some(betNum => betNum.toString() === winningNumber.toString());
   }
 
   private async calculateWinAmount(gameplay: any, boards: any): Promise<number> {
     const { gameId, amount, qty, board, numbers } = gameplay;
     
-    // Get game configuration
     const game = await this.prisma.game.findUnique({ where: { id: gameId } });
     if (!game) return 0;
 
     const winningNumber = boards[board];
-    const betNumbers = Array.isArray(numbers) ? numbers : [numbers];
+    
+    let betNumbers: string[];
+    try {
+      if (typeof numbers === 'string') {
+        try {
+          betNumbers = JSON.parse(numbers).map(n => n.toString());
+        } catch {
+          betNumbers = [numbers];
+        }
+      } else if (Array.isArray(numbers)) {
+        betNumbers = numbers.map(n => n.toString());
+      } else {
+        betNumbers = [numbers.toString()];
+      }
+    } catch {
+      betNumbers = [numbers.toString()];
+    }
+    
+    console.log('CHECK NUMBER: ',winningNumber, betNumbers, 'betType:', gameplay.betType);
+    
+    
+    let combinedBetNumber = '';
+    if (gameplay.betType === 'TRIPLE_DIGIT' || gameplay.betType === 'FOUR_DIGIT') {
+      combinedBetNumber = betNumbers.join('');
+      console.log('Combined bet number:', combinedBetNumber, 'vs winning:', winningNumber);
+    }
     
     // Check if bet wins
-    const isWinning = betNumbers.some(betNum => betNum.toString() === winningNumber.toString());
+    const isWinning = (gameplay.betType === 'TRIPLE_DIGIT' || gameplay.betType === 'FOUR_DIGIT') 
+      ? combinedBetNumber === winningNumber.toString()
+      : betNumbers.some(betNum => betNum.toString() === winningNumber.toString());
+    
     if (!isWinning) return 0;
 
     // For multi-digit games, check partial matches
-    if (game.betType === 'TRIPLE_DIGIT' || game.betType === 'FOUR_DIGIT') {
-      const betNum = betNumbers[0].toString();
+    if (gameplay.betType === 'TRIPLE_DIGIT' || gameplay.betType === 'FOUR_DIGIT') {
+      const betNum = combinedBetNumber || betNumbers.join('');
       const winNum = winningNumber.toString();
       
-      // Check for exact match first
+      console.log(`Multi-digit calculation: betType=${gameplay.betType}, betNum=${betNum}, winNum=${winNum}`);
+      
       if (betNum === winNum) {
-        return (game.winningAmount || 0) * qty;
+        const winAmount = (game.winningAmount || 0) * qty;
+        console.log(`Exact match: winAmount=${winAmount} (${game.winningAmount} * ${qty})`);
+        return winAmount;
       }
       
-      // Check partial matches for multi-digit games
-      if (game.betType === 'TRIPLE_DIGIT') {
+      if (gameplay.betType === 'TRIPLE_DIGIT') {
         // Check last 2 digits match
         if (betNum.slice(-2) === winNum.slice(-2)) {
-          return (game.doubleDigitMatching || 0) * qty;
+          const winAmount = (game.doubleDigitMatching || 0) * qty;
+          console.log(`Triple-digit 2-digit match: ${betNum.slice(-2)} == ${winNum.slice(-2)}, winAmount=${winAmount}`);
+          return winAmount;
         }
         // Check last digit match
         if (betNum.slice(-1) === winNum.slice(-1)) {
-          return (game.singleDigitMatching || 0) * qty;
+          const winAmount = (game.singleDigitMatching || 0) * qty;
+          console.log(`Triple-digit 1-digit match: ${betNum.slice(-1)} == ${winNum.slice(-1)}, winAmount=${winAmount}`);
+          return winAmount;
         }
       }
       
-      if (game.betType === 'FOUR_DIGIT') {
+      if (gameplay.betType === 'FOUR_DIGIT') {
         // Check last 3 digits match
         if (betNum.slice(-3) === winNum.slice(-3)) {
-          return (game.tripleDigitMatching || 0) * qty;
+          const winAmount = (game.tripleDigitMatching || 0) * qty;
+          console.log(`Four-digit 3-digit match: ${betNum.slice(-3)} == ${winNum.slice(-3)}, winAmount=${winAmount}`);
+          return winAmount;
         }
         // Check last 2 digits match
         if (betNum.slice(-2) === winNum.slice(-2)) {
-          return (game.doubleDigitMatching || 0) * qty;
+          const winAmount = (game.doubleDigitMatching || 0) * qty;
+          console.log(`Four-digit 2-digit match: ${betNum.slice(-2)} == ${winNum.slice(-2)}, winAmount=${winAmount}`);
+          return winAmount;
         }
         // Check last digit match
         if (betNum.slice(-1) === winNum.slice(-1)) {
-          return (game.singleDigitMatching || 0) * qty;
+          const winAmount = (game.singleDigitMatching || 0) * qty;
+          console.log(`Four-digit 1-digit match: ${betNum.slice(-1)} == ${winNum.slice(-1)}, winAmount=${winAmount}`);
+          return winAmount;
         }
       }
+      console.log(`No partial matches found for ${gameplay.betType}`);
     }
     
     // For exact matches or single/double digit games
-    return (game.winningAmount || 0) * qty;
+    const finalWinAmount = (game.winningAmount || 0) * qty;
+    console.log(`Final win amount: ${finalWinAmount} (${game.winningAmount} * ${qty})`);
+    return finalWinAmount;
   }
 
   async publishResult(id: number) {
@@ -251,7 +283,6 @@ export class ResultService {
 
     const boards = this.mapNumbersToBoards(result.numbers);
     
-    // Find all game histories for this result's date (comparing date part only)
     const resultDate = new Date(result.date);
     const startOfDay = new Date(resultDate.getFullYear(), resultDate.getMonth(), resultDate.getDate());
     const endOfDay = new Date(resultDate.getFullYear(), resultDate.getMonth(), resultDate.getDate() + 1);
@@ -271,7 +302,6 @@ export class ResultService {
     
     console.log('game-histories',gameHistories);
     
-    // Calculate winnings for each gameplay
     for (const history of gameHistories) {
       let totalWinAmount = 0;
       
@@ -299,6 +329,26 @@ export class ResultService {
           isWon: totalWinAmount > 0
         }
       });
+
+      // Update wallets based on win/loss
+      if (totalWinAmount > 0) {
+        // Player wins - add to player wallet
+        if (history.playerId) {
+          await this.prisma.playerWallet.update({
+            where: { playerId: history.playerId },
+            data: { balance: { increment: totalWinAmount } }
+          });
+        }
+      } else {
+        // Agent wins - add bet amount to agent wallet
+        const totalBetAmount = history.gameplay.reduce((sum, gameplay) => sum + gameplay.amount, 0);
+        if (history.agentId) {
+          await this.prisma.agentWallet.update({
+            where: { agentId: history.agentId },
+            data: { balance: { increment: totalBetAmount } }
+          });
+        }
+      }
     }
 
     return {
@@ -306,11 +356,5 @@ export class ResultService {
       result: { ...result, boards },
       affectedGameHistories: gameHistories.length
     };
-  }
-
-  async remove(id: number) {
-    return this.prisma.result.delete({
-      where: { id }
-    });
   }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, Space, Popconfirm } from 'antd';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { getResults, createResult, deleteResult, publishResult } from '../api/result';
+import { Table, Button, Modal, Form, Input, Space } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { getResults, createResult, publishResult } from '../api/result';
 
 const Result = () => {
   const [results, setResults] = useState([]);
@@ -36,15 +36,6 @@ const Result = () => {
       handleCancel();
     } catch (error) {
       console.error('Error creating result:', error);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await deleteResult(id);
-      fetchResults();
-    } catch (error) {
-      console.error('Error deleting result:', error);
     }
   };
 
@@ -103,17 +94,6 @@ const Result = () => {
           >
             Publish
           </Button>
-          <Popconfirm
-            title="Delete Result"
-            description="Are you sure you want to delete this result?"
-            onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button danger icon={<DeleteOutlined />} size="small">
-              Delete
-            </Button>
-          </Popconfirm>
         </Space>
       ),
     },
