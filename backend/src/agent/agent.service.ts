@@ -11,6 +11,14 @@ export class AgentService {
   ) {}
 
   async register(data: { name?: string; username: string; password: string }) {
+    const existingAgent = await this.prisma.agent.findUnique({
+      where: { username: data.username },
+    });
+
+    if (existingAgent) {
+      throw new BadRequestException('Username already exists');
+    }
+
     const hashedPassword = await bcrypt.hash(data.password, 10);
     
     const agent = await this.prisma.agent.create({
@@ -373,5 +381,49 @@ export class AgentService {
     });
 
     return { success: true, message: 'Password changed successfully' };
+  }
+
+  async agentMyPlayersGameHistory(agentId: number, page?: number, limit?: number) {
+    const queryOptions: any = {
+      where: {
+        player: {
+          agentId: agentId
+        }
+      },
+      include: {
+        player: {
+          select: {
+            id: true,
+            username: true
+          }
+        },
+        gameplay: true
+      },
+      orderBy: { createdAt: 'desc' }
+    };
+
+    if (page && limit) {
+      queryOptions.skip = (page - 1) * limit;
+      queryOptions.take = limit;
+    }
+    
+    const [gameHistories, total] = await Promise.all([
+      this.prisma.gameHistory.findMany(queryOptions),
+      this.prisma.gameHistory.count({
+        where: {
+          player: {
+            agentId: agentId
+          }
+        }
+      })
+    ]);
+
+    const result: any = { data: gameHistories };
+    
+    if (page && limit) {
+      result.pagination = { page, limit, total, totalPages: Math.ceil(total / limit) };
+    }
+
+    return result;
   }
 }

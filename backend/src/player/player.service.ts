@@ -11,6 +11,24 @@ export class PlayerService {
   ) {}
 
   async register(data: { name: string; username: string; phone?: string; password: string; referalCode?: string }) {
+    const existingPlayer = await this.prisma.player.findUnique({
+      where: { username: data.username },
+    });
+
+    if (existingPlayer) {
+      throw new BadRequestException('Username already exists');
+    }
+
+    if (data.phone) {
+      const existingPhone = await this.prisma.player.findUnique({
+        where: { phone: data.phone },
+      });
+
+      if (existingPhone) {
+        throw new BadRequestException('Phone number already exists');
+      }
+    }
+
     const hashedPassword = await bcrypt.hash(data.password, 10);
     
     let agentId: number | undefined = undefined;

@@ -1,7 +1,13 @@
 .history {
   padding: 14px 14px 80px;
   background: var(--background-color);
-  min-height: 100dvh;
+  height: auto;
+  overflow: visible;
+}
+
+.history-list {
+  height: auto;
+  overflow: visible;
 }
 
 .history-header h2 {

@@ -25,7 +25,7 @@ const AgentRegister = ({ onRegister, onSwitchToLogin, onSwitchToPlayer }) => {
         navigate('/agent-profile');
         if (onRegister) onRegister();
       } else {
-        toast.error('Registration failed!');
+        toast.error(data.message || 'Registration failed!');
       }
     } catch (error) {
       toast.error('Registration error!');

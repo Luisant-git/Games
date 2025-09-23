@@ -7,9 +7,6 @@ import { getCategories } from "../api/category";
 
 const Login = ({
   onLogin,
-  onSwitchToRegister,
-  onSwitchToAgent,
-  showAgentOption,
 }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -47,7 +44,7 @@ const Login = ({
         navigate("/");
         if (onLogin) onLogin();
       } else {
-        toast.error("Login failed!");
+        toast.error(data.message || "Login failed!");
       }
     } catch (error) {
       toast.error("Login error!");

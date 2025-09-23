@@ -22,6 +22,7 @@ import Withdraw from './pages/Withdraw';
 import ChangePassword from './pages/ChangePassword';
 import Account from './pages/Account';
 import Result from './pages/Result';
+import MyPlayers from './pages/MyPlayers';
 
 const AppContent = () => {
   const navigate = useNavigate();
@@ -95,6 +96,7 @@ const AppContent = () => {
           <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/login" />} />
 
           <Route path="/agent-history" element={isLoggedIn && userType === 'agent' ? <AgentHistory /> : <Navigate to="/login" />} />
+          <Route path="/my-players" element={isLoggedIn && userType === 'agent' ? <MyPlayers /> : <Navigate to="/login" />} />
           <Route path="/referral-code" element={isLoggedIn ? <ReferralCode /> : <Navigate to="/login" />} />
           <Route path="/deposit" element={isLoggedIn ? <Deposit /> : <Navigate to="/login" />} />
           <Route path="/withdraw" element={isLoggedIn ? <Withdraw /> : <Navigate to="/login" />} />

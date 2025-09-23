@@ -69,14 +69,14 @@ const Profile = () => {
     if (userType === 'agent') {
       baseItems.push(
         { id: 5, icon: '🔗', label: 'Referral Code', count: user.referCode, action: () => navigate('/referral-code') },
-        { id: 6, icon: '📈', label: 'Commission', count: `₹${user.totalCommission || 0}` },
-        { id: 7, icon: '👥', label: 'My Players', count: user.playerCount || 0 }
+        // { id: 6, icon: '📈', label: 'Commission', count: `₹${user.totalCommission || 0}` },
+        { id: 7, icon: '👥', label: 'My Players', count: user.playerCount || 0, action: () => navigate('/my-players') }
       );
     } else {
       // Add referral features for players too
       baseItems.push(
         { id: 5, icon: '🔗', label: 'My Referral Code', count: user.referCode, action: () => navigate('/referral-code') },
-        { id: 6, icon: '🎁', label: 'Referral Bonus', count: `₹${user.wallet?.bonusBalance || 0}` },
+        // { id: 6, icon: '🎁', label: 'Referral Bonus', count: `₹${user.wallet?.bonusBalance || 0}` },
         { id: 7, icon: '👥', label: 'Referred Players', count: user.referredPlayersCount || 0 }
       );
     }
@@ -100,15 +100,14 @@ const Profile = () => {
           <span className="stat-number">₹{balance}</span>
           <span className="stat-label">Wallet Balance</span>
         </div>
-        {/* <div className="stat-item">
-          <span className="stat-number">{user?.gameHistory?.length || '0'}</span>
-          <span className="stat-label">Games Played</span>
-        </div> */}
-        
-        {/* <div className="stat-item">
-          <span className="stat-number">{user?.gameHistory?.filter(game => game.isWon).length || '0'}</span>
-          <span className="stat-label">Games Won</span>
-        </div> */}
+        <div className="stat-item">
+          <span className="stat-number">
+            {userType === 'agent' ? `📈₹${(user.totalCommission || 0).toFixed(2)}` : `🎁₹${(user.wallet?.bonusBalance || 0).toFixed(2)}`}
+          </span>
+          <span className="stat-label">
+            {userType === 'agent' ? 'Commission' : 'Referral Bonus'}
+          </span>
+        </div>
       </div>
 
       <div className="profile-menu">

@@ -175,4 +175,14 @@ export class AgentController {
     const agentId = req.user.id;
     return this.agentService.changePassword(agentId, body.currentPassword, body.newPassword);
   }
+
+  @Get('players')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get agent referred players game history' })
+  @ApiResponse({ status: 200, description: 'Players game history retrieved' })
+  async getMyPlayersGameHistory(@Request() req, @Query('page') page?: string, @Query('limit') limit?: string) {
+    const agentId = req.user.id;
+    return this.agentService.agentMyPlayersGameHistory(agentId, page ? +page : undefined, limit ? +limit : undefined);
+  }
 }
