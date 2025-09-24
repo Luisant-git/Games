@@ -8,14 +8,19 @@ import "./Withdraw.css";
 // Helper function to decode JWT token
 const decodeToken = (token) => {
   try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
     return JSON.parse(jsonPayload);
   } catch (error) {
-    console.error('Error decoding token:', error);
+    console.error("Error decoding token:", error);
     return null;
   }
 };
@@ -26,13 +31,13 @@ const Withdraw = () => {
   const [transferType, setTransferType] = useState("UPI_TRANSFER");
   const [amount, setAmount] = useState("");
   const [withdrawHistory, setWithdrawHistory] = useState([]);
-  
+
   // Bank Transfer fields
   const [accountNumber, setAccountNumber] = useState("");
   const [ifscCode, setIfscCode] = useState("");
   const [bankName, setBankName] = useState("");
   const [accountHolderName, setAccountHolderName] = useState("");
-  
+
   // UPI Transfer fields
   const [upiId, setUpiId] = useState("");
   const [upiAppName, setUpiAppName] = useState("");
@@ -46,11 +51,12 @@ const Withdraw = () => {
 
   const fetchBalance = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const decodedToken = decodeToken(token);
       const userType = decodedToken?.type;
-      
-      const response = userType === 'agent' ? await getAgentWallet() : await getPlayerWallet();
+
+      const response =
+        userType === "agent" ? await getAgentWallet() : await getPlayerWallet();
       const data = await response.json();
       setBalance(data.balance);
     } catch (error) {
@@ -73,14 +79,14 @@ const Withdraw = () => {
       }
 
       let screenshotUrl = null;
-      
+
       if (screenshotFile) {
         setUploading(true);
         try {
           const uploadResponse = await uploadFile(screenshotFile);
           screenshotUrl = uploadResponse.filename;
         } catch (uploadError) {
-          toast.error('Failed to upload screenshot');
+          toast.error("Failed to upload screenshot");
           return;
         } finally {
           setUploading(false);
@@ -88,7 +94,7 @@ const Withdraw = () => {
       }
 
       let transferDetails = {};
-      
+
       if (transferType === "BANK_TRANSFER") {
         if (!accountNumber || !ifscCode || !bankName || !accountHolderName) {
           toast.error("Please fill all bank details");
@@ -98,7 +104,7 @@ const Withdraw = () => {
           accountNumber,
           ifscCode,
           bankName,
-          accountHolderName
+          accountHolderName,
         };
       } else {
         if (!upiId || !upiAppName) {
@@ -107,7 +113,7 @@ const Withdraw = () => {
         }
         transferDetails = {
           upiId,
-          upiAppName
+          upiAppName,
         };
       }
 
@@ -117,7 +123,7 @@ const Withdraw = () => {
         amount: parseFloat(amount),
         ...(screenshotUrl && { screenshot: screenshotUrl }),
       };
-      
+
       const response = await createWithdraw(data);
 
       if (response.success) {
@@ -174,7 +180,7 @@ const Withdraw = () => {
 
         <div className="card withdraw-form-card">
           <h3 className="card-title">Withdraw Funds</h3>
-          
+
           <form className="withdraw-form" onSubmit={handleWithdraw}>
             <div className="form-group">
               <label>Transfer Type</label>
@@ -285,7 +291,11 @@ const Withdraw = () => {
               className="withdraw-button"
               disabled={isProcessing || uploading}
             >
-              {uploading ? "Uploading..." : isProcessing ? "Processing..." : "WITHDRAW"}
+              {uploading
+                ? "Uploading..."
+                : isProcessing
+                ? "Processing..."
+                : "WITHDRAW"}
             </button>
           </form>
         </div>
@@ -299,22 +309,59 @@ const Withdraw = () => {
               {withdrawHistory.map((withdraw) => (
                 <div key={withdraw.id} className="history-item">
                   <div className="history-details">
-                    <p><strong>Type:</strong> {withdraw.transferType === 'BANK_TRANSFER' ? 'Bank Transfer' : 'UPI Transfer'}</p>
-                    <p><strong>Amount:</strong> ₹{withdraw.amount}</p>
-                    {withdraw.transferType === 'BANK_TRANSFER' && (
+                    <p>
+                      <strong>Type:</strong>{" "}
+                      {withdraw.transferType === "BANK_TRANSFER"
+                        ? "Bank Transfer"
+                        : "UPI Transfer"}
+                    </p>
+                    <p>
+                      <strong>Amount:</strong> ₹{withdraw.amount}
+                    </p>
+                    {withdraw.transferType === "BANK_TRANSFER" && (
                       <>
-                        <p><strong>Account:</strong> {withdraw.transferDetails?.accountNumber}</p>
-                        <p><strong>Bank:</strong> {withdraw.transferDetails?.bankName}</p>
+                        <p>
+                          <strong>Account:</strong>{" "}
+                          {withdraw.transferDetails?.accountNumber}
+                        </p>
+                        <p>
+                          <strong>Bank:</strong>{" "}
+                          {withdraw.transferDetails?.bankName}
+                        </p>
                       </>
                     )}
-                    {withdraw.transferType === 'UPI_TRANSFER' && (
+                    {withdraw.transferType === "UPI_TRANSFER" && (
                       <>
-                        <p><strong>UPI ID:</strong> {withdraw.transferDetails?.upiId}</p>
-                        <p><strong>UPI App:</strong> {withdraw.transferDetails?.upiAppName === 'GOOGLE_PAY' ? 'Google Pay' : 'PhonePe'}</p>
+                        <p>
+                          <strong>UPI ID:</strong>{" "}
+                          {withdraw.transferDetails?.upiId}
+                        </p>
+                        <p>
+                          <strong>UPI App:</strong>{" "}
+                          {withdraw.transferDetails?.upiAppName === "GOOGLE_PAY"
+                            ? "Google Pay"
+                            : "PhonePe"}
+                        </p>
                       </>
                     )}
-                    <p><strong>Status:</strong> <span className={`status-${withdraw.status.toLowerCase()}`}>{withdraw.status}</span></p>
-                    <p><strong>Date:</strong> {new Date(withdraw.createdAt).toLocaleDateString()}</p>
+                    <p>
+                      <strong>Status:</strong>{" "}
+                      <span
+                        className={`status-${withdraw.status.toLowerCase()}`}
+                      >
+                        {withdraw.status === "PENDING"
+                          ? "Waiting for admin approval"
+                          : withdraw.status === "COMPLETED"
+                          ? "Amount withdrawn successfully"
+                          : withdraw.status === "MISMATCH"
+                          ? "Withdrawal amount mismatch — please check and retry"
+                          : withdraw.status}
+                      </span>
+                    </p>
+                    <p>
+                      <strong>Date:</strong>{" "}
+                      {new Date(withdraw.createdAt).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
               ))}

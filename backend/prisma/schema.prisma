@@ -230,14 +230,14 @@ enum DepositStatus {
   PENDING
   COMPLETED
   FAILED
-  CANCELLED
+  MISMATCH
 }
 
 enum WithdrawStatus {
   PENDING
   COMPLETED
   FAILED
-  CANCELLED
+  MISMATCH
 }
 
 model Support {
@@ -272,12 +272,13 @@ model ReferralBonus {
 }
 
 model Result {
-  id        Int      @id @default(autoincrement())
-  date      DateTime
-  time      String
-  numbers   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  time        String
+  numbers     String
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model DashBoard {

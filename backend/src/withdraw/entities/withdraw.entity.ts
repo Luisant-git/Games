@@ -14,7 +14,7 @@ export enum WithdrawStatus {
   PENDING = 'PENDING',
   COMPLETED = 'COMPLETED',
   FAILED = 'FAILED',
-  CANCELLED = 'CANCELLED',
+  MISMATCH = 'MISMATCH',
 }
 
 export class Withdraw {

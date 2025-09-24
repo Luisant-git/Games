@@ -31,7 +31,7 @@ const Withdraw = () => {
     try {
       const response = await updateWithdrawStatus(id, ticket);
       if (response.success) {
-        const status = ticket > 0 ? 'COMPLETED' : 'CANCELLED';
+        const status = ticket > 0 ? 'COMPLETED' : 'MISMATCH';
         const updatedData = withdrawData.map((withdraw) =>
           withdraw.id === id ? { ...withdraw, status, ticket } : withdraw
         );
@@ -169,7 +169,7 @@ const Withdraw = () => {
       key: 'status',
       width: 100,
       render: (status) => {
-        const color = status === 'PENDING' ? 'orange' : status === 'COMPLETED' ? 'green' : status === 'CANCELLED' ? 'red' : 'volcano';
+        const color = status === 'PENDING' ? 'orange' : status === 'COMPLETED' ? 'green' : status === 'MISMATCH' ? 'red' : 'volcano';
         return <Tag color={color}>{status}</Tag>;
       },
     },

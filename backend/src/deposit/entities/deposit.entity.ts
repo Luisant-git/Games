@@ -14,7 +14,7 @@ export enum DepositStatus {
   PENDING = 'PENDING',
   COMPLETED = 'COMPLETED',
   FAILED = 'FAILED',
-  CANCELLED = 'CANCELLED',
+  MISMATCH = 'MISMATCH',
 }
 
 export class Deposit {

@@ -280,6 +280,24 @@ export class ResultService {
     if (!result) {
       throw new BadRequestException('Result not found');
     }
+    
+    if (result.isPublished) {
+      throw new BadRequestException('Result already published');
+    }
+    
+    // Check if another result is already published for the same date and time
+    const existingPublished = await this.prisma.result.findFirst({
+      where: {
+        date: result.date,
+        time: result.time,
+        isPublished: true,
+        id: { not: id }
+      }
+    });
+    
+    if (existingPublished) {
+      throw new BadRequestException('A result is already published for this date and time');
+    }
 
     const boards = this.mapNumbersToBoards(result.numbers);
     
@@ -351,9 +369,15 @@ export class ResultService {
       }
     }
 
+    // Mark result as published
+    const updatedResult = await this.prisma.result.update({
+      where: { id },
+      data: { isPublished: true }
+    });
+    
     return {
       message: 'Result published successfully',
-      result: { ...result, boards },
+      result: { ...updatedResult, boards },
       affectedGameHistories: gameHistories.length
     };
   }

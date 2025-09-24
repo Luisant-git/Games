@@ -99,7 +99,7 @@ const Support = () => {
           </div>
 
           <button className="btn-primary" type="submit" disabled={loading}>
-            {loading ? 'SUBMITTING...' : 'SUBMIT TICKET'}
+            {loading ? 'SUBMITTING...' : 'SUBMIT'}
           </button>
         </form>
       </div>

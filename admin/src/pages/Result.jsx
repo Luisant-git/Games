@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, Space, DatePicker, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import toast from 'react-hot-toast';
 import { getResults, createResult, publishResult } from '../api/result';
 import { todayGameAPI } from '../api/todayGame';
 
@@ -20,9 +21,8 @@ const Result = () => {
   const fetchTimeOptions = async () => {
     try {
       const data = await todayGameAPI.getTimings();
-      const showTimes = data.flatMap(item => 
-        item.showTimes.map(st => st.showTime)
-      );
+      console.log(data);
+      
       const convertTo12Hour = (time24) => {
         const [hours, minutes] = time24.split(':');
         const hour = parseInt(hours);
@@ -30,10 +30,18 @@ const Result = () => {
         const hour12 = hour % 12 || 12;
         return `${hour12}:${minutes} ${ampm}`;
       };
-      setTimeOptions(showTimes.map(time => ({ 
-        label: convertTo12Hour(time), 
-        value: convertTo12Hour(time) 
-      })));
+      
+      const options = data.flatMap(item => 
+        item.showTimes.map(st => {
+          const time12 = convertTo12Hour(st.showTime);
+          return {
+            label: `${time12} - ${item.category.name}`,
+            value: `${time12} - ${item.category.name}`
+          };
+        })
+      );
+      
+      setTimeOptions(options);
     } catch (error) {
       console.error('Error fetching time options:', error);
     }
@@ -52,9 +60,10 @@ const Result = () => {
 
   const handleSubmit = async (values) => {
     try {
+      const timeOnly = values.time.split(' - ')[0];
       await createResult({
         date: dayjs().format('YYYY-MM-DD'),
-        time: values.time,
+        time: timeOnly,
         numbers: values.numbers
       });
       fetchResults();
@@ -67,8 +76,10 @@ const Result = () => {
   const handlePublish = async (id) => {
     try {
       await publishResult(id);
+      toast.success('Result published successfully!');
       fetchResults();
     } catch (error) {
+      toast.error(error.message || 'Error publishing result');
       console.error('Error publishing result:', error);
     }
   };
@@ -113,11 +124,12 @@ const Result = () => {
       render: (_, record) => (
         <Space>
           <Button 
-            type="primary" 
+            type={record.isPublished ? "default" : "primary"}
             size="small"
+            disabled={record.isPublished}
             onClick={() => handlePublish(record.id)}
           >
-            Publish
+            {record.isPublished ? 'Published' : 'Publish'}
           </Button>
         </Space>
       ),

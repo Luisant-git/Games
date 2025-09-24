@@ -13,21 +13,20 @@ const Deposit = () => {
   const [transferType, setTransferType] = useState("UPI_TRANSFER");
   const [amount, setAmount] = useState("");
   const [depositHistory, setDepositHistory] = useState([]);
-  
+
   // Bank Transfer fields
   const [accountNumber, setAccountNumber] = useState("");
   const [ifscCode, setIfscCode] = useState("");
   const [bankName, setBankName] = useState("");
   const [accountHolderName, setAccountHolderName] = useState("");
   const [bankTransactionId, setBankTransactionId] = useState("");
-  
+
   // UPI Transfer fields
   const [upiId, setUpiId] = useState("");
   const [upiTransactionId, setUpiTransactionId] = useState("");
   const [upiAppName, setUpiAppName] = useState("");
   const [screenshotFile, setScreenshotFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-  
 
   useEffect(() => {
     fetchBalance();
@@ -36,8 +35,9 @@ const Deposit = () => {
 
   const fetchBalance = async () => {
     try {
-      const userType = localStorage.getItem('userType');
-      const response = userType === 'agent' ? await getAgentWallet() : await getPlayerWallet();
+      const userType = localStorage.getItem("userType");
+      const response =
+        userType === "agent" ? await getAgentWallet() : await getPlayerWallet();
       const data = await response.json();
       setBalance(data.balance);
     } catch (error) {
@@ -52,34 +52,34 @@ const Deposit = () => {
 
     try {
       let screenshotUrl = null;
-      
+
       if (screenshotFile) {
         setUploading(true);
         try {
           const uploadResponse = await uploadFile(screenshotFile);
           screenshotUrl = uploadResponse.filename;
         } catch (uploadError) {
-          toast.error('Failed to upload screenshot');
+          toast.error("Failed to upload screenshot");
           return;
         } finally {
           setUploading(false);
         }
       }
       let transferDetails = {};
-      
+
       if (transferType === "BANK_TRANSFER") {
         transferDetails = {
           accountNumber,
           ifscCode,
           bankName,
           accountHolderName,
-          transactionId: bankTransactionId
+          transactionId: bankTransactionId,
         };
       } else {
         transferDetails = {
           upiId,
           transactionId: upiTransactionId,
-          upiAppName
+          upiAppName,
         };
       }
 
@@ -89,7 +89,7 @@ const Deposit = () => {
         amount: parseFloat(amount),
         ...(screenshotUrl && { screenshot: screenshotUrl }),
       };
-      
+
       const response = await createDeposit(data);
 
       if (response.success) {
@@ -159,7 +159,7 @@ const Deposit = () => {
 
           <form className="verify-form" onSubmit={handleVerifyPayment}>
             <h3 className="card-title">Verify Your Payment</h3>
-            
+
             <div className="form-group">
               <label>Transfer Type</label>
               <select
@@ -289,7 +289,11 @@ const Deposit = () => {
               className="verify-button"
               disabled={isVerifying || uploading}
             >
-              {uploading ? "Uploading..." : isVerifying ? "Verifying..." : "DEPOSIT"}
+              {uploading
+                ? "Uploading..."
+                : isVerifying
+                ? "Verifying..."
+                : "DEPOSIT"}
             </button>
 
             {status === "success" && (
@@ -314,20 +318,57 @@ const Deposit = () => {
               {depositHistory.map((deposit) => (
                 <div key={deposit.id} className="history-item">
                   <div className="history-details">
-                    <p><strong>Type:</strong> {deposit.transferType === 'BANK_TRANSFER' ? 'Bank Transfer' : 'UPI Transfer'}</p>
-                    <p><strong>Amount:</strong> ₹{deposit.amount}</p>
-                    <p><strong>Transaction ID:</strong> {deposit.transferDetails?.transactionId}</p>
-                    {deposit.transferType === 'BANK_TRANSFER' && (
-                      <p><strong>Bank:</strong> {deposit.transferDetails?.bankName}</p>
+                    <p>
+                      <strong>Type:</strong>{" "}
+                      {deposit.transferType === "BANK_TRANSFER"
+                        ? "Bank Transfer"
+                        : "UPI Transfer"}
+                    </p>
+                    <p>
+                      <strong>Amount:</strong> ₹{deposit.amount}
+                    </p>
+                    <p>
+                      <strong>Transaction ID:</strong>{" "}
+                      {deposit.transferDetails?.transactionId}
+                    </p>
+                    {deposit.transferType === "BANK_TRANSFER" && (
+                      <p>
+                        <strong>Bank:</strong>{" "}
+                        {deposit.transferDetails?.bankName}
+                      </p>
                     )}
-                    {deposit.transferType === 'UPI_TRANSFER' && (
+                    {deposit.transferType === "UPI_TRANSFER" && (
                       <>
-                        <p><strong>UPI ID:</strong> {deposit.transferDetails?.upiId}</p>
-                        <p><strong>UPI App:</strong> {deposit.transferDetails?.upiAppName === 'GOOGLE_PAY' ? 'Google Pay' : 'PhonePe'}</p>
+                        <p>
+                          <strong>UPI ID:</strong>{" "}
+                          {deposit.transferDetails?.upiId}
+                        </p>
+                        <p>
+                          <strong>UPI App:</strong>{" "}
+                          {deposit.transferDetails?.upiAppName === "GOOGLE_PAY"
+                            ? "Google Pay"
+                            : "PhonePe"}
+                        </p>
                       </>
                     )}
-                    <p><strong>Status:</strong> <span className={`status-${deposit.status.toLowerCase()}`}>{deposit.status}</span></p>
-                    <p><strong>Date:</strong> {new Date(deposit.createdAt).toLocaleDateString()}</p>
+                    <p>
+                      <strong>Status:</strong>{" "}
+                      <span
+                        className={`status-${deposit.status.toLowerCase()}`}
+                      >
+                        {deposit.status === "PENDING"
+                          ? "Waiting for admin approval"
+                          : deposit.status === "COMPLETED"
+                          ? "Amount added to wallet"
+                          : deposit.status === "MISMATCH"
+                          ? "Amount mismatch — please check and retry"
+                          : deposit.status}
+                      </span>
+                    </p>
+                    <p>
+                      <strong>Date:</strong>{" "}
+                      {new Date(deposit.createdAt).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
               ))}
