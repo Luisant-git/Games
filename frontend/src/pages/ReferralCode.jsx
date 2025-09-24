@@ -54,7 +54,7 @@ const ReferralCode = () => {
             <div className="stat-icon">🎁</div>
             <div className="stat-info">
               <span className="stat-number">
-                ₹{userType === 'agent' ? (user.totalCommission || 0) : (user.wallet?.bonusBalance || 0)}
+                ₹{userType === 'agent' ? (user.totalCommission || 0).toFixed(2) : (user.wallet?.bonusBalance || 0).toFixed(2)}
               </span>
               <span className="stat-label">
                 {userType === 'agent' ? 'Total Commission' : 'Referral Bonus'}

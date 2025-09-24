@@ -1,17 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, Space } from 'antd';
+import { Table, Button, Modal, Form, Input, Space, DatePicker, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
 import { getResults, createResult, publishResult } from '../api/result';
+import { todayGameAPI } from '../api/todayGame';
 
 const Result = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [timeOptions, setTimeOptions] = useState([]);
   const [form] = Form.useForm();
 
   useEffect(() => {
     fetchResults();
+    fetchTimeOptions();
   }, []);
+
+  const fetchTimeOptions = async () => {
+    try {
+      const data = await todayGameAPI.getTimings();
+      const showTimes = data.flatMap(item => 
+        item.showTimes.map(st => st.showTime)
+      );
+      const convertTo12Hour = (time24) => {
+        const [hours, minutes] = time24.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        return `${hour12}:${minutes} ${ampm}`;
+      };
+      setTimeOptions(showTimes.map(time => ({ 
+        label: convertTo12Hour(time), 
+        value: convertTo12Hour(time) 
+      })));
+    } catch (error) {
+      console.error('Error fetching time options:', error);
+    }
+  };
 
   const fetchResults = async () => {
     try {
@@ -26,10 +52,9 @@ const Result = () => {
 
   const handleSubmit = async (values) => {
     try {
-      const datetime = new Date(values.datetime);
       await createResult({
-        date: datetime.toISOString().split('T')[0],
-        time: datetime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
+        date: dayjs().format('YYYY-MM-DD'),
+        time: values.time,
         numbers: values.numbers
       });
       fetchResults();
@@ -70,18 +95,18 @@ const Result = () => {
       dataIndex: 'numbers',
       key: 'numbers',
     },
-    {
-      title: 'Board Results',
-      key: 'boards',
-      render: (_, record) => (
-        <div>
-          <div>A: {record.boards?.A} | B: {record.boards?.B} | C: {record.boards?.C}</div>
-          <div>AB: {record.boards?.AB} | AC: {record.boards?.AC} | BC: {record.boards?.BC}</div>
-          <div>ABC: {record.boards?.ABC}</div>
-          <div>ABCD: {record.boards?.ABCD}</div>
-        </div>
-      ),
-    },
+    // {
+    //   title: 'Board Results',
+    //   key: 'boards',
+    //   render: (_, record) => (
+    //     <div>
+    //       <div>A: {record.boards?.A} | B: {record.boards?.B} | C: {record.boards?.C}</div>
+    //       <div>AB: {record.boards?.AB} | AC: {record.boards?.AC} | BC: {record.boards?.BC}</div>
+    //       <div>ABC: {record.boards?.ABC}</div>
+    //       <div>ABCD: {record.boards?.ABCD}</div>
+    //     </div>
+    //   ),
+    // },
     {
       title: 'Actions',
       key: 'actions',
@@ -144,13 +169,13 @@ const Result = () => {
           onFinish={handleSubmit}
         >
           <Form.Item
-            label="Date & Time"
-            name="datetime"
-            rules={[{ required: true, message: 'Please select date and time!' }]}
+            label="Time"
+            name="time"
+            rules={[{ required: true, message: 'Please select time!' }]}
           >
-            <Input
-              type="datetime-local"
-              placeholder="Select Date & Time"
+            <Select
+              placeholder="Select Time"
+              options={timeOptions}
               style={{ width: '100%' }}
             />
           </Form.Item>

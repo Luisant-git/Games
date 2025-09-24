@@ -9,6 +9,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [balance, setBalance] = useState(0);
   const [user, setUser] = useState({});
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     fetchBalance();
@@ -48,6 +49,10 @@ const Profile = () => {
   };
   
   const handleLogout = () => {
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('userType');
@@ -128,6 +133,19 @@ const Profile = () => {
           </div>
         ))}
       </div>
+
+      {showLogoutModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Confirm Logout</h3>
+            <p>Are you sure you want to logout?</p>
+            <div className="modal-buttons">
+              <button onClick={() => setShowLogoutModal(false)} className="cancel-btn">Cancel</button>
+              <button onClick={confirmLogout} className="confirm-btn">OK</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
