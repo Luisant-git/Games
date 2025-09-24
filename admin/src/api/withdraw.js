@@ -15,7 +15,7 @@ export const getWithdraw = async () => {
 
 export const updateWithdrawStatus = async (id, ticket) => {
     const token = localStorage.getItem("token");
-    const status = ticket > 0 ? 'COMPLETED' : 'CANCELLED';
+    const status = ticket > 0 ? 'COMPLETED' : 'MISMATCH';
     try {
       const response = await fetch(`${API_BASE_URL}/withdraws/${id}/status`, {
         method: "PATCH",
