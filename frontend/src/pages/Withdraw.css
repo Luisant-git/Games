@@ -196,9 +196,9 @@
   text-transform: uppercase;
 }
 
-.status-cancelled {
-  background: #e2e3e5;
-  color: #383d41;
+.status-mismatch {
+  background: #f8d7da;
+  color: #721c24;
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 12px;

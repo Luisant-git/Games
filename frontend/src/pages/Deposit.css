@@ -235,6 +235,16 @@
   text-transform: uppercase;
 }
 
+.status-mismatch {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
 /* Responsive adjustments */
 @media (max-width: 380px) {
   .history-details {

@@ -5,7 +5,7 @@ export enum WithdrawStatus {
   PENDING = 'PENDING',
   COMPLETED = 'COMPLETED',
   FAILED = 'FAILED',
-  CANCELLED = 'CANCELLED',
+  CANCELLED = 'MISMATCH',
 }
 
 export class UpdateWithdrawStatusDto {
