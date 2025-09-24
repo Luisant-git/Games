@@ -15,10 +15,11 @@ const Login = ({
   });
   const [showPassword, setShowPassword] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [userType, setUserType] = useState("player");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       // Try player login first
       let response = await loginPlayer(formData);
@@ -48,6 +49,8 @@ const Login = ({
       }
     } catch (error) {
       toast.error("Login error!");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -133,7 +136,16 @@ const Login = ({
               {showPassword ? "🫥" : "👁️"}
             </button>
           </div>
-          <button type="submit">Login</button>
+          <button type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <span className="loader-container">
+                <span className="spinner"></span>
+                Logging in...
+              </span>
+            ) : (
+              "Login"
+            )}
+          </button>
         </form>
 
         <p>

@@ -5,6 +5,20 @@ export const agentAPI = {
       const response = await fetch(`${API_BASE_URL}/agent/all`)
       return response.json()
   },
+  create: async (agentData) => {
+    const response = await fetch(`${API_BASE_URL}/agent/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(agentData),
+    })
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || 'Failed to create agent')
+    }
+    return response.json()
+  },
   toggleStatus: async (id) => {
     const response = await fetch(`${API_BASE_URL}/agent/${id}/toggle-status`, {
       method: 'PATCH',

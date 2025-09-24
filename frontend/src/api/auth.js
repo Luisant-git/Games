@@ -33,17 +33,6 @@ export const loginAgent = async (credentials) => {
   return response;
 };
 
-export const registerAgent = async (userData) => {
-  const response = await fetch(`${API_BASE_URL}/agent/register`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(userData),
-  });
-  return response;
-};
-
 export const getAgentProfile = async () => {
   const token = localStorage.getItem('token');
   const response = await fetch(`${API_BASE_URL}/agent/profile`, {

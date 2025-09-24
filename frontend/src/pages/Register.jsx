@@ -19,9 +19,11 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
 
   const [showPassword, setShowPassword] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const response = await registerPlayer(formData);
       const data = await response.json();
@@ -36,6 +38,8 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
       }
     } catch (error) {
       toast.error("Registration error!");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -80,12 +84,7 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
       <div className="register-container" style={{ marginTop: "0px", marginBottom: "20px" }}>
         <h2>Registration</h2>
 
-        {showAgentOption && (
-          <div className="user-type-toggle">
-            <button className="active" type="button">Player</button>
-            <button type="button" onClick={onSwitchToAgent}>Agent</button>
-          </div>
-        )}
+
 
         <form onSubmit={handleSubmit} noValidate>
           <input
@@ -142,7 +141,16 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
             aria-label="Referral Code"
           />
 
-          <button type="submit">Register</button>
+          <button type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <span className="loader-container">
+                <span className="spinner"></span>
+                Registering...
+              </span>
+            ) : (
+              "Register"
+            )}
+          </button>
         </form>
 
         <p>

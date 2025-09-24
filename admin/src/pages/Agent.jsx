@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { Tag, Popconfirm, Button, message } from 'antd'
+import { Tag, Popconfirm, Button, Modal, Form, Input } from 'antd'
 import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 import { agentAPI } from '../api/agent'
 import './Agent.css'
 
 const Agent = () => {
     const [allAgents, setAllAgents] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [form] = Form.useForm();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,27 +31,46 @@ const Agent = () => {
   const handleToggleStatus = async (agentId) => {
     try {
       await agentAPI.toggleStatus(agentId)
-      message.success('Agent status updated successfully')
+      toast.success('Agent status updated successfully', { position: 'top-center' })
       fetchAgents()
     } catch (error) {
-      message.error('Failed to update agent status')
+      toast.error('Failed to update agent status', { position: 'top-center' })
     }
   }
 
   const handleTogglePlayPermission = async (agentId) => {
     try {
       await agentAPI.togglePlayPermission(agentId)
-      message.success('Agent play permission updated successfully')
+      toast.success('Agent play permission updated successfully', { position: 'top-center' })
       fetchAgents()
     } catch (error) {
-      message.error('Failed to update agent play permission')
+      toast.error('Failed to update agent play permission', { position: 'top-center' })
+    }
+  }
+
+  const handleAddAgent = async (values) => {
+    try {
+      setLoading(true)
+      await agentAPI.create(values)
+      toast.success('Agent created successfully', { position: 'top-center' })
+      setIsModalVisible(false)
+      form.resetFields()
+      fetchAgents()
+    } catch (error) {
+      const errorMessage = error.message || 'Failed to create agent'
+      toast.error(errorMessage, { position: 'top-center' })
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
     <div style={{ width: '100vw', marginLeft: '-1.5rem', marginRight: '-1.5rem', padding: '0 1rem' }}>
-      <div className="section-header" style={{ padding: '0 0.5rem' }}>
+      <div className="section-header" style={{ padding: '0 0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h2>Agents Management</h2>
+        <Button type="primary" onClick={() => setIsModalVisible(true)}>
+          Add Agent
+        </Button>
       </div>
       
       {loading ? (
@@ -151,6 +173,58 @@ const Agent = () => {
 
         </>
       )}
+      
+      <Modal
+        title="Add New Agent"
+        open={isModalVisible}
+        onCancel={() => {
+          setIsModalVisible(false);
+          form.resetFields();
+        }}
+        footer={null}
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleAddAgent}
+        >
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: 'Please enter agent name' }]}
+          >
+            <Input placeholder="Enter agent name" />
+          </Form.Item>
+          
+          <Form.Item
+            name="username"
+            label="Username"
+            rules={[{ required: true, message: 'Please enter username' }]}
+          >
+            <Input placeholder="Enter username" />
+          </Form.Item>
+          
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[{ required: true, message: 'Please enter password' }]}
+          >
+            <Input.Password placeholder="Enter password" />
+          </Form.Item>
+          
+          <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
+            <Button onClick={() => {
+              setIsModalVisible(false);
+              form.resetFields();
+            }} style={{ marginRight: 8 }}>
+              Cancel
+            </Button>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              Add Agent
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   )
 }
