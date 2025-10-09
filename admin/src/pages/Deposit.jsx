@@ -61,7 +61,7 @@ const Deposit = () => {
       title: 'Username',
       key: 'username',
       width: 120,
-      render: (record) => record.player?.username || (record.agentId ? 'Agent' : 'N/A'),
+      render: (record) => record.player?.username || (record.agentId ? record.agent?.username : 'N/A'),
     },
     {
       title: 'Phone',

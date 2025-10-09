@@ -29,6 +29,7 @@ const Login = ({
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.player));
         localStorage.setItem("userType", "player");
+        toast.success("Login successful!");
         navigate("/");
         if (onLogin) onLogin();
         return;
@@ -42,6 +43,7 @@ const Login = ({
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.agent));
         localStorage.setItem("userType", "agent");
+        toast.success("Login successful!");
         navigate("/");
         if (onLogin) onLogin();
       } else {

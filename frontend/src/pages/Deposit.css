@@ -85,10 +85,76 @@
   margin-bottom: 16px;
 }
 
+.download-qr-btn {
+  background-color: var(--success-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: background-color 0.2s ease;
+}
+
+.download-qr-btn:hover {
+  background-color: #218838;
+}
+
+.upi-id-section {
+  margin: 16px 0;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.upi-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--heading-color);
+  margin: 0 0 8px 0;
+}
+
+.upi-id-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.upi-id {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-dark);
+  background-color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+  flex: 1;
+}
+
+.copy-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.copy-btn:hover {
+  background-color: #0056b3;
+}
+
 .upi-note {
   font-size: 14px;
   color: var(--text-light-grey);
   padding: 0 16px;
+  margin: 0;
 }
 
 /* Verification Form */

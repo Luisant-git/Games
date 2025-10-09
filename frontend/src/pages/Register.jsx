@@ -31,6 +31,7 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.player));
         localStorage.setItem("userType", "player");
+        toast.success("Registration successful!");
         navigate("/");
         if (onRegister) onRegister();
       } else {

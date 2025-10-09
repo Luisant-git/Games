@@ -61,6 +61,13 @@ export class DepositService {
             phone: true,
           },
         },
+        agent: {
+          select: {
+            id: true,
+            username: true,
+            name: true,
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',

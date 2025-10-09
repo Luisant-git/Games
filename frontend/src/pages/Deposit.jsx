@@ -152,6 +152,32 @@ const Deposit = () => {
           <h3 className="card-title">Deposit Funds</h3>
           <div className="qr-section">
             <img src={QRCODE} alt="Scan Me to Pay" className="qr-image" />
+            <button 
+              className="download-qr-btn"
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = QRCODE;
+                link.download = 'payment-qr-code.jpg';
+                link.click();
+              }}
+            >
+              📥 Download QR Code
+            </button>
+            <div className="upi-id-section">
+              <p className="upi-label">UPI ID:</p>
+              <div className="upi-id-container">
+                <span className="upi-id">gamehub@paytm</span>
+                <button 
+                  className="copy-btn"
+                  onClick={() => {
+                    navigator.clipboard.writeText('gamehub@paytm');
+                    toast.success('UPI ID copied to clipboard!');
+                  }}
+                >
+                  📋 Copy
+                </button>
+              </div>
+            </div>
             <p className="upi-note">
               Scan QR for UPI payments or use bank transfer details below
             </p>
@@ -298,7 +324,7 @@ const Deposit = () => {
 
             {status === "success" && (
               <p className="status success">
-                ✅ Payment verified successfully!
+                ✅ Payment Request has been received, <span className="status error">please wait for approval</span>
               </p>
             )}
             {status === "error" && (
