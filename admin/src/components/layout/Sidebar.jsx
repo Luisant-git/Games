@@ -50,7 +50,8 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
     label: "Payments",
     children: [
       { key: "/deposit",  icon: <MoneyCollectOutlined />, label: "Deposit" },     
-      { key: "/withdraw", icon: <ExportOutlined />,       label: "Withdraw" },   
+      { key: "/withdraw", icon: <ExportOutlined />,       label: "Withdraw" },
+      { key: "/payment-settings", icon: <ClockCircleOutlined />, label: "Settings" },   
     ],
   },
   {

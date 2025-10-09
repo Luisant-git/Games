@@ -144,6 +144,7 @@ const Deposit = () => {
                 size="small"
                 id={`ticket-${record.id}`}
                 defaultValue={record.amount}
+                disabled
               />
               <Button
                 type="primary"

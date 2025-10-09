@@ -22,6 +22,7 @@ import './App.css'
 import GameHistory from './pages/GameHistory'
 import Result from './pages/Result'
 import HistoryShowTime from './pages/HistoryShowTime'
+import PaymentSettings from './pages/PaymentSettings'
 
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
             <Route path="settings" element={<Settings />} />
             <Route path="deposit" element={<Deposit />} />
             <Route path="withdraw" element={<Withdraw />} />
+            <Route path="payment-settings" element={<PaymentSettings />} />
             <Route path='results' element={<Result />}></Route>
             <Route path='game-history' element={<GameHistory />}></Route>
             <Route path='history-showtime' element={<HistoryShowTime />}></Route>

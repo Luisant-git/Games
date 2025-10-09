@@ -125,7 +125,7 @@ model GamePlay {
   gameId        Int
   board         String
   betType       BetType
-  numbers       String      // Store as string or JSON
+  numbers       String      
   qty           Int
   amount        Float
   winAmount     Float?
@@ -286,4 +286,16 @@ model DashBoard {
   totalBetAmount       Int    
   totalAgentCommission Int
   totalProfit          Int
+}
+
+model Settings {
+  id                    Int      @id @default(autoincrement())
+  depositStartTime      String   
+  depositEndTime        String   
+  withdrawStartTime     String   
+  withdrawEndTime       String   
+  minimumDepositAmount  Float
+  minimumWithdrawAmount Float
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }

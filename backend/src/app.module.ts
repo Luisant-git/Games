@@ -17,9 +17,10 @@ import { CommissionModule } from './commission/commission.module';
 import { SupportModule } from './support/support.module';
 import { ResultModule } from './result/result.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
-  imports: [AuthModule, GamesModule, AgentModule, PlayerModule, CategoryModule, TimingModule, UploadModule, DepositModule, WithdrawModule, GameHistoryModule, CommissionModule, SupportModule, ResultModule, DashboardModule],
+  imports: [AuthModule, GamesModule, AgentModule, PlayerModule, CategoryModule, TimingModule, UploadModule, DepositModule, WithdrawModule, GameHistoryModule, CommissionModule, SupportModule, ResultModule, DashboardModule, SettingsModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })

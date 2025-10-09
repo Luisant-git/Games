@@ -5,14 +5,31 @@ import { UpdateWithdrawDto } from './dto/update-withdraw.dto';
 import { UpdateWithdrawStatusDto } from './dto/update-withdraw-status.dto';
 import { WithdrawStatus } from './entities/withdraw.entity';
 import { WithdrawValidation } from './withdraw.validation';
+import { SettingsService } from '../settings/settings.service';
 
 @Injectable()
 export class WithdrawService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private settingsService: SettingsService
+  ) {}
 
   async create(createWithdrawDto: CreateWithdrawDto, userId: number, userType: string = 'player') {
     if (!userId) {
       throw new BadRequestException('User ID is required');
+    }
+
+    // Validate withdraw time
+    const isTimeValid = await this.settingsService.validateWithdrawTime();
+    if (!isTimeValid) {
+      throw new BadRequestException('Withdrawals are not allowed at this time');
+    }
+
+    // Validate minimum amount
+    const isAmountValid = await this.settingsService.validateWithdrawAmount(createWithdrawDto.amount);
+    if (!isAmountValid) {
+      const settings = await this.settingsService.getSettings();
+      throw new BadRequestException(`Minimum withdraw amount is ${settings.minimumWithdrawAmount}`);
     }
 
     WithdrawValidation.validateTransferDetails(createWithdrawDto.transferType, createWithdrawDto.transferDetails);

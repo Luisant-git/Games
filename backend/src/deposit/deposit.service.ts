@@ -1,16 +1,33 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { CreateDepositDto } from './dto/create-deposit.dto';
 import { UpdateDepositDto } from './dto/update-deposit.dto';
 import { UpdateDepositStatusDto } from './dto/update-deposit-status.dto';
 import { DepositStatus } from './entities/deposit.entity';
 import { DepositValidation } from './deposit.validation';
+import { SettingsService } from '../settings/settings.service';
 
 @Injectable()
 export class DepositService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private settingsService: SettingsService
+  ) {}
 
   async create(createDepositDto: CreateDepositDto, userId: number, userType: string = 'player') {
+    // Validate deposit time
+    const isTimeValid = await this.settingsService.validateDepositTime();
+    if (!isTimeValid) {
+      throw new BadRequestException('Deposits are not allowed at this time');
+    }
+
+    // Validate minimum amount
+    const isAmountValid = await this.settingsService.validateDepositAmount(createDepositDto.amount);
+    if (!isAmountValid) {
+      const settings = await this.settingsService.getSettings();
+      throw new BadRequestException(`Minimum deposit amount is ${settings.minimumDepositAmount}`);
+    }
+
     DepositValidation.validateTransferDetails(createDepositDto.transferType, createDepositDto.transferDetails);
 
     const depositData: any = {
