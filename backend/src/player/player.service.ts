@@ -20,6 +20,11 @@ export class PlayerService {
     }
 
     if (data.phone) {
+      // Validate phone number format (10 digits)
+      if (!/^\d{10}$/.test(data.phone)) {
+        throw new BadRequestException('Phone number must be exactly 10 digits');
+      }
+      
       const existingPhone = await this.prisma.player.findUnique({
         where: { phone: data.phone },
       });

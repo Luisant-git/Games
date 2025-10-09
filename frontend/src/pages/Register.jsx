@@ -14,7 +14,7 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
     username: "",
     phone: "",
     password: "",
-    referalCode: "", // keeping your existing key
+    referalCode: "", 
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -23,6 +23,13 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate phone number
+    if (!/^\d{10}$/.test(formData.phone)) {
+      toast.error("Phone number must be exactly 10 digits");
+      return;
+    }
+    
     setIsLoading(true);
     try {
       const response = await registerPlayer(formData);
@@ -107,12 +114,16 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
           />
           <input
             type="tel"
-            placeholder="Phone"
+            placeholder="Phone (10 digits)"
             value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            onChange={(e) => {
+              const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+              setFormData({ ...formData, phone: value });
+            }}
             required
             aria-label="Phone"
             autoComplete="tel"
+            maxLength="10"
           />
           <div className="password-input">
             <input
