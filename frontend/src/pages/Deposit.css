@@ -157,6 +157,26 @@
   margin: 0;
 }
 
+/* Deposit Info Section */
+.deposit-info {
+  background-color: #e8f5e8;
+  border: 1px solid #c3e6c3;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.deposit-info p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: var(--text-dark);
+}
+
+.deposit-info strong {
+  color: var(--heading-color);
+  font-weight: 600;
+}
+
 /* Verification Form */
 .form-group {
   margin-bottom: 16px;

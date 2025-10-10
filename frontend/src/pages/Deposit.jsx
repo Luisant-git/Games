@@ -4,6 +4,7 @@ import QRCODE from "../assets/scan_me_qr_code.jpg";
 import { getPlayerWallet, getAgentWallet } from "../api/wallet";
 import { createDeposit, getDepositHistory } from "../api/deposit";
 import { uploadFile } from "../api/upload";
+import { getSettings } from "../api/settings";
 import toast from "react-hot-toast";
 
 const Deposit = () => {
@@ -13,6 +14,7 @@ const Deposit = () => {
   const [transferType, setTransferType] = useState("UPI_TRANSFER");
   const [amount, setAmount] = useState("");
   const [depositHistory, setDepositHistory] = useState([]);
+  const [depositSettings, setDepositSettings] = useState(null);
 
   // Bank Transfer fields
   const [accountNumber, setAccountNumber] = useState("");
@@ -31,6 +33,7 @@ const Deposit = () => {
   useEffect(() => {
     fetchBalance();
     getAllDepositHistory();
+    fetchDepositSettings();
   }, []);
 
   const fetchBalance = async () => {
@@ -136,6 +139,26 @@ const Deposit = () => {
     }
   };
 
+  const fetchDepositSettings = async () => {
+    try {
+      const response = await getSettings();
+      if (response.success) {
+        setDepositSettings(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching deposit settings:", error);
+    }
+  };
+
+  const formatTimeToAMPM = (time) => {
+    if (!time) return '';
+    const [hours, minutes] = time.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${ampm}`;
+  };
+
   return (
     <div className="deposit-page">
       <div className="app-header">
@@ -150,6 +173,12 @@ const Deposit = () => {
 
         <div className="card deposit-actions-card">
           <h3 className="card-title">Deposit Funds</h3>
+          {depositSettings && (
+            <div className="deposit-info">
+              <p><strong>Deposit Timing:</strong> {formatTimeToAMPM(depositSettings.depositStartTime)} - {formatTimeToAMPM(depositSettings.depositEndTime)}</p>
+              <p><strong>Minimum Amount:</strong> ₹{depositSettings.minimumDepositAmount}</p>
+            </div>
+          )}
           <div className="qr-section">
             <img src={QRCODE} alt="Scan Me to Pay" className="qr-image" />
             <button 
@@ -293,9 +322,10 @@ const Deposit = () => {
               <label>Amount (₹)</label>
               <input
                 type="number"
-                placeholder="Enter amount deposited"
+                placeholder={`Enter amount deposited (Min: ₹${depositSettings?.minimumDepositAmount || 0})`}
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
+                min={depositSettings?.minimumDepositAmount || 0}
                 required
               />
             </div>

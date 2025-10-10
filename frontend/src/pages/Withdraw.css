@@ -62,6 +62,26 @@
   color: var(--success-color);
 }
 
+/* Withdraw Info Section */
+.withdraw-info {
+  background-color: #e8f5e8;
+  border: 1px solid #c3e6c3;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.withdraw-info p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: var(--text-dark);
+}
+
+.withdraw-info strong {
+  color: var(--heading-color);
+  font-weight: 600;
+}
+
 /* Withdraw Form */
 .form-group {
   margin-bottom: 16px;

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getPlayerWallet, getAgentWallet } from "../api/wallet";
 import { createWithdraw, getWithdrawHistory } from "../api/withdraw";
 import { uploadFile } from "../api/upload";
+import { getSettings } from "../api/settings";
 import toast from "react-hot-toast";
 import "./Withdraw.css";
 
@@ -31,6 +32,7 @@ const Withdraw = () => {
   const [transferType, setTransferType] = useState("UPI_TRANSFER");
   const [amount, setAmount] = useState("");
   const [withdrawHistory, setWithdrawHistory] = useState([]);
+  const [withdrawSettings, setWithdrawSettings] = useState(null);
 
   // Bank Transfer fields
   const [accountNumber, setAccountNumber] = useState("");
@@ -47,6 +49,7 @@ const Withdraw = () => {
   useEffect(() => {
     fetchBalance();
     getAllWithdrawHistory();
+    fetchWithdrawSettings();
   }, []);
 
   const fetchBalance = async () => {
@@ -166,6 +169,26 @@ const Withdraw = () => {
     }
   };
 
+  const fetchWithdrawSettings = async () => {
+    try {
+      const response = await getSettings();
+      if (response.success) {
+        setWithdrawSettings(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching withdraw settings:", error);
+    }
+  };
+
+  const formatTimeToAMPM = (time) => {
+    if (!time) return '';
+    const [hours, minutes] = time.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${ampm}`;
+  };
+
   return (
     <div className="withdraw-page">
       <div className="app-header">
@@ -180,6 +203,12 @@ const Withdraw = () => {
 
         <div className="card withdraw-form-card">
           <h3 className="card-title">Withdraw Funds</h3>
+          {withdrawSettings && (
+            <div className="withdraw-info">
+              <p><strong>Withdraw Timing:</strong> {formatTimeToAMPM(withdrawSettings.withdrawStartTime)} - {formatTimeToAMPM(withdrawSettings.withdrawEndTime)}</p>
+              <p><strong>Minimum Amount:</strong> ₹{withdrawSettings.minimumWithdrawAmount}</p>
+            </div>
+          )}
 
           <form className="withdraw-form" onSubmit={handleWithdraw}>
             <div className="form-group">
@@ -269,9 +298,10 @@ const Withdraw = () => {
               <label>Amount (₹)</label>
               <input
                 type="number"
-                placeholder="Enter withdrawal amount"
+                placeholder={`Enter withdrawal amount (Min: ₹${withdrawSettings?.minimumWithdrawAmount || 0})`}
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
+                min={withdrawSettings?.minimumWithdrawAmount || 0}
                 required
               />
             </div>

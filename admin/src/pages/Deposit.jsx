@@ -32,7 +32,7 @@ const Deposit = () => {
     try {
       const response = await updateDepositStatus(id, ticket);
       if (response.success) {
-        const status = ticket > 0 ? 'COMPLETED' : 'MISMATCH';
+        const status = ticket === 0 ? 'MISMATCH' : 'COMPLETED';
         const updatedData = depositData.map((deposit) =>
           deposit.id === id ? { ...deposit, status, ticket } : deposit
         );
@@ -134,32 +134,45 @@ const Deposit = () => {
       render: (ticket, record) => {
         if (record.status === 'PENDING') {
           return (
-            <Input.Group compact style={{ display: 'flex', width: '100%' }}>
-              <Input
-                style={{ flex: 1, minWidth: '80px' }}
-                placeholder="0"
-                type="number"
-                min="0"
-                step="1"
-                size="small"
-                id={`ticket-${record.id}`}
-                defaultValue={record.amount}
-                disabled
-              />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <Input.Group compact style={{ display: 'flex', width: '100%' }}>
+                <Input
+                  style={{ flex: 1, minWidth: '80px' }}
+                  placeholder="Amount"
+                  type="number"
+                  min="1"
+                  step="1"
+                  size="small"
+                  id={`ticket-${record.id}`}
+                  defaultValue={record.amount}
+                  disabled
+                />
+                <Button
+                  type="primary"
+                  size="small"
+                  onClick={() => {
+                    const inputValue = document.getElementById(`ticket-${record.id}`).value;
+                    const ticketValue = parseInt(inputValue);
+                    if (ticketValue > 0 && Number.isInteger(ticketValue)) {
+                      updatedDepositStatus(record.id, ticketValue);
+                    }
+                  }}
+                >
+                  ADD
+                </Button>
+              </Input.Group>
               <Button
-                type="primary"
+                type="default"
+                danger
                 size="small"
+                style={{ width: '100%' }}
                 onClick={() => {
-                  const inputValue = document.getElementById(`ticket-${record.id}`).value;
-                  const ticketValue = inputValue === '' ? 0 : parseInt(inputValue);
-                  if (ticketValue >= 0 && Number.isInteger(ticketValue)) {
-                    updatedDepositStatus(record.id, ticketValue);
-                  }
+                  updatedDepositStatus(record.id, 0);
                 }}
               >
-                ADD
+                MISMATCH
               </Button>
-            </Input.Group>
+            </div>
           );
         }
         return ticket !== null ? ticket : 'N/A';
