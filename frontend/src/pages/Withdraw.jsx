@@ -374,6 +374,11 @@ const Withdraw = () => {
                         </p>
                       </>
                     )}
+                    {withdraw.referenceNumber && (
+                      <p>
+                        <strong>Reference:</strong> {withdraw.referenceNumber}
+                      </p>
+                    )}
                     <p>
                       <strong>Status:</strong>{" "}
                       <span

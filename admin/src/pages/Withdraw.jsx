@@ -33,7 +33,7 @@ const Withdraw = () => {
       if (response.success) {
         const status = ticket === 0 ? 'MISMATCH' : 'COMPLETED';
         const updatedData = withdrawData.map((withdraw) =>
-          withdraw.id === id ? { ...withdraw, status, ticket } : withdraw
+          withdraw.id === id ? { ...withdraw, status, ticket, referenceNumber: response.data?.referenceNumber } : withdraw
         );
         setWithdrawData(updatedData);
       }
@@ -176,6 +176,13 @@ const Withdraw = () => {
         }
         return ticket !== null ? `₹${ticket}` : 'N/A';
       },
+    },
+    {
+      title: 'Reference Number',
+      dataIndex: 'referenceNumber',
+      key: 'referenceNumber',
+      width: 150,
+      render: (referenceNumber) => referenceNumber || 'N/A',
     },
     {
       title: 'Status',

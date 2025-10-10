@@ -231,8 +231,28 @@ export class WithdrawService {
       updateData.ticket = updateWithdrawStatusDto.ticket;
     }
 
-    // Deduct amount from wallet when status changes to COMPLETED
+    // Generate reference number and deduct amount from wallet when status changes to COMPLETED
     if (updateWithdrawStatusDto.status === 'COMPLETED') {
+      // Generate unique reference number: WD + timestamp + random 4 digits
+      let referenceNumber;
+      let isUnique = false;
+      
+      while (!isUnique) {
+        const timestamp = Date.now().toString().slice(-8);
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        referenceNumber = `WD${timestamp}${randomNum}`;
+        
+        // Check if reference number already exists
+        const existingWithdraw = await this.prisma.withdraw.findUnique({
+          where: { referenceNumber }
+        });
+        
+        if (!existingWithdraw) {
+          isUnique = true;
+        }
+      }
+      
+      updateData.referenceNumber = referenceNumber;
       if (withdraw.playerId) {
         const playerWallet = await this.prisma.playerWallet.findUnique({
           where: { playerId: withdraw.playerId },

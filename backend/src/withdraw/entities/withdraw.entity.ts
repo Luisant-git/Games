@@ -39,6 +39,9 @@ export class Withdraw {
   @ApiProperty({ example: 123, description: 'Withdraw ticket number' })
   ticket?: number;
 
+  @ApiProperty({ example: 'WD1234567890', description: 'Withdraw reference number' })
+  referenceNumber?: string;
+
   @ApiProperty()
   createdAt: Date;
 
