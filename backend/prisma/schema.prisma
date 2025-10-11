@@ -56,6 +56,7 @@ model Player {
   withdraws   Withdraw[]
   supportTickets Support[]
   referralBonuses ReferralBonus[] @relation("ReferrerBonuses")
+  bankAccounts BankAccount[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }
@@ -75,6 +76,7 @@ model Agent {
   deposits  Deposit[]
   withdraws Withdraw[]
   supportTickets Support[]
+  bankAccounts BankAccount[]
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 }
@@ -288,6 +290,21 @@ model DashBoard {
   totalBetAmount       Int    
   totalAgentCommission Int
   totalProfit          Int
+}
+
+model BankAccount {
+  id                Int      @id @default(autoincrement())
+  playerId          Int?
+  agentId           Int?
+  accountNumber     String
+  ifscCode          String
+  bankName          String
+  accountHolderName String
+  isDefault         Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  player            Player?  @relation(fields: [playerId], references: [id])
+  agent             Agent?   @relation(fields: [agentId], references: [id])
 }
 
 model Settings {

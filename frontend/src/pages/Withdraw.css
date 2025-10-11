@@ -226,6 +226,42 @@
   text-transform: uppercase;
 }
 
+/* Bank Account Management Buttons */
+.add-account-btn {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid var(--success-color);
+  border-radius: 8px;
+  background-color: transparent;
+  color: var(--success-color);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-account-btn:hover {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.save-account-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--primary-color);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-account-btn:hover {
+  background-color: var(--primary-dark);
+}
+
 /* Responsive adjustments */
 @media (max-width: 380px) {
   .history-details {

@@ -3,6 +3,7 @@ import { getPlayerWallet, getAgentWallet } from "../api/wallet";
 import { createWithdraw, getWithdrawHistory } from "../api/withdraw";
 import { uploadFile } from "../api/upload";
 import { getSettings } from "../api/settings";
+import { getBankAccounts, createBankAccount, setDefaultBankAccount, deleteBankAccount } from "../api/bankAccount";
 import toast from "react-hot-toast";
 import "./Withdraw.css";
 
@@ -33,6 +34,9 @@ const Withdraw = () => {
   const [amount, setAmount] = useState("");
   const [withdrawHistory, setWithdrawHistory] = useState([]);
   const [withdrawSettings, setWithdrawSettings] = useState(null);
+  const [bankAccounts, setBankAccounts] = useState([]);
+  const [selectedBankAccount, setSelectedBankAccount] = useState("");
+  const [showAddBankForm, setShowAddBankForm] = useState(false);
 
   // Bank Transfer fields
   const [accountNumber, setAccountNumber] = useState("");
@@ -50,7 +54,17 @@ const Withdraw = () => {
     fetchBalance();
     getAllWithdrawHistory();
     fetchWithdrawSettings();
+    fetchBankAccounts();
   }, []);
+
+  useEffect(() => {
+    if (transferType === "BANK_TRANSFER" && bankAccounts.length > 0) {
+      const defaultAccount = bankAccounts.find(acc => acc.isDefault);
+      if (defaultAccount) {
+        setSelectedBankAccount(defaultAccount.id.toString());
+      }
+    }
+  }, [transferType, bankAccounts]);
 
   const fetchBalance = async () => {
     try {
@@ -99,16 +113,31 @@ const Withdraw = () => {
       let transferDetails = {};
 
       if (transferType === "BANK_TRANSFER") {
-        if (!accountNumber || !ifscCode || !bankName || !accountHolderName) {
-          toast.error("Please fill all bank details");
+        if (!selectedBankAccount && !showAddBankForm) {
+          toast.error("Please select a bank account");
           return;
         }
-        transferDetails = {
-          accountNumber,
-          ifscCode,
-          bankName,
-          accountHolderName,
-        };
+        
+        if (selectedBankAccount) {
+          const selectedAccount = bankAccounts.find(acc => acc.id.toString() === selectedBankAccount);
+          transferDetails = {
+            accountNumber: selectedAccount.accountNumber,
+            ifscCode: selectedAccount.ifscCode,
+            bankName: selectedAccount.bankName,
+            accountHolderName: selectedAccount.accountHolderName,
+          };
+        } else {
+          if (!accountNumber || !ifscCode || !bankName || !accountHolderName) {
+            toast.error("Please fill all bank details");
+            return;
+          }
+          transferDetails = {
+            accountNumber,
+            ifscCode,
+            bankName,
+            accountHolderName,
+          };
+        }
       } else {
         if (!upiId || !upiAppName) {
           toast.error("Please fill all UPI details");
@@ -147,10 +176,9 @@ const Withdraw = () => {
 
   const resetForm = () => {
     setAmount("");
-    setAccountNumber("");
-    setIfscCode("");
-    setBankName("");
-    setAccountHolderName("");
+    setSelectedBankAccount("");
+    setShowAddBankForm(false);
+    resetBankForm();
     setUpiId("");
     setUpiAppName("");
     setScreenshotFile(null);
@@ -178,6 +206,55 @@ const Withdraw = () => {
     } catch (error) {
       console.error("Error fetching withdraw settings:", error);
     }
+  };
+
+  const fetchBankAccounts = async () => {
+    try {
+      const response = await getBankAccounts();
+      if (response.success) {
+        setBankAccounts(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching bank accounts:", error);
+    }
+  };
+
+  const handleAddBankAccount = async (e) => {
+    e.preventDefault();
+    try {
+      if (!accountNumber || !ifscCode || !bankName || !accountHolderName) {
+        toast.error("Please fill all bank details");
+        return;
+      }
+
+      const bankAccountData = {
+        accountNumber,
+        ifscCode,
+        bankName,
+        accountHolderName,
+        isDefault: bankAccounts.length === 0,
+      };
+
+      const response = await createBankAccount(bankAccountData);
+      if (response.success) {
+        toast.success("Bank account added successfully!");
+        setShowAddBankForm(false);
+        resetBankForm();
+        fetchBankAccounts();
+      } else {
+        toast.error(response.message || "Failed to add bank account");
+      }
+    } catch (error) {
+      console.error("Error adding bank account:", error);
+      toast.error("Failed to add bank account");
+    }
+  };
+
+  const resetBankForm = () => {
+    setAccountNumber("");
+    setIfscCode("");
+    setBankName("");
+    setAccountHolderName("");
   };
 
   const formatTimeToAMPM = (time) => {
@@ -225,46 +302,95 @@ const Withdraw = () => {
 
             {transferType === "BANK_TRANSFER" ? (
               <>
+                {bankAccounts.length > 0 && (
+                  <div className="form-group">
+                    <label>Select Bank Account</label>
+                    <select
+                      value={selectedBankAccount}
+                      onChange={(e) => {
+                        setSelectedBankAccount(e.target.value);
+                        if (e.target.value) {
+                          setShowAddBankForm(false);
+                        }
+                      }}
+                      className="transfer-type-select"
+                    >
+                      <option value="">Select existing account</option>
+                      {bankAccounts.map((account) => (
+                        <option key={account.id} value={account.id}>
+                          {account.bankName} - ****{account.accountNumber.slice(-4)} {account.isDefault ? '(Default)' : ''}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                
                 <div className="form-group">
-                  <label>Account Number</label>
-                  <input
-                    type="text"
-                    placeholder="Enter bank account number"
-                    value={accountNumber}
-                    onChange={(e) => setAccountNumber(e.target.value)}
-                    required
-                  />
+                  <button
+                    type="button"
+                    className="add-account-btn"
+                    onClick={() => {
+                      setShowAddBankForm(!showAddBankForm);
+                      setSelectedBankAccount("");
+                    }}
+                  >
+                    {showAddBankForm ? "Cancel" : "Add New Bank Account"}
+                  </button>
                 </div>
-                <div className="form-group">
-                  <label>IFSC Code</label>
-                  <input
-                    type="text"
-                    placeholder="Enter IFSC code"
-                    value={ifscCode}
-                    onChange={(e) => setIfscCode(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Bank Name</label>
-                  <input
-                    type="text"
-                    placeholder="Enter bank name"
-                    value={bankName}
-                    onChange={(e) => setBankName(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Account Holder Name</label>
-                  <input
-                    type="text"
-                    placeholder="Enter account holder name"
-                    value={accountHolderName}
-                    onChange={(e) => setAccountHolderName(e.target.value)}
-                    required
-                  />
-                </div>
+
+                {showAddBankForm && (
+                  <>
+                    <div className="form-group">
+                      <label>Account Number</label>
+                      <input
+                        type="text"
+                        placeholder="Enter bank account number"
+                        value={accountNumber}
+                        onChange={(e) => setAccountNumber(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>IFSC Code</label>
+                      <input
+                        type="text"
+                        placeholder="Enter IFSC code"
+                        value={ifscCode}
+                        onChange={(e) => setIfscCode(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Bank Name</label>
+                      <input
+                        type="text"
+                        placeholder="Enter bank name"
+                        value={bankName}
+                        onChange={(e) => setBankName(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Account Holder Name</label>
+                      <input
+                        type="text"
+                        placeholder="Enter account holder name"
+                        value={accountHolderName}
+                        onChange={(e) => setAccountHolderName(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <button
+                        type="button"
+                        className="save-account-btn"
+                        onClick={handleAddBankAccount}
+                      >
+                        Save Bank Account
+                      </button>
+                    </div>
+                  </>
+                )}
               </>
             ) : (
               <>
@@ -319,7 +445,7 @@ const Withdraw = () => {
             <button
               type="submit"
               className="withdraw-button"
-              disabled={isProcessing || uploading}
+              disabled={isProcessing || uploading || (transferType === "BANK_TRANSFER" && !selectedBankAccount && !showAddBankForm)}
             >
               {uploading
                 ? "Uploading..."
