@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { playGame, getPlayerGameHistory, playAgentGame, getAgentGameHistory } from "../api/games";
+import { getPlayerWallet, getAgentWallet } from "../api/wallet";
 import "./Game.css";
 
 const Game = ({ category, games }) => {
@@ -16,6 +17,7 @@ const Game = ({ category, games }) => {
   const [historyBets, setHistoryBets] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [walletBalance, setWalletBalance] = useState(0);
   console.log('GAME GAMES', games);
   console.log('view bets', historyBets);
   
@@ -32,6 +34,22 @@ const Game = ({ category, games }) => {
       setSelectedShow(category.timing[0].showTimes[0]);
     }
   }, [category]);
+
+  useEffect(() => {
+    const fetchWalletBalance = async () => {
+      try {
+        const userType = localStorage.getItem('userType');
+        const response = userType === 'agent' ? await getAgentWallet() : await getPlayerWallet();
+        if (response.ok) {
+          const data = await response.json();
+          setWalletBalance(data.balance || 0);
+        }
+      } catch (error) {
+        console.error('Error fetching wallet balance:', error);
+      }
+    };
+    fetchWalletBalance();
+  }, []);
 
   useEffect(() => {
     if (!selectedShow) return;
@@ -77,13 +95,22 @@ const Game = ({ category, games }) => {
       return;
     }
     
+    const betAmount = game.ticket * currentQty;
+    const currentTotalAmount = bets.reduce((sum, b) => sum + b.amount, 0);
+    const newTotalAmount = currentTotalAmount + betAmount;
+    
+    if (newTotalAmount > walletBalance) {
+      toast.error(`Insufficient balance! Available: ₹${walletBalance}, Required: ₹${newTotalAmount}`);
+      return;
+    }
+    
     const newBet = {
       gameId: game.id,
       board: game.board,
       betType: game.betType,
       numbers,
       qty: currentQty,
-      amount: game.ticket * currentQty,
+      amount: betAmount,
       winAmount: game.winningAmount,
     };
     setBets([...bets, newBet]);
