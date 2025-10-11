@@ -127,6 +127,23 @@ const Deposit = () => {
       },
     },
     {
+      title: 'Transaction Slip',
+      dataIndex: 'transactionSlip',
+      key: 'transactionSlip',
+      width: 120,
+      render: (transactionSlip) => {
+        if (transactionSlip) {
+          const imageUrl = transactionSlip.startsWith('http') ? transactionSlip : `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4020'}/uploads/${transactionSlip}`;
+          return (
+            <a href={imageUrl} target="_blank" rel="noopener noreferrer">
+              View Slip
+            </a>
+          );
+        }
+        return 'No Slip';
+      },
+    },
+    {
       title: 'Ticket',
       dataIndex: 'ticket',
       key: 'ticket',

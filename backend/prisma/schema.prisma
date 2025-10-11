@@ -193,6 +193,7 @@ model Deposit {
   amount          Float
   ticket          Int?
   screenshot      String?
+  transactionSlip String?
   status          DepositStatus
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt

@@ -39,6 +39,9 @@ export class Deposit {
   @ApiProperty({ example: 123, description: 'Deposit ticket number' })
   ticket?: number;
 
+  @ApiProperty({ example: 'transaction_slip.jpg', description: 'Transaction slip for bank transfers' })
+  transactionSlip?: string;
+
   @ApiProperty()
   createdAt: Date;
 

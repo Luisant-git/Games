@@ -28,6 +28,7 @@ const Deposit = () => {
   const [upiTransactionId, setUpiTransactionId] = useState("");
   const [upiAppName, setUpiAppName] = useState("");
   const [screenshotFile, setScreenshotFile] = useState(null);
+  const [transactionSlipFile, setTransactionSlipFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -54,19 +55,32 @@ const Deposit = () => {
     setStatus(null);
 
     try {
-      let screenshotUrl = null;
+      if (transferType === "BANK_TRANSFER" && !transactionSlipFile) {
+        toast.error("Transaction slip is required for bank transfers");
+        setIsVerifying(false);
+        return;
+      }
 
-      if (screenshotFile) {
-        setUploading(true);
-        try {
+      let screenshotUrl = null;
+      let transactionSlipUrl = null;
+
+      setUploading(true);
+      
+      try {
+        if (screenshotFile) {
           const uploadResponse = await uploadFile(screenshotFile);
           screenshotUrl = uploadResponse.filename;
-        } catch (uploadError) {
-          toast.error("Failed to upload screenshot");
-          return;
-        } finally {
-          setUploading(false);
         }
+        
+        if (transactionSlipFile) {
+          const uploadResponse = await uploadFile(transactionSlipFile);
+          transactionSlipUrl = uploadResponse.filename;
+        }
+      } catch (uploadError) {
+        toast.error("Failed to upload files");
+        return;
+      } finally {
+        setUploading(false);
       }
       let transferDetails = {};
 
@@ -91,6 +105,7 @@ const Deposit = () => {
         transferDetails,
         amount: parseFloat(amount),
         ...(screenshotUrl && { screenshot: screenshotUrl }),
+        ...(transactionSlipUrl && { transactionSlip: transactionSlipUrl }),
       };
 
       const response = await createDeposit(data);
@@ -124,6 +139,7 @@ const Deposit = () => {
     setUpiTransactionId("");
     setUpiAppName("");
     setScreenshotFile(null);
+    setTransactionSlipFile(null);
   };
 
   const getAllDepositHistory = async () => {
@@ -270,14 +286,24 @@ const Deposit = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Transaction ID</label>
+                  <label>Transaction ID / Reference Number</label>
                   <input
                     type="text"
-                    placeholder="Enter transaction ID"
+                    placeholder="Enter bank transaction ID or reference number"
                     value={bankTransactionId}
                     onChange={(e) => setBankTransactionId(e.target.value)}
                     required
                   />
+                </div>
+                <div className="form-group">
+                  <label>Transaction Slip (Required)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setTransactionSlipFile(e.target.files[0])}
+                    required
+                  />
+                  {transactionSlipFile && <p>Selected: {transactionSlipFile.name}</p>}
                 </div>
               </>
             ) : (
