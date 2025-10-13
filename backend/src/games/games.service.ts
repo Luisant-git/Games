@@ -90,8 +90,14 @@ export class GamesService {
       throw new BadRequestException('Insufficient balance');
     }
 
-    // Calculate agent commission based on individual game commission rates
+    // Calculate agent commission based on individual game commission rates (flat rates)
     let agentCommission = 0;
+    console.log(`Player agent info:`, { 
+      playerId: player.id,
+      agentId: player.agentId, 
+      hasAgent: !!player.agent,
+      agentDetails: player.agent ? { id: player.agent.id, username: player.agent.username } : null
+    });
     if (player.agent) {
       for (const game of gameplay) {
         const commission = await this.prisma.agentCommission.findUnique({
@@ -104,15 +110,17 @@ export class GamesService {
         });
         const commissionRate = commission?.commissionRate || 0;
         const gameCommission = commissionRate;
-        console.log(`Game ${game.gameId}: Amount ${game.amount}, Commission Rate ₹${commissionRate}, Commission ${gameCommission}`);
+        console.log(`Game ${game.gameId}: Amount ${game.amount}, Flat Commission Rate ₹${commissionRate}, Commission ₹${gameCommission}`);
         agentCommission += gameCommission;
       }
+      console.log(`Total games played: ${gameplay.length}`);
       console.log(`Total agent commission: ₹${agentCommission}`);
     }
 
     const gameHistory = await this.prisma.gameHistory.create({
       data: {
         playerId,
+        agentId: player.agentId,
         categoryId,
         showtimeId,
         showTime: new Date(showTime),
@@ -168,7 +176,38 @@ export class GamesService {
     });
 
     if (player.agent && agentCommission > 0) {
-      await this.commissionService.calculatePlayerReferralCommission(playerId, agentCommission);
+      console.log(`Processing commission for agent ${player.agentId}, total: ₹${agentCommission}`);
+      // Update specific commission records for games played
+      for (const game of gameplay) {
+        const commission = await this.prisma.agentCommission.findUnique({
+          where: {
+            agentId_gameId: {
+              agentId: player.agentId as number,
+              gameId: game.gameId,
+            },
+          },
+        });
+        console.log(`Commission record for game ${game.gameId}:`, commission);
+        if (commission && commission.commissionRate > 0) {
+          const updated = await this.prisma.agentCommission.update({
+            where: { id: commission.id },
+            data: { 
+              amount: { increment: commission.commissionRate },
+              fromPlayerId: playerId
+            }
+          });
+          console.log(`Updated commission record:`, updated);
+        }
+      }
+      
+      // Add to agent wallet
+      await this.prisma.agentWallet.update({
+        where: { agentId: player.agentId as number },
+        data: { balance: { increment: agentCommission } }
+      });
+      console.log(`Added ₹${agentCommission} to agent wallet`);
+    } else {
+      console.log(`No commission processing: hasAgent=${!!player.agent}, agentId=${player.agentId}, commission=${agentCommission}`);
     }
 
     return {

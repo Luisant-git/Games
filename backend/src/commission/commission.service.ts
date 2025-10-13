@@ -11,25 +11,44 @@ export class CommissionService {
       include: { agent: true }
     });
 
-    if (!player?.agent || agentCommission <= 0) return;
+    console.log(`Commission Service - Player ID: ${playerId}, Agent Commission: ₹${agentCommission}`);
+
+    if (!player?.agent || agentCommission <= 0) {
+      console.log('No agent or zero commission, skipping');
+      return;
+    }
 
     if (player.agentId) {
-      await this.prisma.agentCommission.updateMany({
-        where: {
-          agentId: player.agentId,
-          commissionType: 'PLAYER_REFERRAL'
-        },
-        data: {
-          amount: { increment: agentCommission },
-          fromPlayerId: playerId
-        }
+      const agentId = player.agentId;
+      console.log(`Adding ₹${agentCommission} to agent ${agentId} wallet`);
+      
+      // Update both wallet balance and commission amount in database
+      await this.prisma.$transaction(async (tx) => {
+        // Add to wallet
+        await tx.agentWallet.update({
+          where: { agentId },
+          data: { balance: { increment: agentCommission } }
+        });
+
+        // Update total commission amount for all games this agent has commission for
+        await tx.agentCommission.updateMany({
+          where: {
+            agentId,
+            commissionType: 'PLAYER_REFERRAL'
+          },
+          data: {
+            amount: { increment: agentCommission }
+          }
+        });
       });
+      
+      console.log(`Commission successfully added to agent wallet and database`);
     }
   }
 
 
 
-  private async addCommissionToAgent(
+  async addCommissionToAgent(
     agentId: number,
     amount: number,
     type: 'PLAYER_REFERRAL' | 'GAMEPLAY_BONUS',
