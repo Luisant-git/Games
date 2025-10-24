@@ -333,24 +333,18 @@ const Game = ({ category, games }) => {
 
       {/* THREE DIGITS */}
       <div className={`section ${!isGameActive() ? 'disabled' : ''}`}>
-        {games.filter((g) => g.betType === "TRIPLE_DIGIT").length > 0 && (
-          <h3>
-            Three Digits{" "}
-            <span className="ticket">
-              ₹{games.find((g) => g.betType === "TRIPLE_DIGIT")?.ticket}
-            </span>{" "}
-            <span className="win">
-              Win ₹
-              {games.find((g) => g.betType === "TRIPLE_DIGIT")?.winningAmount}
-            </span>
-          </h3>
-        )}
         {games
           .filter((g) => g.betType === "TRIPLE_DIGIT")
           .map((game) => (
-            <div key={game.id} className="bet-row triple-digit">
-              <div className="top-row">
-                <span className={`board ${game.board}`}>{game.board}</span>
+            <div key={game.id}>
+              <h3>
+                Three Digits
+                <span className="ticket">₹{game.ticket}</span>{" "}
+                <span className="win">Win ₹{game.winningAmount}</span>
+              </h3>
+              <div className="bet-row triple-digit">
+                <div className="top-row">
+                  <span className={`board ${game.board}`}>{game.board}</span>
                 <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} onChange={(e) => {
                   const value = e.target.value;
                   if (value !== '' && (parseInt(value) < 0 || parseInt(value) > 9)) {
@@ -396,6 +390,7 @@ const Game = ({ category, games }) => {
                 >
                   Add
                 </button>
+              </div>
               </div>
             </div>
           ))}
@@ -403,24 +398,18 @@ const Game = ({ category, games }) => {
 
       {/* 4DS DIGITS */}
       <div className={`section ${!isGameActive() ? 'disabled' : ''}`}>
-        {games.filter((g) => g.betType === "FOUR_DIGIT").length > 0 && (
-          <h3>
-            4DS Digits{" "}
-            <span className="ticket">
-              ₹{games.find((g) => g.betType === "FOUR_DIGIT")?.ticket}
-            </span>{" "}
-            <span className="win">
-              Win ₹
-              {games.find((g) => g.betType === "FOUR_DIGIT")?.winningAmount}
-            </span>
-          </h3>
-        )}
         {games
           .filter((g) => g.betType === "FOUR_DIGIT")
           .map((game) => (
-            <div key={game.id} className="bet-row four-digit">
-              <div className="top-row">
-                <span className={`board ${game.board}`}>{game.board}</span>
+            <div key={game.id}>
+              <h3>
+                4DS Digits
+                <span className="ticket">₹{game.ticket}</span>{" "}
+                <span className="win">Win ₹{game.winningAmount}</span>
+              </h3>
+              <div className="bet-row four-digit">
+                <div className="top-row">
+                  <span className={`board ${game.board}`}>{game.board}</span>
                 <input type="number" min="0" max="9" placeholder="0" disabled={!isGameActive()} onChange={(e) => {
                   const value = e.target.value;
                   if (value !== '' && (parseInt(value) < 0 || parseInt(value) > 9)) {
@@ -472,6 +461,7 @@ const Game = ({ category, games }) => {
                 >
                   Add
                 </button>
+              </div>
               </div>
             </div>
           ))}
