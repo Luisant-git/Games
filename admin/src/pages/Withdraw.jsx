@@ -62,12 +62,7 @@ const Withdraw = () => {
       width: 120,
       render: (record) => record.player?.username || record.agent?.username || 'N/A',
     },
-    {
-      title: 'Phone',
-      key: 'phone',
-      width: 180,
-      render: (record) => record.player?.phone || 'N/A',
-    },
+
     {
       title: 'Transfer Type',
       dataIndex: 'transferType',
@@ -81,24 +76,25 @@ const Withdraw = () => {
       width: 200,
       render: (record) => {
         const details = record.transferDetails;
-        if (record.transferType === 'BANK_TRANSFER') {
-          return (
-            <div>
-              <div><strong>Bank:</strong> {details?.bankName || 'N/A'}</div>
-              <div><strong>Account:</strong> {details?.accountNumber || 'N/A'}</div>
-              <div><strong>IFSC:</strong> {details?.ifscCode || 'N/A'}</div>
-              <div><strong>Holder:</strong> {details?.accountHolderName || 'N/A'}</div>
-            </div>
-          );
-        } else {
-          const appName = details?.upiAppName === 'GOOGLE_PAY' ? 'Google Pay' : 'PhonePe';
-          return (
-            <div>
-              <div><strong>UPI ID:</strong> {details?.upiId || 'N/A'}</div>
-              <div><strong>App:</strong> {appName}</div>
-            </div>
-          );
-        }
+        return (
+          <div>
+            <div><strong>Name:</strong> {record.name || 'N/A'}</div>
+            <div><strong>Phone:</strong> {record.phone || 'N/A'}</div>
+            {record.transferType === 'BANK_TRANSFER' ? (
+              <>
+                <div><strong>Bank:</strong> {details?.bankName || 'N/A'}</div>
+                <div><strong>Account:</strong> {details?.accountNumber || 'N/A'}</div>
+                <div><strong>IFSC:</strong> {details?.ifscCode || 'N/A'}</div>
+                <div><strong>Holder:</strong> {details?.accountHolderName || 'N/A'}</div>
+              </>
+            ) : (
+              <>
+                <div><strong>UPI ID:</strong> {details?.upiId || 'N/A'}</div>
+                <div><strong>App:</strong> {details?.upiAppName === 'GOOGLE_PAY' ? 'Google Pay' : 'PhonePe'}</div>
+              </>
+            )}
+          </div>
+        );
       },
     },
     {

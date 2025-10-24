@@ -12,6 +12,16 @@ export enum UpiAppName {
 }
 
 export class CreateDepositDto {
+  @ApiProperty({ example: 'John Doe', description: 'Name of the person making deposit', required: false })
+  @IsString()
+  @IsOptional()
+  name?: string;
+
+  @ApiProperty({ example: '+919876543210', description: 'Phone number of the person making deposit', required: false })
+  @IsString()
+  @IsOptional()
+  phone?: string;
+
   @ApiProperty({ enum: TransferType, example: TransferType.BANK_TRANSFER, description: 'Type of transfer' })
   @IsEnum(TransferType)
   @IsNotEmpty()

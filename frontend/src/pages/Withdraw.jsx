@@ -47,6 +47,8 @@ const Withdraw = () => {
   // UPI Transfer fields
   const [upiId, setUpiId] = useState("");
   const [upiAppName, setUpiAppName] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [screenshotFile, setScreenshotFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
@@ -86,6 +88,18 @@ const Withdraw = () => {
     setIsProcessing(true);
 
     try {
+      if (!name.trim()) {
+        toast.error("Name is required");
+        return;
+      }
+      if (!phone.trim()) {
+        toast.error("Phone number is required");
+        return;
+      }
+      if (!screenshotFile) {
+        toast.error("Screenshot is required");
+        return;
+      }
       if (!amount || amount <= 0) {
         toast.error("Enter a valid amount");
         return;
@@ -153,6 +167,8 @@ const Withdraw = () => {
         transferType,
         transferDetails,
         amount: parseFloat(amount),
+        ...(name && { name }),
+        ...(phone && { phone }),
         ...(screenshotUrl && { screenshot: screenshotUrl }),
       };
 
@@ -176,6 +192,8 @@ const Withdraw = () => {
 
   const resetForm = () => {
     setAmount("");
+    setName("");
+    setPhone("");
     setSelectedBankAccount("");
     setShowAddBankForm(false);
     resetBankForm();
@@ -288,6 +306,28 @@ const Withdraw = () => {
           )}
 
           <form className="withdraw-form" onSubmit={handleWithdraw}>
+            <div className="form-group">
+              <label>Name</label>
+              <input
+                type="text"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Phone Number</label>
+              <input
+                type="tel"
+                placeholder="Enter your phone number"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+              />
+            </div>
+
             <div className="form-group">
               <label>Transfer Type</label>
               <select
@@ -433,11 +473,12 @@ const Withdraw = () => {
             </div>
 
             <div className="form-group">
-              <label>Screenshot (Optional)</label>
+              <label>Screenshot</label>
               <input
                 type="file"
                 accept="image/*"
                 onChange={(e) => setScreenshotFile(e.target.files[0])}
+                required
               />
               {screenshotFile && <p>Selected: {screenshotFile.name}</p>}
             </div>

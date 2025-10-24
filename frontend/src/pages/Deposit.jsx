@@ -27,6 +27,8 @@ const Deposit = () => {
   const [upiId, setUpiId] = useState("");
   const [upiTransactionId, setUpiTransactionId] = useState("");
   const [upiAppName, setUpiAppName] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [screenshotFile, setScreenshotFile] = useState(null);
   const [transactionSlipFile, setTransactionSlipFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -55,6 +57,21 @@ const Deposit = () => {
     setStatus(null);
 
     try {
+      if (!name.trim()) {
+        toast.error("Name is required");
+        setIsVerifying(false);
+        return;
+      }
+      if (!phone.trim()) {
+        toast.error("Phone number is required");
+        setIsVerifying(false);
+        return;
+      }
+      if (!screenshotFile) {
+        toast.error("Screenshot is required");
+        setIsVerifying(false);
+        return;
+      }
       if (transferType === "BANK_TRANSFER" && !transactionSlipFile) {
         toast.error("Transaction slip is required for bank transfers");
         setIsVerifying(false);
@@ -104,6 +121,8 @@ const Deposit = () => {
         transferType,
         transferDetails,
         amount: parseFloat(amount),
+        ...(name && { name }),
+        ...(phone && { phone }),
         ...(screenshotUrl && { screenshot: screenshotUrl }),
         ...(transactionSlipUrl && { transactionSlip: transactionSlipUrl }),
       };
@@ -130,6 +149,8 @@ const Deposit = () => {
 
   const resetForm = () => {
     setAmount("");
+    setName("");
+    setPhone("");
     setAccountNumber("");
     setIfscCode("");
     setBankName("");
@@ -230,6 +251,28 @@ const Deposit = () => {
 
           <form className="verify-form" onSubmit={handleVerifyPayment}>
             <h3 className="card-title">Verify Your Payment</h3>
+
+            <div className="form-group">
+              <label>Name</label>
+              <input
+                type="text"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Phone Number</label>
+              <input
+                type="tel"
+                placeholder="Enter your phone number"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+              />
+            </div>
 
             <div className="form-group">
               <label>Transfer Type</label>
@@ -357,11 +400,12 @@ const Deposit = () => {
             </div>
 
             <div className="form-group">
-              <label>Screenshot (Optional)</label>
+              <label>Screenshot</label>
               <input
                 type="file"
                 accept="image/*"
                 onChange={(e) => setScreenshotFile(e.target.files[0])}
+                required
               />
               {screenshotFile && <p>Selected: {screenshotFile.name}</p>}
             </div>

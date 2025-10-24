@@ -190,6 +190,8 @@ model Deposit {
   id              Int           @id @default(autoincrement())
   playerId        Int?
   agentId         Int?
+  name            String?
+  phone           String?
   transferType    TransferType
   transferDetails Json
   amount          Float
@@ -207,6 +209,8 @@ model Withdraw {
   id              Int            @id @default(autoincrement())
   playerId        Int?
   agentId         Int?
+  name            String?
+  phone           String?
   transferType    TransferType
   transferDetails Json
   amount          Float
