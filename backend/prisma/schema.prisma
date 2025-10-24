@@ -46,7 +46,7 @@ model Player {
   phone       String?       @unique
   password    String
   referalCode String?
-  referCode   String        @unique @default(cuid())
+  referCode   String        @unique
   referredBy  String?
   agent       Agent?        @relation(fields: [agentId], references: [id])
   agentId     Int?
@@ -66,7 +66,7 @@ model Agent {
   name      String?
   username  String        @unique
   password  String
-  referCode String        @unique @default(cuid())
+  referCode String        @unique
   isActive  Boolean       @default(false)
   canPlay   Boolean       @default(true)
   players   Player[]

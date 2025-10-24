@@ -21,11 +21,24 @@ export class AgentService {
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
     
+    // Generate unique 8-character referCode
+    let referCode = '';
+    let isUnique = false;
+    while (!isUnique) {
+      referCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+      const existing = await this.prisma.agent.findUnique({ where: { referCode } });
+      if (!existing) {
+        const existingPlayer = await this.prisma.player.findUnique({ where: { referCode } });
+        if (!existingPlayer) isUnique = true;
+      }
+    }
+    
     const agent = await this.prisma.agent.create({
       data: {
         name: data.name,
         username: data.username,
         password: hashedPassword,
+        referCode,
         wallet: {
           create: {
             balance: 0,

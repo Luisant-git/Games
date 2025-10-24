@@ -36,6 +36,18 @@ export class PlayerService {
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
     
+    // Generate unique 8-character referCode
+    let referCode = '';
+    let isUnique = false;
+    while (!isUnique) {
+      referCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+      const existing = await this.prisma.player.findUnique({ where: { referCode } });
+      if (!existing) {
+        const existingAgent = await this.prisma.agent.findUnique({ where: { referCode } });
+        if (!existingAgent) isUnique = true;
+      }
+    }
+    
     let agentId: number | undefined = undefined;
     let referredBy: string | undefined = undefined;
     
@@ -61,6 +73,7 @@ export class PlayerService {
       data: {
         ...data,
         password: hashedPassword,
+        referCode,
         agentId,
         referredBy,
         wallet: {
