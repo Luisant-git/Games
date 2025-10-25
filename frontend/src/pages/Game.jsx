@@ -504,9 +504,11 @@ const Game = ({ category, games }) => {
                           <div className="board-title">{board}</div>
                           {bets.map((bet, betIndex) => (
                             <div key={betIndex} className="bet-item">
-                              <span className="qty">{['TRIPLE_DIGIT', 'FOUR_DIGIT'].includes(bet.betType) ? JSON.parse(bet.numbers).join('') : bet.numbers}</span>
-                              <span className="qty">x</span>
-                              <span className="qty">{bet.qty}</span>
+                              <div className="bet-info">
+                                <span className="pre-amount">{['TRIPLE_DIGIT', 'FOUR_DIGIT'].includes(bet.betType) ? JSON.parse(bet.numbers).join('') : bet.numbers}</span>
+                                <span className="pre-amount">x</span>
+                                <span className="pre-amount">{bet.qty}</span>
+                              </div>
                               <span className="amount">₹{bet.amount}</span>
                             </div>
                           ))}
@@ -549,9 +551,11 @@ const Game = ({ category, games }) => {
                     <div className="board-title">{board}</div>
                     {boardBets.map((bet) => (
                       <div key={bet.originalIndex} className="confirm-bet-item">
-                        <span className="qty">{['TRIPLE_DIGIT', 'FOUR_DIGIT'].includes(bet.betType) ? bet.numbers.join('') : bet.numbers}</span>
-                        <span className="qty">×</span>
-                        <span className="qty">{bet.qty}</span>
+                        <div className="bet-info">
+                          <span className="pre-amount">{['TRIPLE_DIGIT', 'FOUR_DIGIT'].includes(bet.betType) ? bet.numbers.join('') : bet.numbers}</span>
+                          <span className="pre-amount">×</span>
+                          <span className="pre-amount">{bet.qty}</span>
+                        </div>
                         <button className="remove-bet" onClick={() => {
                           const newBets = bets.filter((_, i) => i !== bet.originalIndex);
                           setBets(newBets);

@@ -50,7 +50,7 @@ const History = () => {
     }
   };
 
-  const formatDate = (dateString) => {
+  const formatDateTime = (dateString) => {
     const date = new Date(dateString);
     const time = date.toLocaleTimeString("en-US", {
       hour: "numeric",
@@ -58,7 +58,7 @@ const History = () => {
       hour12: true
     });
     const formattedDate = date.toLocaleDateString("en-GB").replace(/\//g, '-');
-    return `${time}, ${formattedDate}`;
+    return { time, date: formattedDate };
   };
 
   return (
@@ -76,7 +76,8 @@ const History = () => {
                 <div className="game-info">
                   <div className="game-meta">
                     <h4>{game.categoryName}</h4>
-                    <span>📅 {formatDate(game.showTime)}</span>
+                    <span>🕒 {formatDateTime(game.showTime).time}</span>
+                    <span>📅 {formatDateTime(game.showTime).date}</span>
                   </div>
                   <div className="gameplay-details">
                     {Object.entries(game.gameplay.reduce((acc, play) => {
