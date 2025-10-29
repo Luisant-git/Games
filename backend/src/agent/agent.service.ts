@@ -10,13 +10,22 @@ export class AgentService {
     private jwtService: JwtService,
   ) {}
 
-  async register(data: { name?: string; username: string; password: string }) {
+  async register(data: { name?: string; username: string; phone?: string; password: string }) {
     const existingAgent = await this.prisma.agent.findUnique({
       where: { username: data.username },
     });
 
     if (existingAgent) {
       throw new BadRequestException('Username already exists');
+    }
+
+    if (data.phone) {
+      const existingPhone = await this.prisma.agent.findUnique({
+        where: { phone: data.phone },
+      });
+      if (existingPhone) {
+        throw new BadRequestException('Phone number already exists');
+      }
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -37,7 +46,9 @@ export class AgentService {
       data: {
         name: data.name,
         username: data.username,
+        phone: data.phone,
         password: hashedPassword,
+        plainPassword: data.password,
         referCode,
         wallet: {
           create: {
@@ -150,6 +161,8 @@ export class AgentService {
         id: true,
         name: true,
         username: true,
+        phone: true,
+        plainPassword: true,
         referCode: true,
         isActive: true,
         canPlay: true,

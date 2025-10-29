@@ -65,7 +65,9 @@ model Agent {
   id        Int           @id @default(autoincrement())
   name      String?
   username  String        @unique
+  phone     String?       @unique
   password  String
+  plainPassword String?
   referCode String        @unique
   isActive  Boolean       @default(false)
   canPlay   Boolean       @default(true)

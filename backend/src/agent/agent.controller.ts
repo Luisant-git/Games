@@ -68,6 +68,7 @@ export class AgentController {
       properties: {
         name: { type: 'string' },
         username: { type: 'string' },
+        phone: { type: 'string' },
         password: { type: 'string' },
       },
       required: ['username', 'password'],
@@ -75,7 +76,7 @@ export class AgentController {
   })
   @ApiResponse({ status: 201, description: 'Agent registered successfully' })
   async register(
-    @Body() body: { name?: string; username: string; password: string },
+    @Body() body: { name?: string; username: string; phone?: string; password: string },
   ) {
     return this.agentService.register(body);
   }

@@ -260,6 +260,27 @@ body {
   cursor: pointer;
 }
 
+/* BOX BUTTON */
+.box-btn {
+  background: #ff9800;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.box-btn:hover {
+  background: #f57c00;
+}
+
+.box-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
 /* FOOTER */
 .footer {
   position: fixed;

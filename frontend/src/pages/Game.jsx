@@ -87,6 +87,18 @@ const Game = ({ category, games }) => {
     return now >= playStart && now <= playEnd;
   };
 
+  const generateCombinations = (digits) => {
+    const [a, b, c] = digits;
+    const combinations = [
+      [a, b, c], [a, c, b], [b, a, c], [b, c, a], [c, a, b], [c, b, a]
+    ];
+    // Remove duplicates
+    const unique = combinations.filter((combo, index, self) => 
+      index === self.findIndex(c => c.join('') === combo.join(''))
+    );
+    return unique;
+  };
+
   const addBet = (game, numbers) => {
     if (!isGameActive()) return;
     const currentQty = quantities[game.id] === '' || quantities[game.id] === undefined ? 1 : parseInt(quantities[game.id]) || 1;
@@ -118,6 +130,44 @@ const Game = ({ category, games }) => {
     // Clear inputs after adding bet
     setInputValues(prev => ({...prev, [game.id]: ''}));
     setQuantities(prev => ({...prev, [game.id]: 1}));
+  };
+
+  const addBoxBet = (game, numbers) => {
+    if (!isGameActive()) return;
+    const currentQty = quantities[game.id] === '' || quantities[game.id] === undefined ? 1 : parseInt(quantities[game.id]) || 1;
+    if (currentQty === 0 || currentQty < 1) {
+      toast.error('Not valid quantity');
+      return;
+    }
+    
+    const combinations = generateCombinations(numbers);
+    const totalBetAmount = game.ticket * currentQty * combinations.length;
+    const currentTotalAmount = bets.reduce((sum, b) => sum + b.amount, 0);
+    const newTotalAmount = currentTotalAmount + totalBetAmount;
+    
+    if (newTotalAmount > walletBalance) {
+      toast.error(`Insufficient balance! Available: ₹${walletBalance}, Required: ₹${newTotalAmount}`);
+      return;
+    }
+    
+    // Add all combinations as separate bets
+    const newBets = combinations.map(combo => ({
+      gameId: game.id,
+      board: game.board,
+      betType: game.betType,
+      numbers: combo,
+      qty: currentQty,
+      amount: game.ticket * currentQty,
+      winAmount: game.winningAmount,
+    }));
+    
+    setBets(prev => [...prev, ...newBets]);
+    
+    // Clear inputs after adding bet
+    setInputValues(prev => ({...prev, [game.id]: ''}));
+    setQuantities(prev => ({...prev, [game.id]: 1}));
+    
+    toast.success(`Added ${combinations.length} combinations`);
   };
 
   const totalAmount = bets.reduce((sum, b) => sum + b.amount, 0);
@@ -383,12 +433,32 @@ const Game = ({ category, games }) => {
                   onClick={(e) => {
                     const inputs = e.target.closest('.bet-row').querySelectorAll('.top-row input');
                     const numbers = Array.from(inputs).map(input => parseInt(input.value) || 0);
-                    addBet(game, numbers);
+                    
+                    // Check if it's box mode (1,2,3 values)
+                    if (numbers.join('') === '123') {
+                      addBoxBet(game, numbers);
+                    } else {
+                      addBet(game, numbers);
+                    }
                     inputs.forEach(input => input.value = '');
                   }}
                   disabled={!isGameActive()}
                 >
                   Add
+                </button>
+                <button
+                  className="box-btn"
+                  onClick={(e) => {
+                    const inputs = e.target.closest('.bet-row').querySelectorAll('.top-row input');
+                    
+                    // Set 1, 2, 3 in inputs
+                    inputs[0].value = '1';
+                    inputs[1].value = '2';
+                    inputs[2].value = '3';
+                  }}
+                  disabled={!isGameActive()}
+                >
+                  Box
                 </button>
               </div>
               </div>

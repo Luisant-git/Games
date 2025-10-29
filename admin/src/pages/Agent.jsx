@@ -64,6 +64,18 @@ const Agent = () => {
     }
   }
 
+  const handleShareAgent = (agent) => {
+    if (!agent.phone) {
+      toast.error('Agent phone number not available', { position: 'top-center' })
+      return
+    }
+    
+    const password = agent.plainPassword || '[Contact admin for password]'
+    const message = `Hello! Your agent account has been created:\n\nUsername: ${agent.username}\nPassword: ${password}\nRefer Code: ${agent.referCode}\n\nThank you!`
+    const whatsappUrl = `https://wa.me/91${agent.phone}?text=${encodeURIComponent(message)}`
+    window.open(whatsappUrl, '_blank')
+  }
+
   return (
     <div style={{ width: '100vw', marginLeft: '-1.5rem', marginRight: '-1.5rem', padding: '0 1rem' }}>
       <div className="section-header" style={{ padding: '0 0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -94,6 +106,7 @@ const Agent = () => {
                     <th>ID</th>
                     <th>Name</th>
                     <th>Username</th>
+                    <th>Phone</th>
                     <th>Refer Code</th>
                     <th>Status</th>
                     <th>Can Play</th>
@@ -109,6 +122,7 @@ const Agent = () => {
                       <td>{agent.id}</td>
                       <td>{agent.name}</td>
                       <td>{agent.username}</td>
+                      <td>{agent.phone || '-'}</td>
                       <td>{agent.referCode}</td>
                       <td>
                         <Popconfirm
@@ -161,6 +175,14 @@ const Agent = () => {
                           >
                             Games
                           </Button>
+                          <Button
+                            type="default"
+                            size="small"
+                            onClick={() => handleShareAgent(agent)}
+                            disabled={!agent.phone}
+                          >
+                            Share
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -202,6 +224,16 @@ const Agent = () => {
             rules={[{ required: true, message: 'Please enter username' }]}
           >
             <Input placeholder="Enter username" />
+          </Form.Item>
+          
+          <Form.Item
+            name="phone"
+            label="Phone"
+            rules={[
+              { pattern: /^[0-9]{10}$/, message: 'Phone number must be exactly 10 digits' }
+            ]}
+          >
+            <Input placeholder="Enter 10-digit phone number" maxLength={10} />
           </Form.Item>
           
           <Form.Item
