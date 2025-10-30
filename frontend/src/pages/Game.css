@@ -281,6 +281,14 @@ body {
   cursor: not-allowed;
 }
 
+.box-btn.active {
+  background: #4caf50;
+}
+
+.box-btn.active:hover {
+  background: #45a049;
+}
+
 /* FOOTER */
 .footer {
   position: fixed;

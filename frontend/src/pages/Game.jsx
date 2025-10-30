@@ -18,6 +18,7 @@ const Game = ({ category, games }) => {
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0);
+  const [boxMode, setBoxMode] = useState({});
   console.log('GAME GAMES', games);
   console.log('view bets', historyBets);
   
@@ -434,9 +435,14 @@ const Game = ({ category, games }) => {
                     const inputs = e.target.closest('.bet-row').querySelectorAll('.top-row input');
                     const numbers = Array.from(inputs).map(input => parseInt(input.value) || 0);
                     
-                    // Check if it's box mode (1,2,3 values)
-                    if (numbers.join('') === '123') {
+                    if (boxMode[game.id]) {
+                      // Check if all inputs have values
+                      if (numbers.some(num => isNaN(num))) {
+                        toast.error('Please enter all 3 digits first');
+                        return;
+                      }
                       addBoxBet(game, numbers);
+                      setBoxMode(prev => ({...prev, [game.id]: false}));
                     } else {
                       addBet(game, numbers);
                     }
@@ -447,14 +453,9 @@ const Game = ({ category, games }) => {
                   Add
                 </button>
                 <button
-                  className="box-btn"
-                  onClick={(e) => {
-                    const inputs = e.target.closest('.bet-row').querySelectorAll('.top-row input');
-                    
-                    // Set 1, 2, 3 in inputs
-                    inputs[0].value = '1';
-                    inputs[1].value = '2';
-                    inputs[2].value = '3';
+                  className={`box-btn ${boxMode[game.id] ? 'active' : ''}`}
+                  onClick={() => {
+                    setBoxMode(prev => ({...prev, [game.id]: !prev[game.id]}));
                   }}
                   disabled={!isGameActive()}
                 >
