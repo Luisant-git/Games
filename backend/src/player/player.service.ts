@@ -19,6 +19,14 @@ export class PlayerService {
       throw new BadRequestException('Username already exists');
     }
 
+    const existingAgent = await this.prisma.agent.findUnique({
+      where: { username: data.username },
+    });
+
+    if (existingAgent) {
+      throw new BadRequestException('Username already exists');
+    }
+
     if (data.phone) {
       // Validate phone number format (10 digits)
       if (!/^\d{10}$/.test(data.phone)) {
