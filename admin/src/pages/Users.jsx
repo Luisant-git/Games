@@ -73,7 +73,6 @@ const Users = () => {
           <table className="responsive-table">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Username</th>
                 <th>Phone</th>
                 <th>Referral Code</th>
@@ -84,7 +83,6 @@ const Users = () => {
             <tbody>
               {allPlayers.map((player) => (
                 <tr key={player.id}>
-                  <td>{player.id}</td>
                   <td>{player.username}</td>
                   <td>{player.phone}</td>
                   <td>{player.referalCode || 'N/A'}</td>

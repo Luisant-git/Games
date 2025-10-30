@@ -55,12 +55,6 @@ const GameHistory = () => {
 
   const columns = [
     {
-      title: 'User ID',
-      key: 'userId',
-      width: 80,
-      render: (record) => record.player?.id || record.agent?.id || 'N/A',
-    },
-    {
       title: 'User',
       key: 'user',
       width: 120,

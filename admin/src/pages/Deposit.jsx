@@ -45,13 +45,6 @@ const Deposit = () => {
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 60,
-      fixed: isMobile ? false : 'left',
-    },
-    {
       title: 'User Type',
       key: 'userType',
       width: 100,
