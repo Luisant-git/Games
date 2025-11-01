@@ -103,12 +103,12 @@ const Home = ({
         {!loading && (
           <div className="table-card">
             <table className="show-times-table">
-              <thead>
+              {/* <thead>
                 <tr>
                   <th>Category</th>
                   <th>Show Time</th>
                 </tr>
-              </thead>
+              </thead> */}
               <tbody>
                 {categories.map((category) =>
                   category.timing?.map((timing) =>
