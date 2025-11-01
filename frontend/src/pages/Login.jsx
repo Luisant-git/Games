@@ -172,7 +172,7 @@ const Login = ({ onLogin }) => {
       </div>
 
       {/* Dynamic copyright footer */}
-      <div className="header-bottom">{`GameHub©${new Date().getFullYear()}`}</div>
+      <div className="header-bottom">{`Udhayam©${new Date().getFullYear()}`}</div>
     </div>
   );
 };

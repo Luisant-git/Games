@@ -211,7 +211,7 @@ const Register = ({
       </div>
 
       {/* Bottom fixed footer — same as Login */}
-      <div className="header-bottom">{`GameHub©${new Date().getFullYear()}`}</div>
+      <div className="header-bottom">{`Udhayam©${new Date().getFullYear()}`}</div>
     </div>
   );
 };
