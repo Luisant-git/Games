@@ -7,7 +7,7 @@ const ShareReferral = ({ referCode, onClose }) => {
     
     const appUrl = window.location.origin;
     const referralUrl = `${appUrl}/register?ref=${referCode}`;
-    const message = `🎮 Join our Gaming Platform!\n\n🔥 Use my referral code: ${referCode}\n🔗 Register here: ${referralUrl}\n\n💰 Start playing and winning today!`;
+    const message = `-> Join our Gaming Platform!\n\n-> Use my referral code: ${referCode}\n-> Register here: ${referralUrl}\n\n-> Start playing and winning today!`;
     
     switch (platform) {
       case 'whatsapp':
