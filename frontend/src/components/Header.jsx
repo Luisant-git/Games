@@ -6,9 +6,9 @@ import { getPlayerWallet, getAgentWallet } from "../api/wallet";
 const Header = ({ selectedCategory }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const showBackButton = location.pathname !== '/' || !!selectedCategory;
+  const showBackButton = location.pathname !== "/" || !!selectedCategory;
   const [balance, setBalance] = useState(0);
-  console.log(balance, '<--- balance');
+  console.log(balance, "<--- balance");
 
   useEffect(() => {
     fetchBalance();
@@ -16,8 +16,9 @@ const Header = ({ selectedCategory }) => {
 
   const fetchBalance = async () => {
     try {
-      const userType = localStorage.getItem('userType');
-      const response = userType === 'agent' ? await getAgentWallet() : await getPlayerWallet();
+      const userType = localStorage.getItem("userType");
+      const response =
+        userType === "agent" ? await getAgentWallet() : await getPlayerWallet();
       const data = await response.json();
       setBalance(data.balance);
     } catch (error) {
@@ -29,11 +30,20 @@ const Header = ({ selectedCategory }) => {
       <div className="header-content">
         <div className="logo">
           {showBackButton ? (
-            <button className="back-btn" onClick={() => selectedCategory ? window.location.reload() : navigate(-1)}>
+            <button
+              className="back-btn"
+              onClick={() =>
+                selectedCategory ? window.location.reload() : navigate(-1)
+              }
+            >
               <div>⬅</div>
               <div>🪙{balance}</div>
             </button>
-          ) : <span className="logo-text" onClick={() => navigate('/')}>KL & DEAR LOTTERY BOOKING</span>}
+          ) : (
+            <span className="logo-text" onClick={() => navigate("/")}>
+              UDHAYAM LOTTERY BOOKING
+            </span>
+          )}
         </div>
       </div>
     </header>

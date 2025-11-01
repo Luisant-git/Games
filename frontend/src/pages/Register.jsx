@@ -5,7 +5,12 @@ import { registerPlayer } from "../api/auth";
 import { getCategories } from "../api/category";
 import "./Register.css";
 
-const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOption }) => {
+const Register = ({
+  onRegister,
+  onSwitchToLogin,
+  onSwitchToAgent,
+  showAgentOption,
+}) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -14,7 +19,7 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
     username: "",
     phone: "",
     password: "",
-    referalCode: "", 
+    referalCode: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -23,13 +28,13 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validate phone number
     if (!/^\d{10}$/.test(formData.phone)) {
       toast.error("Phone number must be exactly 10 digits");
       return;
     }
-    
+
     setIsLoading(true);
     try {
       const response = await registerPlayer(formData);
@@ -62,23 +67,28 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
 
   useEffect(() => {
     getAllCategories();
-    
+
     // Auto-populate referral code from URL
-    const refCode = searchParams.get('ref');
+    const refCode = searchParams.get("ref");
     if (refCode) {
-      setFormData(prev => ({ ...prev, referalCode: refCode }));
+      setFormData((prev) => ({ ...prev, referalCode: refCode }));
     }
   }, [searchParams]);
 
   return (
     <div className="register">
       {/* Top fixed header — same as Login */}
-      <div className="header-top">KL & DEAR LOTTERY BOOKING</div>
+      <div className="header-top">UDHAYAM LOTTERY BOOKING</div>
 
       {/* Category banner — same as Login */}
       <div className="category-banner">
         {categories.map((cat) => (
-          <div key={cat.id} className="category-card" role="button" tabIndex={0}>
+          <div
+            key={cat.id}
+            className="category-card"
+            role="button"
+            tabIndex={0}
+          >
             <img
               src={cat.image || "https://via.placeholder.com/150"}
               alt={cat.name}
@@ -89,10 +99,11 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
       </div>
 
       {/* Main form container */}
-      <div className="register-container" style={{ marginTop: "0px", marginBottom: "20px" }}>
+      <div
+        className="register-container"
+        style={{ marginTop: "0px", marginBottom: "20px" }}
+      >
         <h2>Registration</h2>
-
-
 
         <form onSubmit={handleSubmit} noValidate>
           <input
@@ -107,7 +118,9 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
             type="text"
             placeholder="Username"
             value={formData.username}
-            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, username: e.target.value })
+            }
             required
             aria-label="Username"
             autoComplete="username"
@@ -117,7 +130,7 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
             placeholder="Phone (10 digits)"
             value={formData.phone}
             onChange={(e) => {
-              const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+              const value = e.target.value.replace(/\D/g, "").slice(0, 10);
               setFormData({ ...formData, phone: value });
             }}
             required
@@ -130,7 +143,9 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
               required
               aria-label="Password"
               autoComplete="new-password"
@@ -149,7 +164,9 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
             type="text"
             placeholder="Referral Code (Optional)"
             value={formData.referalCode}
-            onChange={(e) => setFormData({ ...formData, referalCode: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, referalCode: e.target.value })
+            }
             aria-label="Referral Code"
           />
 
@@ -169,7 +186,9 @@ const Register = ({ onRegister, onSwitchToLogin, onSwitchToAgent, showAgentOptio
           Already have an account?{" "}
           <button
             type="button"
-            onClick={() => (onSwitchToLogin ? onSwitchToLogin() : navigate("/login"))}
+            onClick={() =>
+              onSwitchToLogin ? onSwitchToLogin() : navigate("/login")
+            }
             className="link-button"
           >
             Login here

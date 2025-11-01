@@ -15,6 +15,7 @@ const Home = ({
 }) => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
+  console.log('CATEGORY',categories);
   const [games, setGames] = useState([]);
   const [walletBalance, setWalletBalance] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -51,6 +52,16 @@ const Home = ({
   const formatINR = (amt) =>
     new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 2 }).format(amt || 0);
 
+  // Helper: format time to AM/PM
+  const formatTime = (time) => {
+    if (!time) return '';
+    const [hours, minutes] = time.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${ampm}`;
+  };
+
   if (selectedCategory) {
     return (
       <div className="home">
@@ -61,6 +72,8 @@ const Home = ({
       </div>
     );
   }
+
+
 
   return (
     <div className="home">
@@ -77,37 +90,58 @@ const Home = ({
         </div>
       </section>
 
-      {/* Disclaimer */}
-      <section className="info-box info-disclaimer" role="note">
-        <h4 className="info-title">Disclaimer !!!</h4>
-        <p className="info-text">{disclaimerText}</p>
-      </section>
-
-      {/* Categories from API (your banner images) */}
-      <section className="banners">
+      {/* Category Tables */}
+      <section className="categories-section">
         {loading && (
-          <>
-            <div className="banner-skeleton" />
-            <div className="banner-skeleton" />
-          </>
+          <div className="loading-text">Loading categories...</div>
         )}
 
         {!loading && categories?.length === 0 && (
           <div className="empty-state">No categories found.</div>
         )}
 
-        {!loading &&
-          categories.map((category) => (
-            <div className="banner" key={category.id}>
-              <img
-                className="banner-image"
-                src={category.image}
-                alt={category.name}
-                loading="lazy"
-                onClick={() => onCategoryChange?.(category)}
-              />
-            </div>
-          ))}
+        {!loading && (
+          <div className="table-card">
+            <table className="show-times-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Show Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {categories.map((category) =>
+                  category.timing?.map((timing) =>
+                    timing.showTimes?.map((showTime) => (
+                      <tr
+                        key={`${category.id}-${timing.id}-${showTime.id}`}
+                        className="show-time-row"
+                        onClick={() => {
+                          onCategoryChange?.({
+                            ...category,
+                            timing: [{
+                              ...timing,
+                              showTimes: [showTime]
+                            }]
+                          });
+                        }}
+                      >
+                        <td>{category.name}</td>
+                        <td>{formatTime(showTime.showTime)}</td>
+                      </tr>
+                    ))
+                  )
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {/* Disclaimer */}
+      <section className="info-box info-disclaimer" role="note">
+        <h4 className="info-title">Disclaimer !!!</h4>
+        <p className="info-text">{disclaimerText}</p>
       </section>
 
       {/* Notice */}

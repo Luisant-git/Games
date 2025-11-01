@@ -5,9 +5,7 @@ import { loginPlayer, loginAgent } from "../api/auth";
 import "./Login.css";
 import { getCategories } from "../api/category";
 
-const Login = ({
-  onLogin,
-}) => {
+const Login = ({ onLogin }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -24,7 +22,7 @@ const Login = ({
       // Try player login first
       let response = await loginPlayer(formData);
       let data = await response.json();
-      
+
       if (response.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.player));
@@ -34,11 +32,11 @@ const Login = ({
         if (onLogin) onLogin();
         return;
       }
-      
+
       // If player login fails, try agent login
       response = await loginAgent(formData);
       data = await response.json();
-      
+
       if (response.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.agent));
@@ -71,7 +69,7 @@ const Login = ({
 
   return (
     <div className="login">
-      <div className="header-top">KL & DEAR LOTTERY BOOKING</div>
+      <div className="header-top">UDHAYAM LOTTERY BOOKING</div>
       {/* Disclaimer Box
       <div style={{
         position: 'fixed',
@@ -107,8 +105,6 @@ const Login = ({
         style={{ marginTop: "0px", marginBottom: "20px" }}
       >
         <h2>Login</h2>
-
-
 
         <form onSubmit={handleSubmit}>
           <input
