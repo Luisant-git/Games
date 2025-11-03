@@ -786,10 +786,10 @@ body {
   background: #f44336;
   color: #fff;
   border: none;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  font-size: 16px;
+  font-size: 24px;
   cursor: pointer;
   display: flex;
   align-items: center;
