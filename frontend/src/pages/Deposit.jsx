@@ -436,23 +436,23 @@ const Deposit = () => {
                         : "UPI Transfer"}
                     </p>
                     <p>
-                      <strong>Amount:</strong> ₹{deposit.amount}
+                      <strong>Amount:</strong> ₹{deposit.amount || 'N/A'}
                     </p>
                     <p>
                       <strong>Transaction ID:</strong>{" "}
-                      {deposit.transferDetails?.transactionId}
+                      {deposit.transferDetails?.transactionId || 'N/A'}
                     </p>
                     {deposit.transferType === "BANK_TRANSFER" && (
                       <p>
                         <strong>Bank:</strong>{" "}
-                        {deposit.transferDetails?.bankName}
+                        {deposit.transferDetails?.bankName || 'N/A'}
                       </p>
                     )}
                     {deposit.transferType === "UPI_TRANSFER" && (
                       <>
                         <p>
                           <strong>UPI ID:</strong>{" "}
-                          {deposit.transferDetails?.upiId}
+                          {deposit.transferDetails?.upiId || 'N/A'}
                         </p>
                         <p>
                           <strong>UPI App:</strong>{" "}

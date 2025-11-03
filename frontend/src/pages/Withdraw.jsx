@@ -497,11 +497,11 @@ const Withdraw = () => {
                       <>
                         <p>
                           <strong>Account:</strong>{" "}
-                          {withdraw.transferDetails?.accountNumber}
+                          {withdraw.transferDetails?.accountNumber || 'N/A'}
                         </p>
                         <p>
                           <strong>Bank:</strong>{" "}
-                          {withdraw.transferDetails?.bankName}
+                          {withdraw.transferDetails?.bankName || 'N/A'}
                         </p>
                       </>
                     )}
@@ -509,7 +509,7 @@ const Withdraw = () => {
                       <>
                         <p>
                           <strong>UPI ID:</strong>{" "}
-                          {withdraw.transferDetails?.upiId}
+                          {withdraw.transferDetails?.upiId || 'N/A'}
                         </p>
                         <p>
                           <strong>UPI App:</strong>{" "}
@@ -523,7 +523,7 @@ const Withdraw = () => {
                     )}
                     {withdraw.referenceNumber && (
                       <p>
-                        <strong>Reference:</strong> {withdraw.referenceNumber}
+                        <strong>Reference:</strong> {withdraw.referenceNumber || 'N/A'}
                       </p>
                     )}
                     <p>
