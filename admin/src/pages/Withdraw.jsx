@@ -83,7 +83,7 @@ const Withdraw = () => {
             ) : (
               <>
                 <div><strong>UPI ID:</strong> {details?.upiId || 'N/A'}</div>
-                <div><strong>App:</strong> {details?.upiAppName === 'GOOGLE_PAY' ? 'Google Pay' : 'PhonePe'}</div>
+                <div><strong>App:</strong> {details?.upiAppName ? (details.upiAppName === 'GOOGLE_PAY' ? 'Google Pay' : 'PhonePe') : 'N/A'}</div>
               </>
             )}
           </div>

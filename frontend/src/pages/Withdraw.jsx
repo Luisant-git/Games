@@ -88,20 +88,16 @@ const Withdraw = () => {
     setIsProcessing(true);
 
     try {
-      if (!name.trim()) {
-        toast.error("Name is required");
-        return;
-      }
       if (!phone.trim()) {
         toast.error("Phone number is required");
         return;
       }
-      if (!screenshotFile) {
-        toast.error("Screenshot is required");
+      if (!amount || amount <= 0) {
+        toast.error("Amount is required");
         return;
       }
-      if (!amount || amount <= 0) {
-        toast.error("Enter a valid amount");
+      if (!screenshotFile) {
+        toast.error("Screenshot is required");
         return;
       }
       if (parseFloat(amount) > balance) {
@@ -127,11 +123,6 @@ const Withdraw = () => {
       let transferDetails = {};
 
       if (transferType === "BANK_TRANSFER") {
-        if (!selectedBankAccount && !showAddBankForm) {
-          toast.error("Please select a bank account");
-          return;
-        }
-        
         if (selectedBankAccount) {
           const selectedAccount = bankAccounts.find(acc => acc.id.toString() === selectedBankAccount);
           transferDetails = {
@@ -140,11 +131,7 @@ const Withdraw = () => {
             bankName: selectedAccount.bankName,
             accountHolderName: selectedAccount.accountHolderName,
           };
-        } else {
-          if (!accountNumber || !ifscCode || !bankName || !accountHolderName) {
-            toast.error("Please fill all bank details");
-            return;
-          }
+        } else if (accountNumber || ifscCode || bankName || accountHolderName) {
           transferDetails = {
             accountNumber,
             ifscCode,
@@ -153,14 +140,12 @@ const Withdraw = () => {
           };
         }
       } else {
-        if (!upiId || !upiAppName) {
-          toast.error("Please fill all UPI details");
-          return;
+        if (upiId || upiAppName) {
+          transferDetails = {
+            upiId,
+            upiAppName,
+          };
         }
-        transferDetails = {
-          upiId,
-          upiAppName,
-        };
       }
 
       const data = {
@@ -307,18 +292,17 @@ const Withdraw = () => {
 
           <form className="withdraw-form" onSubmit={handleWithdraw}>
             <div className="form-group">
-              <label>Name</label>
+              <label>Name (Optional)</label>
               <input
                 type="text"
                 placeholder="Enter your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                required
               />
             </div>
 
             <div className="form-group">
-              <label>Phone Number</label>
+              <label>Phone Number <span style={{color: 'red'}}>*</span></label>
               <input
                 type="tel"
                 placeholder="Enter your phone number"
@@ -329,7 +313,7 @@ const Withdraw = () => {
             </div>
 
             <div className="form-group">
-              <label>Transfer Type</label>
+              <label>Transfer Type (Optional)</label>
               <select
                 value={transferType}
                 onChange={(e) => setTransferType(e.target.value)}
@@ -381,43 +365,39 @@ const Withdraw = () => {
                 {showAddBankForm && (
                   <>
                     <div className="form-group">
-                      <label>Account Number</label>
+                      <label>Account Number (Optional)</label>
                       <input
                         type="text"
                         placeholder="Enter bank account number"
                         value={accountNumber}
                         onChange={(e) => setAccountNumber(e.target.value)}
-                        required
                       />
                     </div>
                     <div className="form-group">
-                      <label>IFSC Code</label>
+                      <label>IFSC Code (Optional)</label>
                       <input
                         type="text"
                         placeholder="Enter IFSC code"
                         value={ifscCode}
                         onChange={(e) => setIfscCode(e.target.value)}
-                        required
                       />
                     </div>
                     <div className="form-group">
-                      <label>Bank Name</label>
+                      <label>Bank Name (Optional)</label>
                       <input
                         type="text"
                         placeholder="Enter bank name"
                         value={bankName}
                         onChange={(e) => setBankName(e.target.value)}
-                        required
                       />
                     </div>
                     <div className="form-group">
-                      <label>Account Holder Name</label>
+                      <label>Account Holder Name (Optional)</label>
                       <input
                         type="text"
                         placeholder="Enter account holder name"
                         value={accountHolderName}
                         onChange={(e) => setAccountHolderName(e.target.value)}
-                        required
                       />
                     </div>
                     <div className="form-group">
@@ -435,22 +415,20 @@ const Withdraw = () => {
             ) : (
               <>
                 <div className="form-group">
-                  <label>UPI ID</label>
+                  <label>UPI ID (Optional)</label>
                   <input
                     type="text"
                     placeholder="Enter UPI ID (e.g., user@gpay)"
                     value={upiId}
                     onChange={(e) => setUpiId(e.target.value)}
-                    required
                   />
                 </div>
                 <div className="form-group">
-                  <label>UPI App Name</label>
+                  <label>UPI App Name (Optional)</label>
                   <select
                     value={upiAppName}
                     onChange={(e) => setUpiAppName(e.target.value)}
                     className="transfer-type-select"
-                    required
                   >
                     <option value="">Select UPI App</option>
                     <option value="GOOGLE_PAY">Google Pay</option>
@@ -461,7 +439,7 @@ const Withdraw = () => {
             )}
 
             <div className="form-group">
-              <label>Amount (₹)</label>
+              <label>Amount (₹) <span style={{color: 'red'}}>*</span></label>
               <input
                 type="number"
                 placeholder={`Enter withdrawal amount (Min: ₹${withdrawSettings?.minimumWithdrawAmount || 0})`}
@@ -473,7 +451,7 @@ const Withdraw = () => {
             </div>
 
             <div className="form-group">
-              <label>Screenshot</label>
+              <label>Screenshot <span style={{color: 'red'}}>*</span></label>
               <input
                 type="file"
                 accept="image/*"
@@ -486,7 +464,7 @@ const Withdraw = () => {
             <button
               type="submit"
               className="withdraw-button"
-              disabled={isProcessing || uploading || (transferType === "BANK_TRANSFER" && !selectedBankAccount && !showAddBankForm)}
+              disabled={isProcessing || uploading}
             >
               {uploading
                 ? "Uploading..."
@@ -535,9 +513,11 @@ const Withdraw = () => {
                         </p>
                         <p>
                           <strong>UPI App:</strong>{" "}
-                          {withdraw.transferDetails?.upiAppName === "GOOGLE_PAY"
-                            ? "Google Pay"
-                            : "PhonePe"}
+                          {withdraw.transferDetails?.upiAppName
+                            ? (withdraw.transferDetails.upiAppName === "GOOGLE_PAY"
+                              ? "Google Pay"
+                              : "PhonePe")
+                            : "N/A"}
                         </p>
                       </>
                     )}

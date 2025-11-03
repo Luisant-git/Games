@@ -195,26 +195,12 @@
   font-size: 14px;
 }
 
-.category-table {
-  margin-bottom: 24px;
-}
-
 .table-card {
-  background: var(--card);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  background: #ffffff;
+  border-radius: 12px;
   overflow: hidden;
-  margin-bottom: 16px;
-}
-
-.category-title {
-  margin: 0;
-  color: white !important;
-  font-size: 18px;
-  font-weight: 700;
-  text-align: center;
-  background: var(--green);
-  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
 }
 
 .show-times-table {
@@ -222,54 +208,40 @@
   border-collapse: collapse;
 }
 
-.show-times-table thead {
-  background: var(--green);
-}
-
-.show-times-table th {
-  padding: 12px 16px;
-  text-align: center;
-  color: white;
-  font-size: 16px;
-  font-weight: 700;
-  border-right: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.show-times-table th:last-child {
-  border-right: none;
-}
-
-.show-times-table tbody {
-  border-bottom: 2px solid #ddd;
-}
-
-.show-times-table td {
-  padding: 14px 16px;
-  text-align: center;
-  border-bottom: 1px solid #e0e0e0;
-  border-right: 1px solid #e0e0e0;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text);
-}
-
-.show-times-table td:last-child {
-  border-right: none;
-}
-
 .show-time-row {
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.15s ease;
 }
 
 .show-time-row:nth-child(even) {
-  background-color: #d2f7dc;
+  background-color: #f9fafb;
 }
 
 .show-time-row:hover {
-  background-color: #f0f7ff;
+  background-color: #f0fdf4;
 }
 
-.show-time-row:last-child td {
+.category-cell {
+  padding: 16px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+}
+
+.time-cell {
+  padding: 16px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1b9e5a;
+  text-align: center;
+  white-space: nowrap;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.show-time-row:last-child .category-cell,
+.show-time-row:last-child .time-cell {
   border-bottom: none;
 }

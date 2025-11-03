@@ -57,23 +57,18 @@ const Deposit = () => {
     setStatus(null);
 
     try {
-      if (!name.trim()) {
-        toast.error("Name is required");
-        setIsVerifying(false);
-        return;
-      }
       if (!phone.trim()) {
         toast.error("Phone number is required");
         setIsVerifying(false);
         return;
       }
-      if (!screenshotFile) {
-        toast.error("Screenshot is required");
+      if (!amount || amount <= 0) {
+        toast.error("Amount is required");
         setIsVerifying(false);
         return;
       }
-      if (transferType === "BANK_TRANSFER" && !transactionSlipFile) {
-        toast.error("Transaction slip is required for bank transfers");
+      if (!screenshotFile) {
+        toast.error("Screenshot is required");
         setIsVerifying(false);
         return;
       }
@@ -253,18 +248,17 @@ const Deposit = () => {
             <h3 className="card-title">Verify Your Payment</h3>
 
             <div className="form-group">
-              <label>Name</label>
+              <label>Name (Optional)</label>
               <input
                 type="text"
                 placeholder="Enter your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                required
               />
             </div>
 
             <div className="form-group">
-              <label>Phone Number</label>
+              <label>Phone Number <span style={{color: 'red'}}>*</span></label>
               <input
                 type="tel"
                 placeholder="Enter your phone number"
@@ -275,7 +269,7 @@ const Deposit = () => {
             </div>
 
             <div className="form-group">
-              <label>Transfer Type</label>
+              <label>Transfer Type (Optional)</label>
               <select
                 value={transferType}
                 onChange={(e) => setTransferType(e.target.value)}
@@ -289,62 +283,56 @@ const Deposit = () => {
             {transferType === "BANK_TRANSFER" ? (
               <>
                 <div className="form-group">
-                  <label>Account Number</label>
+                  <label>Account Number (Optional)</label>
                   <input
                     type="text"
                     placeholder="Enter bank account number"
                     value={accountNumber}
                     onChange={(e) => setAccountNumber(e.target.value)}
-                    required
                   />
                 </div>
                 <div className="form-group">
-                  <label>IFSC Code</label>
+                  <label>IFSC Code (Optional)</label>
                   <input
                     type="text"
                     placeholder="Enter IFSC code"
                     value={ifscCode}
                     onChange={(e) => setIfscCode(e.target.value)}
-                    required
                   />
                 </div>
                 <div className="form-group">
-                  <label>Bank Name</label>
+                  <label>Bank Name (Optional)</label>
                   <input
                     type="text"
                     placeholder="Enter bank name"
                     value={bankName}
                     onChange={(e) => setBankName(e.target.value)}
-                    required
                   />
                 </div>
                 <div className="form-group">
-                  <label>Account Holder Name</label>
+                  <label>Account Holder Name (Optional)</label>
                   <input
                     type="text"
                     placeholder="Enter account holder name"
                     value={accountHolderName}
                     onChange={(e) => setAccountHolderName(e.target.value)}
-                    required
                   />
                 </div>
                 <div className="form-group">
-                  <label>Transaction ID / Reference Number</label>
+                  <label>Transaction ID / Reference Number (Optional)</label>
                   <input
                     type="text"
                     placeholder="Enter bank transaction ID or reference number"
                     value={bankTransactionId}
                     onChange={(e) => setBankTransactionId(e.target.value)}
-                    required
                   />
                 </div>
                 <div className="form-group">
-                  <label>Transaction Slip (Required)</label>
+                  <label>Transaction Slip (Optional)</label>
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => setTransactionSlipFile(e.target.files[0])}
-                    required
                   />
                   {transactionSlipFile && <p>Selected: {transactionSlipFile.name}</p>}
                 </div>
@@ -352,22 +340,20 @@ const Deposit = () => {
             ) : (
               <>
                 <div className="form-group">
-                  <label>UPI ID</label>
+                  <label>UPI ID (Optional)</label>
                   <input
                     type="text"
                     placeholder="Enter UPI ID (e.g., user@gpay)"
                     value={upiId}
                     onChange={(e) => setUpiId(e.target.value)}
-                    required
                   />
                 </div>
                 <div className="form-group">
-                  <label>UPI App Name</label>
+                  <label>UPI App Name (Optional)</label>
                   <select
                     value={upiAppName}
                     onChange={(e) => setUpiAppName(e.target.value)}
                     className="transfer-type-select"
-                    required
                   >
                     <option value="">Select UPI App</option>
                     <option value="GOOGLE_PAY">Google Pay</option>
@@ -375,20 +361,19 @@ const Deposit = () => {
                   </select>
                 </div>
                 <div className="form-group">
-                  <label>Transaction ID</label>
+                  <label>Transaction ID (Optional)</label>
                   <input
                     type="text"
                     placeholder="Enter UPI transaction ID"
                     value={upiTransactionId}
                     onChange={(e) => setUpiTransactionId(e.target.value)}
-                    required
                   />
                 </div>
               </>
             )}
 
             <div className="form-group">
-              <label>Amount (₹)</label>
+              <label>Amount (₹) <span style={{color: 'red'}}>*</span></label>
               <input
                 type="number"
                 placeholder={`Enter amount deposited (Min: ₹${depositSettings?.minimumDepositAmount || 0})`}
@@ -400,7 +385,7 @@ const Deposit = () => {
             </div>
 
             <div className="form-group">
-              <label>Screenshot</label>
+              <label>Screenshot <span style={{color: 'red'}}>*</span></label>
               <input
                 type="file"
                 accept="image/*"
@@ -471,9 +456,11 @@ const Deposit = () => {
                         </p>
                         <p>
                           <strong>UPI App:</strong>{" "}
-                          {deposit.transferDetails?.upiAppName === "GOOGLE_PAY"
-                            ? "Google Pay"
-                            : "PhonePe"}
+                          {deposit.transferDetails?.upiAppName
+                            ? (deposit.transferDetails.upiAppName === "GOOGLE_PAY"
+                              ? "Google Pay"
+                              : "PhonePe")
+                            : "N/A"}
                         </p>
                       </>
                     )}

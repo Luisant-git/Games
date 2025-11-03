@@ -103,12 +103,6 @@ const Home = ({
         {!loading && (
           <div className="table-card">
             <table className="show-times-table">
-              {/* <thead>
-                <tr>
-                  <th>Category</th>
-                  <th>Show Time</th>
-                </tr>
-              </thead> */}
               <tbody>
                 {categories.map((category) =>
                   category.timing?.map((timing) =>
@@ -126,8 +120,8 @@ const Home = ({
                           });
                         }}
                       >
-                        <td>{category.name}</td>
-                        <td>{formatTime(showTime.showTime)}</td>
+                        <td className="category-cell">{category.name}</td>
+                        <td className="time-cell">{formatTime(showTime.showTime)}</td>
                       </tr>
                     ))
                   )

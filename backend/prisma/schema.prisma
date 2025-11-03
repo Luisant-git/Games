@@ -193,12 +193,12 @@ model Deposit {
   playerId        Int?
   agentId         Int?
   name            String?
-  phone           String?
-  transferType    TransferType
-  transferDetails Json
+  phone           String
+  transferType    TransferType?
+  transferDetails Json?
   amount          Float
   ticket          Int?
-  screenshot      String?
+  screenshot      String
   transactionSlip String?
   status          DepositStatus
   createdAt       DateTime      @default(now())
@@ -212,12 +212,12 @@ model Withdraw {
   playerId        Int?
   agentId         Int?
   name            String?
-  phone           String?
-  transferType    TransferType
-  transferDetails Json
+  phone           String
+  transferType    TransferType?
+  transferDetails Json?
   amount          Float
   ticket          Int?
-  screenshot      String?
+  screenshot      String
   referenceNumber String?        @unique
   status          WithdrawStatus
   createdAt       DateTime       @default(now())
