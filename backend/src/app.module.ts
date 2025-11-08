@@ -22,9 +22,10 @@ import { BankAccountModule } from './bank-account/bank-account.module';
 import { OrderReportModule } from './order-report/order-report.module';
 import { SummaryReportModule } from './summary-report/summary-report.module';
 import { PlayerReportModule } from './player-report/player-report.module';
+import { AgentReportModule } from './agent-report/agent-report.module';
 
 @Module({
-  imports: [AuthModule, GamesModule, AgentModule, PlayerModule, CategoryModule, TimingModule, UploadModule, DepositModule, WithdrawModule, GameHistoryModule, CommissionModule, SupportModule, ResultModule, DashboardModule, SettingsModule, BankAccountModule, OrderReportModule, SummaryReportModule, PlayerReportModule],
+  imports: [AuthModule, GamesModule, AgentModule, PlayerModule, CategoryModule, TimingModule, UploadModule, DepositModule, WithdrawModule, GameHistoryModule, CommissionModule, SupportModule, ResultModule, DashboardModule, SettingsModule, BankAccountModule, OrderReportModule, SummaryReportModule, PlayerReportModule, AgentReportModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })

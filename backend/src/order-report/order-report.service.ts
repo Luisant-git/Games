@@ -183,6 +183,41 @@ export class OrderReportService {
     }, {});
 
     let message = '';
+
+    if (filterDto.showtimeId) {
+      const showtime = await this.prisma.showTime.findUnique({
+        where: { id: Number(filterDto.showtimeId) },
+        include: {
+          timing: {
+            include: {
+              category: true,
+            },
+          },
+        },
+      });
+
+      if (showtime) {
+        const formatTime = (time: string) => {
+          const [hours, minutes] = time.split(':');
+          const hour = parseInt(hours);
+          const ampm = hour >= 12 ? 'PM' : 'AM';
+          const hour12 = hour % 12 || 12;
+          return `${hour12}:${minutes} ${ampm}`;
+        };
+
+        const formatDate = (date: Date) => {
+          const day = date.getDate();
+          const month = (date.getMonth() + 1).toString().padStart(2, '0');
+          const year = date.getFullYear();
+          return `${day}-${month}-${year}`;
+        };
+
+        message += `Category: ${showtime.timing.category.name}\n`;
+        message += `Showtime: ${formatTime(showtime.showTime)}\n`;
+        message += `Date: ${formatDate(targetDate)}\n\n`;
+      }
+    }
+
     Object.entries(groupedByBoard).forEach(([board, items]: [string, any[]]) => {
       items.forEach((item) => {
         message += `${board}\n${item.number} * ${item.qty}\n\n`;
