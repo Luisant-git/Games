@@ -42,6 +42,10 @@ const Header = ({ onMenuToggle, isMobile }) => {
       '/game-history': 'Game History',
       '/results': 'Results',
       '/history-showtime': 'History Showtime',
+      '/order-report': 'Order Report',
+      '/summary-report': 'Summary Report',
+      '/player-report': 'Player Report',
+      '/agent-report': 'Agent Report',
     }
     
     // Handle dynamic routes

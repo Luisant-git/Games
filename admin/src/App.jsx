@@ -23,6 +23,10 @@ import GameHistory from './pages/GameHistory'
 import Result from './pages/Result'
 import HistoryShowTime from './pages/HistoryShowTime'
 import PaymentSettings from './pages/PaymentSettings'
+import OrderReport from './pages/OrderReport'
+import SummaryReport from './pages/SummaryReport'
+import PlayerReport from './pages/PlayerReport'
+import AgentReport from './pages/AgentReport'
 
 
 function App() {
@@ -54,6 +58,10 @@ function App() {
             <Route path='results' element={<Result />}></Route>
             <Route path='game-history' element={<GameHistory />}></Route>
             <Route path='history-showtime' element={<HistoryShowTime />}></Route>
+            <Route path='order-report' element={<OrderReport />}></Route>
+            <Route path='summary-report' element={<SummaryReport />}></Route>
+            <Route path='player-report' element={<PlayerReport />}></Route>
+            <Route path='agent-report' element={<AgentReport />}></Route>
           </Route>
         </Routes>
       </Router>

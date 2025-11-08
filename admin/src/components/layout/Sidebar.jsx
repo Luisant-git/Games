@@ -63,6 +63,17 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
       { key: "/history-showtime", icon: <FieldTimeOutlined />,  label: "Showtime History" },
     ],
   },
+  {
+    key: "reports",
+    icon: <BarChartOutlined />,        
+    label: "Reports",
+    children: [
+      { key: "/order-report", icon: <BarChartOutlined />, label: "Orders Report" },
+      { key: "/summary-report", icon: <BarChartOutlined />, label: "Summary Report" },
+      { key: "/player-report", icon: <BarChartOutlined />, label: "Player Report" },
+      { key: "/agent-report", icon: <BarChartOutlined />, label: "Agent Report" },
+    ],
+  }
 ];
 
 
