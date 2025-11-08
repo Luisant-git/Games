@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Input, Form, Card, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import { loginAdmin } from '../api/auth'
 
 const Login = () => {
   const [loading, setLoading] = useState(false)
@@ -10,16 +11,12 @@ const Login = () => {
   const onFinish = async (values) => {
     setLoading(true)
     try {
-      // Simple admin login - you can enhance this with actual API call
-      if (values.username === 'admin' && values.password === 'admin123') {
-        localStorage.setItem('adminToken', 'admin-logged-in')
-        message.success('Login successful!')
-        navigate('/category')
-      } else {
-        message.error('Invalid credentials')
-      }
+      const result = await loginAdmin(values.email, values.password)
+      localStorage.setItem('adminToken', result.access_token)
+      message.success('Login successful!')
+      navigate('/category')
     } catch (error) {
-      message.error('Login failed')
+      message.error('Invalid credentials')
     } finally {
       setLoading(false)
     }
@@ -47,13 +44,14 @@ const Login = () => {
           layout="vertical"
         >
           <Form.Item
-            name="username"
-            rules={[{ required: true, message: 'Please input your username!' }]}
+            name="email"
+            rules={[{ required: true, message: 'Please input your email!' }]}
           >
             <Input
               prefix={<UserOutlined />}
-              placeholder="Username"
+              placeholder="Email"
               size="large"
+              type="email"
             />
           </Form.Item>
 
@@ -81,9 +79,7 @@ const Login = () => {
           </Form.Item>
         </Form>
         
-        <div style={{ textAlign: 'center', marginTop: '16px', color: '#666' }}>
-          <small>Default: admin / admin123</small>
-        </div>
+
       </Card>
     </div>
   )

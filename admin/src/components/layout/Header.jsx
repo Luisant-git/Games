@@ -13,6 +13,14 @@ const Header = ({ onMenuToggle, isMobile }) => {
     navigate('/login')
   }
 
+  const handleMenuClick = ({ key }) => {
+    if (key === 'profile') {
+      navigate('/profile')
+    } else if (key === 'logout') {
+      logout()
+    }
+  }
+
   const menuItems = [
     {
       key: 'profile',
@@ -23,7 +31,6 @@ const Header = ({ onMenuToggle, isMobile }) => {
       key: 'logout',
       icon: <LogoutOutlined />,
       label: 'Logout',
-      onClick: logout
     }
   ]
 
@@ -46,6 +53,7 @@ const Header = ({ onMenuToggle, isMobile }) => {
       '/summary-report': 'Summary Report',
       '/player-report': 'Player Report',
       '/agent-report': 'Agent Report',
+      '/profile': 'Profile',
     }
     
     // Handle dynamic routes
@@ -72,7 +80,7 @@ const Header = ({ onMenuToggle, isMobile }) => {
       </div>
       <div className="header-actions">
         <Dropdown
-          menu={{ items: menuItems }}
+          menu={{ items: menuItems, onClick: handleMenuClick }}
           placement="bottomRight"
           trigger={['click']}
         >

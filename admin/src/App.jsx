@@ -27,6 +27,7 @@ import OrderReport from './pages/OrderReport'
 import SummaryReport from './pages/SummaryReport'
 import PlayerReport from './pages/PlayerReport'
 import AgentReport from './pages/AgentReport'
+import Profile from './pages/Profile'
 
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
             <Route path='summary-report' element={<SummaryReport />}></Route>
             <Route path='player-report' element={<PlayerReport />}></Route>
             <Route path='agent-report' element={<AgentReport />}></Route>
+            <Route path='profile' element={<Profile />}></Route>
           </Route>
         </Routes>
       </Router>

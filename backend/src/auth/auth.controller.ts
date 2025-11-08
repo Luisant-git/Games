@@ -35,4 +35,14 @@ export class AuthController {
   getProfile(@Request() req) {
     return req.user;
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('admin-profile')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get full admin profile' })
+  @ApiResponse({ status: 200, description: 'Profile retrieved successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getAdminProfile(@Request() req) {
+    return this.authService.getAdminProfile(req.user.id);
+  }
 }

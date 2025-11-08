@@ -43,9 +43,29 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: user.id, email: user.email, type: 'admin' };
+    const payload = { id: user.id, email: user.email, type: 'admin' };
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async getAdminProfile(adminId: number) {
+    const admin = await this.prisma.admin.findUnique({
+      where: { id: adminId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!admin) {
+      throw new UnauthorizedException('Admin not found');
+    }
+
+    return admin;
   }
 }
