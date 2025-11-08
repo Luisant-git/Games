@@ -31,19 +31,14 @@ export class SummaryReportService {
       gameHistories.map(async (gh, index) => {
         const totalAmount = gh.gameplay.reduce((sum, play) => sum + play.amount * play.qty, 0);
         const entries = gh.gameplay.length;
-        const commission = totalAmount * 0.1;
+        const commission = gh.agentCommission;
         const balance = totalAmount - commission;
 
         const category = await this.prisma.category.findUnique({ where: { id: gh.categoryId } });
         const showtime = await this.prisma.showTime.findUnique({ where: { id: gh.showtimeId } });
-        const result = await this.prisma.result.findFirst({
-          where: {
-            date: { gte: fromDate, lte: toDate },
-            time: showtime?.showTime,
-          },
-        });
-
-        const winningAmount = result ? gh.totalWinAmount : 0;
+        
+        const winningNumber = gh.isWon ? gh.gameplay.find(p => p.winAmount && p.winAmount > 0)?.numbers : null;
+        const winningAmount = gh.totalWinAmount;
         const profit = balance - winningAmount;
 
         return {
@@ -55,7 +50,7 @@ export class SummaryReportService {
           totalAmount,
           commission,
           balance,
-          winningNo: result?.numbers || '-',
+          winningNo: winningNumber || '-',
           winningAmount,
           profit,
         };
@@ -86,7 +81,7 @@ export class SummaryReportService {
         const allPlays = gameHistories.flatMap((gh) => gh.gameplay);
         const totalAmount = allPlays.reduce((sum, play) => sum + play.amount * play.qty, 0);
         const entries = allPlays.length;
-        const commission = totalAmount * 0.1;
+        const commission = gameHistories.reduce((sum, gh) => sum + gh.agentCommission, 0);
         const balance = totalAmount - commission;
         const winningAmount = gameHistories.reduce((sum, gh) => sum + gh.totalWinAmount, 0);
         const profit = balance - winningAmount;
@@ -113,35 +108,22 @@ export class SummaryReportService {
     fromDate.setHours(0, 0, 0, 0);
     toDate.setHours(23, 59, 59, 999);
 
-    const results = await this.prisma.result.findMany({
+    const gamePlays = await this.prisma.gamePlay.findMany({
       where: {
-        date: { gte: fromDate, lte: toDate },
+        createdAt: { gte: fromDate, lte: toDate },
+        winAmount: { gt: 0 },
       },
     });
 
-    const winningData: any[] = [];
-    let sno = 1;
-
-    for (const result of results) {
-      const gamePlays = await this.prisma.gamePlay.findMany({
-        where: {
-          numbers: result.numbers,
-          createdAt: { gte: fromDate, lte: toDate },
-        },
-      });
-
-      for (const play of gamePlays) {
-        winningData.push({
-          sno: sno++,
-          boardName: play.board,
-          number: play.numbers,
-          qty: play.qty,
-          rate: play.amount,
-          totalAmount: play.amount * play.qty,
-          winningAmount: play.winAmount || play.amount * play.qty * 9,
-        });
-      }
-    }
+    const winningData = gamePlays.map((play, index) => ({
+      sno: index + 1,
+      boardName: play.board,
+      number: play.numbers,
+      qty: play.qty,
+      rate: play.amount,
+      totalAmount: play.amount * play.qty,
+      winningAmount: play.winAmount,
+    }));
 
     return winningData;
   }

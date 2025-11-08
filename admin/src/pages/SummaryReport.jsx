@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Table, DatePicker, Button, Space, Tabs } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { getSummaryReport, getAgentReport, getWinningResult } from '../api/summaryReport'
@@ -14,6 +14,10 @@ export default function SummaryReport() {
   const [winningData, setWinningData] = useState([])
   const [loading, setLoading] = useState(false)
   const [dateRange, setDateRange] = useState([dayjs(), dayjs()])
+
+  useEffect(() => {
+    handleSearch()
+  }, [])
 
   const handleSearch = async () => {
     setLoading(true)
