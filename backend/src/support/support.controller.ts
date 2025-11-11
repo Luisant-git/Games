@@ -5,6 +5,9 @@ import {
   Body,
   UseGuards,
   Request,
+  Query,
+  Patch,
+  Param,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -37,5 +40,23 @@ export class SupportController {
   @ApiResponse({ status: 200, description: 'Support tickets found' })
   findByUser(@Request() req) {
     return this.supportService.findByUser(req.user.id, req.user.type);
+  }
+
+  @Get('admin/all')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get all support tickets (admin only)' })
+  @ApiResponse({ status: 200, description: 'All support tickets' })
+  findAll(@Query('page') page: string, @Query('limit') limit: string) {
+    return this.supportService.findAll(+page || 1, +limit || 10);
+  }
+
+  @Patch(':id/status')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Update support ticket status' })
+  @ApiResponse({ status: 200, description: 'Status updated successfully' })
+  updateStatus(@Param('id') id: string, @Body('status') status: string) {
+    return this.supportService.updateStatus(+id, status);
   }
 }

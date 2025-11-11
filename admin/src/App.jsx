@@ -28,6 +28,7 @@ import SummaryReport from './pages/SummaryReport'
 import PlayerReport from './pages/PlayerReport'
 import AgentReport from './pages/AgentReport'
 import Profile from './pages/Profile'
+import Enquiry from './pages/Enquiry'
 
 
 function App() {
@@ -64,6 +65,7 @@ function App() {
             <Route path='player-report' element={<PlayerReport />}></Route>
             <Route path='agent-report' element={<AgentReport />}></Route>
             <Route path='profile' element={<Profile />}></Route>
+            <Route path='support/enquiry' element={<Enquiry />}></Route>
           </Route>
         </Routes>
       </Router>

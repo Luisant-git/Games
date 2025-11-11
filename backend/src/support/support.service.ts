@@ -53,4 +53,47 @@ export class SupportService {
       },
     });
   }
+
+  async findAll(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+    const [data, total] = await Promise.all([
+      this.prisma.support.findMany({
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          player: {
+            select: {
+              id: true,
+              username: true,
+            },
+          },
+          agent: {
+            select: {
+              id: true,
+              username: true,
+            },
+          },
+        },
+      }),
+      this.prisma.support.count(),
+    ]);
+
+    return {
+      data,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  async updateStatus(id: number, status: string) {
+    return this.prisma.support.update({
+      where: { id },
+      data: { status: status as any },
+    });
+  }
 }

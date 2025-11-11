@@ -20,6 +20,8 @@ import {
   DotChartOutlined,
   AreaChartOutlined,
   RadarChartOutlined,
+  CustomerServiceOutlined,
+  CustomerServiceFilled,
 } from "@ant-design/icons";
 
 const Sidebar = ({ isOpen, onClose, isMobile }) => {
@@ -76,6 +78,14 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
       { key: "/summary-report", icon: <DotChartOutlined />, label: "Summary Report" },
       { key: "/player-report", icon: <AreaChartOutlined />, label: "Player Report" },
       { key: "/agent-report", icon: <RadarChartOutlined />, label: "Agent Report" },
+    ],
+  },
+  {
+    key: "support",
+    icon: <CustomerServiceOutlined />,
+    label: "Support",
+    children: [
+      { key: "/support/enquiry", icon: <CustomerServiceFilled />, label: "Enquiry" },
     ],
   }
 ];
