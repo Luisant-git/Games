@@ -16,12 +16,12 @@ import {
   MoneyCollectOutlined,
   TagsOutlined,
   AppstoreOutlined,
-  PieChartFilled,
   DotChartOutlined,
   AreaChartOutlined,
   RadarChartOutlined,
   CustomerServiceOutlined,
   CustomerServiceFilled,
+  PieChartOutlined,
 } from "@ant-design/icons";
 
 const Sidebar = ({ isOpen, onClose, isMobile }) => {
@@ -74,7 +74,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
     icon: <BarChartOutlined />,        
     label: "Reports",
     children: [
-      { key: "/order-report", icon: <PieChartFilled />, label: "Orders Report" },
+      { key: "/order-report", icon: <PieChartOutlined />, label: "Orders Report" },
       { key: "/summary-report", icon: <DotChartOutlined />, label: "Summary Report" },
       { key: "/player-report", icon: <AreaChartOutlined />, label: "Player Report" },
       { key: "/agent-report", icon: <RadarChartOutlined />, label: "Agent Report" },
