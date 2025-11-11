@@ -373,7 +373,12 @@ const Game = ({ category, games }) => {
                 <button onClick={() => updateQuantity(game.id, 1)} disabled={!isGameActive()}>+</button>
               </div>
               <button className="add-btn" onClick={() => {
-                const number = parseInt(inputValues[game.id]) || 0;
+                const value = inputValues[game.id];
+                if (value === '' || value === undefined) {
+                  toast.error('Please enter a number');
+                  return;
+                }
+                const number = value.toString().padStart(2, '0');
                 addBet(game, number);
               }} disabled={!isGameActive()}>
                 Add
