@@ -43,8 +43,6 @@ export class SupportController {
   }
 
   @Get('admin/all')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all support tickets (admin only)' })
   @ApiResponse({ status: 200, description: 'All support tickets' })
   findAll(@Query('page') page: string, @Query('limit') limit: string) {
@@ -52,8 +50,6 @@ export class SupportController {
   }
 
   @Patch(':id/status')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update support ticket status' })
   @ApiResponse({ status: 200, description: 'Status updated successfully' })
   updateStatus(@Param('id') id: string, @Body('status') status: string) {
