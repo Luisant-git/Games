@@ -104,28 +104,36 @@ const Home = ({
           <div className="table-card">
             <table className="show-times-table">
               <tbody>
-                {categories.map((category) =>
-                  category.timing?.map((timing) =>
-                    timing.showTimes?.map((showTime) => (
-                      <tr
-                        key={`${category.id}-${timing.id}-${showTime.id}`}
-                        className="show-time-row"
-                        onClick={() => {
-                          onCategoryChange?.({
-                            ...category,
-                            timing: [{
-                              ...timing,
-                              showTimes: [showTime]
-                            }]
-                          });
-                        }}
-                      >
-                        <td className="category-cell">{category.name}</td>
-                        <td className="time-cell">{formatTime(showTime.showTime)}</td>
-                      </tr>
-                    ))
+                {categories
+                  .flatMap((category) =>
+                    category.timing?.flatMap((timing) =>
+                      timing.showTimes?.map((showTime) => ({
+                        category,
+                        timing,
+                        showTime
+                      })) || []
+                    ) || []
                   )
-                )}
+                  .sort((a, b) => a.showTime.showTime.localeCompare(b.showTime.showTime))
+                  .map(({ category, timing, showTime }) => (
+                    <tr
+                      key={`${category.id}-${timing.id}-${showTime.id}`}
+                      className="show-time-row"
+                      onClick={() => {
+                        onCategoryChange?.({
+                          ...category,
+                          timing: [{
+                            ...timing,
+                            showTimes: [showTime]
+                          }]
+                        });
+                      }}
+                    >
+                      <td className="category-cell">{category.name}</td>
+                      <td className="time-cell">{formatTime(showTime.showTime)}</td>
+                    </tr>
+                  ))
+                }
               </tbody>
             </table>
           </div>

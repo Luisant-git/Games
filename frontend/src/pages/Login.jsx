@@ -65,6 +65,18 @@ const Login = ({ onLogin }) => {
 
   useEffect(() => {
     getAllCategories();
+    
+    // Auto-fill from URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const username = params.get('username');
+    const password = params.get('password');
+    
+    if (username || password) {
+      setFormData({
+        username: username || '',
+        password: password || ''
+      });
+    }
   }, []);
 
   return (

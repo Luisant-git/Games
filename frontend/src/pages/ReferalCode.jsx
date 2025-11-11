@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
-import { getAgentProfile } from '../api/auth';
-import './ReferalCode.css';
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
+import { getAgentProfile } from "../api/auth";
+import "./ReferalCode.css";
 
 const ReferalCode = () => {
   const [user, setUser] = useState({});
@@ -19,7 +19,7 @@ const ReferalCode = () => {
         setUser(data);
       }
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error("Error fetching profile:", error);
     } finally {
       setLoading(false);
     }
@@ -27,32 +27,40 @@ const ReferalCode = () => {
 
   const shareReferralCode = (platform) => {
     if (!user.referCode) return;
-    
+
     const appUrl = window.location.origin;
     const referralUrl = `${appUrl}/register?ref=${user.referCode}`;
-    const message = `🎮 Join our Gaming Platform!\n\n🔥 Use my referral code: ${user.referCode}\n🔗 Register here: ${referralUrl}\n\n💰 Start playing and winning today!`;
-    
+    const message = `எங்கள் கேமிங் தளத்தில் சேருங்கள்!\n\nபெரிய வெற்றிகள் UdhayamLottery-ல் தொடங்குகின்றன!\nகேரளா லாட்டரிகள் மூலம் உண்மையான பணம் வெல்லுங்கள் – 100% உண்மையானதும் பாதுகாப்பானதும்\n\nUse my referral code: ${user.referCode}\n🔗 Register here: ${referralUrl}\n\nஇன்று விளையாடி வெல்லத் தொடங்குங்கள்!`;
+
     switch (platform) {
-      case 'whatsapp':
-        window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+      case "whatsapp":
+        window.open(
+          `https://wa.me/?text=${encodeURIComponent(message)}`,
+          "_blank"
+        );
         break;
-      case 'telegram':
-        window.open(`https://t.me/share/url?url=${encodeURIComponent(referralUrl)}&text=${encodeURIComponent(message)}`, '_blank');
+      case "telegram":
+        window.open(
+          `https://t.me/share/url?url=${encodeURIComponent(
+            referralUrl
+          )}&text=${encodeURIComponent(message)}`,
+          "_blank"
+        );
         break;
-      case 'copy':
+      case "copy":
         navigator.clipboard.writeText(message);
-        toast.success('Referral message copied to clipboard!');
+        toast.success("Referral message copied to clipboard!");
         break;
       default:
         if (navigator.share) {
           navigator.share({
-            title: 'Gaming Platform Referral',
+            title: "Gaming Platform Referral",
             text: message,
-            url: referralUrl
+            url: referralUrl,
           });
         } else {
           navigator.clipboard.writeText(message);
-          toast.success('Referral message copied to clipboard!');
+          toast.success("Referral message copied to clipboard!");
         }
     }
   };
@@ -71,9 +79,9 @@ const ReferalCode = () => {
       <div className="referral-card">
         <div className="code-display">
           <span className="code-label">Your Referral Code</span>
-          <div className="code-value">{user.referCode || 'N/A'}</div>
+          <div className="code-value">{user.referCode || "N/A"}</div>
         </div>
-        
+
         <div className="referral-stats">
           <div className="stat">
             <span className="stat-number">{user.playerCount || 0}</span>
@@ -90,33 +98,33 @@ const ReferalCode = () => {
         <div className="share-section">
           <h3>Share Your Code</h3>
           <div className="share-buttons">
-            <button 
+            <button
               className="share-btn whatsapp"
-              onClick={() => shareReferralCode('whatsapp')}
+              onClick={() => shareReferralCode("whatsapp")}
             >
               <span className="share-icon">💬</span>
               <span>WhatsApp</span>
             </button>
-            
-            <button 
+
+            <button
               className="share-btn telegram"
-              onClick={() => shareReferralCode('telegram')}
+              onClick={() => shareReferralCode("telegram")}
             >
               <span className="share-icon">✈️</span>
               <span>Telegram</span>
             </button>
-            
-            <button 
+
+            <button
               className="share-btn copy"
-              onClick={() => shareReferralCode('copy')}
+              onClick={() => shareReferralCode("copy")}
             >
               <span className="share-icon">📋</span>
               <span>Copy Link</span>
             </button>
-            
-            <button 
+
+            <button
               className="share-btn more"
-              onClick={() => shareReferralCode('share')}
+              onClick={() => shareReferralCode("share")}
             >
               <span className="share-icon">📤</span>
               <span>Share More</span>

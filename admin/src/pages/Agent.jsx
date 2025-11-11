@@ -71,7 +71,8 @@ const Agent = () => {
     }
     
     const password = agent.plainPassword || '[Contact admin for password]'
-    const message = `Hello! Your agent account has been created:\n\nUsername: ${agent.username}\nPassword: ${password}\nRefer Code: ${agent.referCode}\n\nThank you!`
+    const loginUrl = `https://udhayam.co.in/login?username=${encodeURIComponent(agent.username)}&password=${encodeURIComponent(password)}`
+    const message = `Hello! Your agent account has been created:\n\nUsername: ${agent.username}\nPassword: ${password}\nRefer Code: ${agent.referCode}\n\nLogin here: ${loginUrl}\n\nThank you!`
     const whatsappUrl = `https://wa.me/91${agent.phone}?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, '_blank')
   }
