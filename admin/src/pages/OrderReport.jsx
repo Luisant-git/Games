@@ -32,6 +32,7 @@ export default function OrderReport() {
   }
 
   const [metadata, setMetadata] = useState(null)
+  const [totalAmount, setTotalAmount] = useState(0)
 
   const fetchData = async (filterParams = {}) => {
     setLoading(true)
@@ -39,6 +40,7 @@ export default function OrderReport() {
       const result = await getOrderReport(filterParams)
       setData(result.data || result)
       setMetadata(result.metadata || null)
+      setTotalAmount(result.totalAmount || 0)
       if (result.pagination) {
         setPagination({
           total: result.pagination.total,
@@ -204,6 +206,12 @@ export default function OrderReport() {
           size="small"
         />
       </div>
+
+      {totalAmount > 0 && (
+        <div style={{ padding: '10px 0.5rem', fontSize: '16px', fontWeight: 'bold', textAlign: 'right' }}>
+          Total Amount: ₹{totalAmount}
+        </div>
+      )}
     </div>
   )
 }

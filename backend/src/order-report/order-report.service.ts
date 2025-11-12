@@ -67,6 +67,7 @@ export class OrderReportService {
     }, {});
 
     const allData = Object.values(groupedData);
+    const totalAmount = allData.reduce((sum: number, item: any) => sum + item.amount, 0);
     const total = allData.length;
     const page = filterDto.page || 1;
     const limit = filterDto.limit || 10;
@@ -102,6 +103,7 @@ export class OrderReportService {
     return { 
       data, 
       metadata,
+      totalAmount,
       pagination: {
         total,
         page,
@@ -210,17 +212,24 @@ export class OrderReportService {
           return `${day}-${month}-${year}`;
         };
 
-        message += `Category: ${showtime.timing.category.name}\n`;
+        // message += `Category: ${showtime.timing.category.name}\n`;
         message += `Showtime: ${formatTime(showtime.showTime)}\n`;
         message += `Date: ${formatDate(targetDate)}\n\n`;
       }
     }
 
+    let totalAmount = 0;
     Object.entries(groupedByBoard).forEach(([board, items]: [string, any[]]) => {
       items.forEach((item) => {
+        const itemAmount = gamePlays
+          .filter(p => p.board === board && p.numbers === item.number)
+          .reduce((sum, p) => sum + p.amount, 0);
+        totalAmount += itemAmount;
         message += `${board}\n${item.number} * ${item.qty}\n\n`;
       });
     });
+
+    message += `\nTotal Amount: ₹${totalAmount}`;
 
     return { message: message.trim() };
   }
