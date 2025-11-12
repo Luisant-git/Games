@@ -55,23 +55,21 @@ export class GamesService {
   async playGame(playerId: number, playGameDto: PlayGameDto) {
     const { categoryId, category, showtimeId, showTime, playStart, playEnd, gameplay } = playGameDto;
     
-    // Check if current time is within play window (time only, not date)
+    // Check if current time is within play window
     const now = new Date();
-    const currentTime = now.getHours() * 60 + now.getMinutes();
-    
     const playStartTime = new Date(playStart);
     const playEndTime = new Date(playEnd);
-    const startMinutes = playStartTime.getHours() * 60 + playStartTime.getMinutes();
-    const endMinutes = playEndTime.getHours() * 60 + playEndTime.getMinutes();
     
-    console.log(`Current time: ${now.getHours()}:${now.getMinutes()} (${currentTime} minutes)`);
-    console.log(`Play window: ${playStartTime.getHours()}:${playStartTime.getMinutes()} - ${playEndTime.getHours()}:${playEndTime.getMinutes()} (${startMinutes}-${endMinutes} minutes)`);
+    console.log('=== PLAY TIME VALIDATION ===');
+    console.log('Current time (server):', now.toISOString(), '|', now.toString());
+    console.log('Play start:', playStartTime.toISOString(), '|', playStartTime.toString());
+    console.log('Play end:', playEndTime.toISOString(), '|', playEndTime.toString());
+    console.log('Is before start?', now < playStartTime);
+    console.log('Is after end?', now > playEndTime);
     
-    if (currentTime < startMinutes || currentTime > endMinutes) {
+    if (now < playStartTime || now > playEndTime) {
       throw new BadRequestException('Game is not available for play at this time');
     }
-
-
     
     const totalBetAmount = gameplay.reduce((sum, game) => sum + game.amount, 0);
     const totalWinAmount = 0; // Will be updated after result declaration
@@ -92,6 +90,7 @@ export class GamesService {
 
     // Calculate agent commission based on individual game commission rates (flat rates)
     let agentCommission = 0;
+    console.log('=== VALIDATION PASSED ===');
     console.log(`Player agent info:`, { 
       playerId: player.id,
       agentId: player.agentId, 
