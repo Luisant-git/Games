@@ -121,9 +121,8 @@ export default function OrderReport() {
     { title: 'S.No', dataIndex: 'sno', key: 'sno', width: 80 },
     { title: 'Board Name', dataIndex: 'board', key: 'board', width: 120 },
     { title: 'Bet Number', dataIndex: 'number', key: 'number', width: 100, render: (number) => formatNumber(number) },
-    { title: 'Amount', dataIndex: 'amount', key: 'amount', width: 100, render: (amount) => `₹${amount}` },
     { title: 'Qty', dataIndex: 'qty', key: 'qty', width: 80 },
-    { title: 'Total Amount', dataIndex: 'totalAmount', key: 'totalAmount', width: 120, render: (amount) => `₹${amount}` },
+    { title: 'Amount', dataIndex: 'amount', key: 'amount', width: 100, render: (amount) => `₹${amount}` },
   ]
 
   return (

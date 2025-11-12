@@ -59,12 +59,10 @@ export class OrderReportService {
           number: play.numbers,
           amount: 0,
           qty: 0,
-          totalAmount: 0,
         };
       }
       acc[key].qty += play.qty;
       acc[key].amount += play.amount;
-      acc[key].totalAmount += play.amount * play.qty;
       return acc;
     }, {});
 
