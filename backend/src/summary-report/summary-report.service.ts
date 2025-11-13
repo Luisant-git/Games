@@ -37,11 +37,7 @@ export class SummaryReportService {
         const balance = totalAmount - commission;
 
         const category = gh.categoryId ? await this.prisma.category.findUnique({ where: { id: gh.categoryId } }) : null;
-        
-        const showtimeDate = new Date(gh.showTime);
-        const hours = showtimeDate.getHours();
-        const minutes = showtimeDate.getMinutes().toString().padStart(2, '0');
-        const formattedShowtime = `${hours}:${minutes}`;
+        const showtime = gh.showtimeId ? await this.prisma.showTime.findUnique({ where: { id: gh.showtimeId } }) : null;
         
         const winningNumbers = gh.isWon ? gh.gameplay.filter(p => p.winAmount && p.winAmount > 0).map(p => `${p.board}-${p.numbers}`) : [];
         const winningAmount = gh.totalWinAmount;
@@ -53,7 +49,7 @@ export class SummaryReportService {
           categoryId: gh.categoryId,
           showtimeId: gh.showtimeId,
           showDate: gh.createdAt.toLocaleDateString('en-US'),
-          showtime: formattedShowtime,
+          showtime: showtime?.showTime || '-',
           entries,
           totalAmount,
           commission,
