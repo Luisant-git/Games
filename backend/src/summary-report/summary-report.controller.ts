@@ -10,14 +10,4 @@ export class SummaryReportController {
   async getSummaryReport(@Query() filterDto: SummaryReportFilterDto) {
     return this.summaryReportService.getSummaryReport(filterDto);
   }
-
-  @Get('agent')
-  async getAgentReport(@Query() filterDto: SummaryReportFilterDto) {
-    return this.summaryReportService.getAgentReport(filterDto);
-  }
-
-  @Get('winning')
-  async getWinningResult(@Query() filterDto: SummaryReportFilterDto) {
-    return this.summaryReportService.getWinningResult(filterDto);
-  }
 }
