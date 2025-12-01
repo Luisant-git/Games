@@ -50,17 +50,24 @@ const ReferralCode = () => {
         </div>
 
         <div className="referral-stats">
-          <div className="stat-card">
-            <div className="stat-icon">🎁</div>
-            <div className="stat-info">
-              <span className="stat-number">
-                ₹{userType === 'agent' ? (user.totalCommission || 0).toFixed(2) : (user.wallet?.bonusBalance || 0).toFixed(2)}
-              </span>
-              <span className="stat-label">
-                {userType === 'agent' ? 'Total Commission' : 'Referral Bonus'}
-              </span>
+          {userType === 'agent' && (
+            <div className="stat-card">
+              <div className="stat-icon">🎁</div>
+              <div className="stat-info">
+                <span className="stat-number">₹{(user.totalCommission || 0).toFixed(2)}</span>
+                <span className="stat-label">Total Commission</span>
+              </div>
             </div>
-          </div>
+          )}
+          {/* {userType === 'player' && (
+            <div className="stat-card">
+              <div className="stat-icon">🎁</div>
+              <div className="stat-info">
+                <span className="stat-number">₹{(user.wallet?.bonusBalance || 0).toFixed(2)}</span>
+                <span className="stat-label">Referral Bonus</span>
+              </div>
+            </div>
+          )} */}
 
           <div className="stat-card">
             <div className="stat-icon">👥</div>
@@ -79,9 +86,9 @@ const ReferralCode = () => {
           <h3>How it works:</h3>
           <ul>
             <li>Share your referral code with friends</li>
-            <li>When they register using your code, you earn rewards</li>
-            <li>{userType === 'agent' ? 'Earn commission on their gameplay' : 'Get ₹100 bonus instantly'}</li>
-            <li>Track your earnings and referrals here</li>
+            <li>When they register using your code, they join your network</li>
+            <li>{userType === 'agent' ? 'Earn commission on their gameplay' : 'Build your referral network and grow together'}</li>
+            <li>Track your referrals and network here</li>
           </ul>
         </div>
       </div>

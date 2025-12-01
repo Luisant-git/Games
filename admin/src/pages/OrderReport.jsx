@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Table, Input, Button, Select, Space } from 'antd'
+import { Table, Input, Button, Select, Space, Checkbox } from 'antd'
 import { SearchOutlined, WhatsAppOutlined, ReloadOutlined } from '@ant-design/icons'
 import { getOrderReport, getWhatsAppFormat, getShowtimes } from '../api/orderReport'
 import toast from 'react-hot-toast'
@@ -17,6 +17,8 @@ export default function OrderReport() {
   })
   const [loading, setLoading] = useState(false)
   const [pagination, setPagination] = useState({ total: 0, current: 1, pageSize: 10 })
+  const [selectedRows, setSelectedRows] = useState([])
+  const [selectAll, setSelectAll] = useState(false)
 
   useEffect(() => {
     fetchShowTimes()
@@ -75,13 +77,43 @@ export default function OrderReport() {
     fetchData(params)
   }
 
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedRows([])
+      setSelectAll(false)
+    } else {
+      setSelectedRows(data.map(item => item.sno))
+      setSelectAll(true)
+    }
+  }
+
+  const handleRowSelect = (sno) => {
+    setSelectedRows(prev => {
+      if (prev.includes(sno)) {
+        const newSelected = prev.filter(id => id !== sno)
+        setSelectAll(newSelected.length === data.length && data.length > 0)
+        return newSelected
+      } else {
+        const newSelected = [...prev, sno]
+        setSelectAll(newSelected.length === data.length && data.length > 0)
+        return newSelected
+      }
+    })
+  }
+
   const handleWhatsAppShare = async () => {
     try {
+      if (selectedRows.length === 0) {
+        toast.error('Please select at least one order to share')
+        return
+      }
+      
       const params = { date: dayjs().format('YYYY-MM-DD') }
       if (filters.showtimeId) params.showtimeId = filters.showtimeId
       if (filters.board) params.board = filters.board
       if (filters.qty) params.qty = filters.qty
-      const result = await getWhatsAppFormat(params)
+      
+      const result = await getWhatsAppFormat(params, selectedRows, selectAll)
       const message = encodeURIComponent(result.message)
       window.open(`https://wa.me/?text=${message}`, '_blank')
     } catch (error) {
@@ -120,6 +152,17 @@ export default function OrderReport() {
   }
 
   const columns = [
+    { 
+      title: <Checkbox checked={selectAll} onChange={handleSelectAll}>Select All</Checkbox>, 
+      key: 'select', 
+      width: 120,
+      render: (_, record) => (
+        <Checkbox 
+          checked={selectedRows.includes(record.sno)} 
+          onChange={() => handleRowSelect(record.sno)}
+        />
+      )
+    },
     { title: 'S.No', dataIndex: 'sno', key: 'sno', width: 80 },
     { title: 'Board Name', dataIndex: 'board', key: 'board', width: 120 },
     { title: 'Bet Number', dataIndex: 'number', key: 'number', width: 100, render: (number) => formatNumber(number) },
@@ -164,11 +207,17 @@ export default function OrderReport() {
             style={{ width: 120 }}
           />
           <Button type="primary" onClick={handleSearch}>Search</Button>
-          <Button type="primary" icon={<WhatsAppOutlined />} style={{ backgroundColor: '#25D366' }} onClick={handleWhatsAppShare}>
-            Share
+          <Button 
+            type="primary" 
+            icon={<WhatsAppOutlined />} 
+            style={{ backgroundColor: '#25D366' }} 
+            onClick={handleWhatsAppShare}
+            disabled={selectedRows.length === 0}
+          >
+            Share Selected ({selectedRows.length})
           </Button>
           <Button icon={<ReloadOutlined />} onClick={handleSearch}></Button>
-          <Button onClick={() => { setFilters({ showtimeId: null, board: '', qty: '' }); fetchData(); }}>Clear</Button>
+          <Button onClick={() => { setFilters({ showtimeId: null, board: '', qty: '' }); setSelectedRows([]); setSelectAll(false); fetchData(); }}>Clear</Button>
         </Space>
       </div>
 

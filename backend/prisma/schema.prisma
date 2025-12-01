@@ -217,7 +217,6 @@ model Withdraw {
   transferDetails Json?
   amount          Float
   ticket          Int?
-  screenshot      String
   referenceNumber String?        @unique
   status          WithdrawStatus
   createdAt       DateTime       @default(now())

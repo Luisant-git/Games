@@ -49,8 +49,6 @@ const Withdraw = () => {
   const [upiAppName, setUpiAppName] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [screenshotFile, setScreenshotFile] = useState(null);
-  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetchBalance();
@@ -96,28 +94,9 @@ const Withdraw = () => {
         toast.error("Amount is required");
         return;
       }
-      if (!screenshotFile) {
-        toast.error("Screenshot is required");
-        return;
-      }
       if (parseFloat(amount) > balance) {
         toast.error("Insufficient balance");
         return;
-      }
-
-      let screenshotUrl = null;
-
-      if (screenshotFile) {
-        setUploading(true);
-        try {
-          const uploadResponse = await uploadFile(screenshotFile);
-          screenshotUrl = uploadResponse.filename;
-        } catch (uploadError) {
-          toast.error("Failed to upload screenshot");
-          return;
-        } finally {
-          setUploading(false);
-        }
       }
 
       let transferDetails = {};
@@ -154,7 +133,6 @@ const Withdraw = () => {
         amount: parseFloat(amount),
         ...(name && { name }),
         ...(phone && { phone }),
-        ...(screenshotUrl && { screenshot: screenshotUrl }),
       };
 
       const response = await createWithdraw(data);
@@ -184,7 +162,6 @@ const Withdraw = () => {
     resetBankForm();
     setUpiId("");
     setUpiAppName("");
-    setScreenshotFile(null);
   };
 
   const getAllWithdrawHistory = async () => {
@@ -450,25 +427,12 @@ const Withdraw = () => {
               />
             </div>
 
-            <div className="form-group">
-              <label>Screenshot <span style={{color: 'red'}}>*</span></label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setScreenshotFile(e.target.files[0])}
-                required
-              />
-              {screenshotFile && <p>Selected: {screenshotFile.name}</p>}
-            </div>
-
             <button
               type="submit"
               className="withdraw-button"
-              disabled={isProcessing || uploading}
+              disabled={isProcessing}
             >
-              {uploading
-                ? "Uploading..."
-                : isProcessing
+              {isProcessing
                 ? "Processing..."
                 : "WITHDRAW"}
             </button>

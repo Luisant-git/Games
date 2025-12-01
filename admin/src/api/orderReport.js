@@ -19,7 +19,7 @@ export const getOrderReport = async (filters = {}) => {
   return response.json();
 };
 
-export const getWhatsAppFormat = async (filters = {}) => {
+export const getWhatsAppFormat = async (filters = {}, selectedNumbers = [], isSelectAll = false) => {
   const params = new URLSearchParams();
   
   Object.entries(filters).forEach(([key, value]) => {
@@ -27,6 +27,13 @@ export const getWhatsAppFormat = async (filters = {}) => {
       params.append(key, value);
     }
   });
+
+  if (selectedNumbers.length > 0) {
+    params.append('selectedNumbers', selectedNumbers.join(','));
+  }
+
+  params.append('isSelectAll', isSelectAll.toString());
+
 
   const response = await fetch(`${API_BASE_URL}/order-report/whatsapp?${params}`, {
     method: "GET",

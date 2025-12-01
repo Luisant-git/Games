@@ -134,7 +134,7 @@ export class OrderReportService {
     }));
   }
 
-  async getWhatsAppFormat(filterDto: OrderReportFilterDto) {
+  async getWhatsAppFormat(filterDto: OrderReportFilterDto, selectedNumbers?: string, isSelectAll: boolean = false) {
     const targetDate = filterDto.date ? new Date(filterDto.date) : new Date();
     targetDate.setHours(0, 0, 0, 0);
 
@@ -166,19 +166,40 @@ export class OrderReportService {
       },
     });
 
-    const groupedByBoard: Record<string, any[]> = gamePlays.reduce((acc, play) => {
-      if (!acc[play.board]) {
-        acc[play.board] = [];
-      }
-      const existing = acc[play.board].find((item) => item.number === play.numbers);
-      if (existing) {
-        existing.qty += play.qty;
-      } else {
-        acc[play.board].push({
+    const groupedData: Record<string, any> = gamePlays.reduce((acc, play) => {
+      const key = `${play.board}-${play.numbers}`;
+      if (!acc[key]) {
+        acc[key] = {
+          board: play.board,
           number: play.numbers,
-          qty: play.qty,
-        });
+          amount: 0,
+          qty: 0,
+        };
       }
+      acc[key].qty += play.qty;
+      acc[key].amount += play.amount;
+      return acc;
+    }, {});
+
+    let allData = Object.values(groupedData).map((item: any, index) => ({
+      sno: index + 1,
+      ...item,
+    }));
+
+    if (selectedNumbers) {
+      const selectedSNos = selectedNumbers.split(',').map(n => parseInt(n));
+      allData = allData.filter((item: any) => selectedSNos.includes(item.sno));
+    }
+
+    const groupedByBoard: Record<string, any[]> = allData.reduce((acc, item: any) => {
+      if (!acc[item.board]) {
+        acc[item.board] = [];
+      }
+      acc[item.board].push({
+        number: item.number,
+        qty: item.qty,
+        amount: item.amount,
+      });
       return acc;
     }, {});
 
@@ -221,15 +242,14 @@ export class OrderReportService {
     let totalAmount = 0;
     Object.entries(groupedByBoard).forEach(([board, items]: [string, any[]]) => {
       items.forEach((item) => {
-        const itemAmount = gamePlays
-          .filter(p => p.board === board && p.numbers === item.number)
-          .reduce((sum, p) => sum + p.amount, 0);
-        totalAmount += itemAmount;
+        totalAmount += item.amount;
         message += `${board}\n${item.number} * ${item.qty}\n\n`;
       });
     });
 
-    message += `\nTotal Amount: ₹${totalAmount}`;
+    if (isSelectAll) {
+      message += `\nTotal Amount: ₹${totalAmount}`;
+    }
 
     return { message: message.trim() };
   }

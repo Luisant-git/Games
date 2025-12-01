@@ -441,7 +441,7 @@ export class AgentService {
       queryOptions.take = limit;
     }
     
-    const [gameHistories, total] = await Promise.all([
+    const [gameHistories, total, categories, showtimes] = await Promise.all([
       this.prisma.gameHistory.findMany(queryOptions),
       this.prisma.gameHistory.count({
         where: {
@@ -449,10 +449,22 @@ export class AgentService {
             agentId: agentId
           }
         }
-      })
+      }),
+      this.prisma.category.findMany(),
+      this.prisma.showTime.findMany()
     ]);
 
-    const result: any = { data: gameHistories };
+    const enrichedData = gameHistories.map(history => {
+      const category = categories.find(c => c.id === history.categoryId);
+      const showtime = showtimes.find(s => s.id === history.showtimeId);
+      return {
+        ...history,
+        category,
+        showtime
+      };
+    });
+
+    const result: any = { data: enrichedData };
     
     if (page && limit) {
       result.pagination = { page, limit, total, totalPages: Math.ceil(total / limit) };

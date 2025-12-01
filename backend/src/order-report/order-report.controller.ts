@@ -17,7 +17,7 @@ export class OrderReportController {
   }
 
   @Get('whatsapp')
-  async getWhatsAppFormat(@Query() filterDto: OrderReportFilterDto) {
-    return this.orderReportService.getWhatsAppFormat(filterDto);
+  async getWhatsAppFormat(@Query() filterDto: OrderReportFilterDto, @Query('selectedNumbers') selectedNumbers?: string, @Query('isSelectAll') isSelectAll?: string) {
+    return this.orderReportService.getWhatsAppFormat(filterDto, selectedNumbers, isSelectAll === 'true');
   }
 }

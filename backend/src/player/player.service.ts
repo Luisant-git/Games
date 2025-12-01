@@ -110,7 +110,7 @@ export class PlayerService {
           data: {
             referrerId: referrer.id,
             referredId: player.id,
-            amount: 100,
+            amount: 0,
           },
         });
         
@@ -119,7 +119,7 @@ export class PlayerService {
           where: { playerId: referrer.id },
           data: {
             bonusBalance: {
-              increment: 100,
+              increment: 0,
             },
           },
         });

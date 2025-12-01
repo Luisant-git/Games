@@ -612,6 +612,18 @@ const Game = ({ category, games }) => {
               <h3>Confirm Bets</h3>
               <button className="close-x" onClick={() => setShowConfirm(false)}>×</button>
             </div>
+            {selectedShow && category && (
+              <div className="confirm-game-info">
+                <div className="info-row">
+                  {/* <span className="info-label">🎮 Category:</span> */}
+                  <span className="info-value">{category.name}</span>
+                </div>
+                <div className="info-row">
+                  {/* <span className="info-label">⏰ Showtime:</span> */}
+                  <span className="info-value">{new Date(`2000-01-01T${selectedShow.showTime}:00`).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</span>
+                </div>
+              </div>
+            )}
             {bets.length === 0 ? (
               <div className="empty-bets">
                 <p>No bets added yet</p>

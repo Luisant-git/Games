@@ -105,14 +105,18 @@ const Profile = () => {
           <span className="stat-number">₹{balance}</span>
           <span className="stat-label">Wallet Balance</span>
         </div>
-        <div className="stat-item">
-          <span className="stat-number">
-            {userType === 'agent' ? `📈₹${(user.totalCommission || 0).toFixed(2)}` : `🎁₹${(user.wallet?.bonusBalance || 0).toFixed(2)}`}
-          </span>
-          <span className="stat-label">
-            {userType === 'agent' ? 'Commission' : 'Referral Bonus'}
-          </span>
-        </div>
+        {userType === 'agent' && (
+          <div className="stat-item">
+            <span className="stat-number">📈₹{(user.totalCommission || 0).toFixed(2)}</span>
+            <span className="stat-label">Commission</span>
+          </div>
+        )}
+        {/* {userType === 'player' && (
+          <div className="stat-item">
+            <span className="stat-number">🎁₹{(user.wallet?.bonusBalance || 0).toFixed(2)}</span>
+            <span className="stat-label">Referral Bonus</span>
+          </div>
+        )} */}
       </div>
 
       <div className="profile-menu">
