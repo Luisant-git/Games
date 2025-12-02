@@ -240,7 +240,7 @@ const Game = ({ category, games }) => {
                   className={`time-btn ${selectedShow?.id === t.id ? 'selected' : ''}`}
                   onClick={() => setSelectedShow(t)}
                 >
-                  {new Date(`2000-01-01T${t.showTime}:00`).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
+                  {new Date(`2000-01-01T${t.showTime}:00`).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true})}
                 </button>
               </div>
             ))}
@@ -620,7 +620,7 @@ const Game = ({ category, games }) => {
                 </div>
                 <div className="info-row">
                   {/* <span className="info-label">⏰ Showtime:</span> */}
-                  <span className="info-value">{new Date(`2000-01-01T${selectedShow.showTime}:00`).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</span>
+                  <span className="info-value">{new Date(`2000-01-01T${selectedShow.showTime}:00`).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true})}</span>
                 </div>
               </div>
             )}
