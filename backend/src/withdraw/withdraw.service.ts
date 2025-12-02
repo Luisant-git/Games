@@ -61,6 +61,27 @@ export class WithdrawService {
       withdrawData.playerId = userId;
     }
 
+    // Deduct amount from wallet instantly when withdraw request is created
+    if (userType === 'agent') {
+      await this.prisma.agentWallet.update({
+        where: { agentId: userId },
+        data: {
+          balance: {
+            decrement: createWithdrawDto.amount,
+          },
+        },
+      });
+    } else {
+      await this.prisma.playerWallet.update({
+        where: { playerId: userId },
+        data: {
+          balance: {
+            decrement: createWithdrawDto.amount,
+          },
+        },
+      });
+    }
+
     const withdraw = await this.prisma.withdraw.create({
       data: withdrawData,
       include: {
@@ -231,7 +252,7 @@ export class WithdrawService {
       updateData.ticket = updateWithdrawStatusDto.ticket;
     }
 
-    // Generate reference number and deduct amount from wallet when status changes to COMPLETED
+    // Generate reference number when status changes to COMPLETED
     if (updateWithdrawStatusDto.status === 'COMPLETED') {
       // Generate unique reference number: WD + timestamp + random 4 digits
       let referenceNumber;
@@ -253,37 +274,25 @@ export class WithdrawService {
       }
       
       updateData.referenceNumber = referenceNumber;
+    }
+    
+    // Refund amount to wallet if status changes to FAILED or MISMATCH
+    if (updateWithdrawStatusDto.status === 'FAILED' || updateWithdrawStatusDto.status === 'MISMATCH') {
       if (withdraw.playerId) {
-        const playerWallet = await this.prisma.playerWallet.findUnique({
-          where: { playerId: withdraw.playerId },
-        });
-        
-        if (!playerWallet || playerWallet.balance < withdraw.amount) {
-          throw new BadRequestException('Insufficient balance to complete withdrawal');
-        }
-
         await this.prisma.playerWallet.update({
           where: { playerId: withdraw.playerId },
           data: {
             balance: {
-              decrement: withdraw.amount,
+              increment: withdraw.amount,
             },
           },
         });
       } else if (withdraw.agentId) {
-        const agentWallet = await this.prisma.agentWallet.findUnique({
-          where: { agentId: withdraw.agentId },
-        });
-        
-        if (!agentWallet || agentWallet.balance < withdraw.amount) {
-          throw new BadRequestException('Insufficient balance to complete withdrawal');
-        }
-
         await this.prisma.agentWallet.update({
           where: { agentId: withdraw.agentId },
           data: {
             balance: {
-              decrement: withdraw.amount,
+              increment: withdraw.amount,
             },
           },
         });
