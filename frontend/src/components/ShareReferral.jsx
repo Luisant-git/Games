@@ -7,7 +7,7 @@ const ShareReferral = ({ referCode, onClose }) => {
 
     const appUrl = window.location.origin;
     const referralUrl = `${appUrl}/register?ref=${referCode}`;
-    const message = `எங்கள் கேமிங் தளத்தில் சேருங்கள்!\n\nபெரிய வெற்றிகள் UdhayamLottery-ல் தொடங்குகின்றன!\nகேரளா லாட்டரிகள் மூலம் உண்மையான பணம் வெல்லுங்கள் – 100% உண்மையானதும் பாதுகாப்பானதும்\n\n-> Use my referral code: ${referCode}\n-> Register here: ${referralUrl}\n\nஇன்று விளையாடி வெல்லத் தொடங்குங்கள்!`;
+    const message = `\n-> Use my referral code: ${referCode}\n-> Register here: ${referralUrl}`;
 
     switch (platform) {
       case "whatsapp":

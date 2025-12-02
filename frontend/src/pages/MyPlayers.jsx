@@ -93,16 +93,23 @@ const MyPlayers = () => {
   };
 
   const handleSeeMore = (player) => {
-    const historyData = player.gameHistory?.map((history, index) => ({
-      sno: index + 1,
-      category: history.category?.name || 'N/A',
-      showDate: history.showTime || 'N/A',
-      showtime: history.showtime?.showTime || 'N/A',
-      entries: history.gameplay?.length || 1,
-      totalAmount: history.totalBetAmount || 0,
-      commission: history.agentCommission || 0,
-      winningAmount: history.totalWinAmount || 0,
-    })) || [];
+    const historyData = player.gameHistory?.map((history, index) => {
+      const showDateTime = new Date(history.showTime);
+      const hours = showDateTime.getHours();
+      const minutes = showDateTime.getMinutes().toString().padStart(2, '0');
+      const showtime = `${hours}:${minutes}`;
+      
+      return {
+        sno: index + 1,
+        category: history.category?.name || 'N/A',
+        showDate: history.showTime || 'N/A',
+        showtime: showtime,
+        entries: history.gameplay?.length || 1,
+        totalAmount: history.totalBetAmount || 0,
+        commission: history.agentCommission || 0,
+        winningAmount: history.totalWinAmount || 0,
+      };
+    }) || [];
     setSelectedPlayerHistory(historyData);
     setSelectedPlayerName(player.username);
     setModalVisible(true);
@@ -110,7 +117,10 @@ const MyPlayers = () => {
 
   const formatTime = (time) => {
     if (!time || typeof time !== 'string') return 'N/A';
-    const [hours, minutes] = time.split(':');
+    const parts = time.split(':');
+    if (parts.length < 2) return 'N/A';
+    const hours = parts[0];
+    const minutes = parts[1] || '00';
     const hour = parseInt(hours);
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const hour12 = hour % 12 || 12;
