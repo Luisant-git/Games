@@ -39,9 +39,5 @@ export const publishResult = async (id) => {
     },
   });
   
-  if (!response.ok) {
-    throw new Error('Failed to publish result');
-  }
-  
-  return response.json();
+  return response;
 };

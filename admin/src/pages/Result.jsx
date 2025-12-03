@@ -75,7 +75,13 @@ const Result = () => {
 
   const handlePublish = async (id) => {
     try {
-      await publishResult(id);
+      const response = await publishResult(id);
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error publishing result:', errorData);
+        toast.error(errorData.message || 'Error publishing result');
+        return;
+      }
       toast.success('Result published successfully!');
       fetchResults();
     } catch (error) {
@@ -90,6 +96,12 @@ const Result = () => {
   };
 
   const columns = [
+    {
+      title: 'S.No',
+      key: 'sno',
+      width: 80,
+      render: (_, __, index) => index + 1,
+    },
     {
       title: 'Date',
       dataIndex: 'date',

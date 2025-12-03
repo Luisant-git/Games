@@ -104,6 +104,7 @@ const Agent = () => {
               <table className="responsive-table">
                 <thead>
                   <tr>
+                    <th>S.No</th>
                     <th>Name</th>
                     <th>Username</th>
                     <th>Phone</th>
@@ -117,8 +118,9 @@ const Agent = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {allAgents.map((agent) => (
+                  {allAgents.map((agent, index) => (
                     <tr key={agent.id}>
+                      <td>{index + 1}</td>
                       <td>{agent.name}</td>
                       <td>{agent.username}</td>
                       <td>{agent.phone || '-'}</td>

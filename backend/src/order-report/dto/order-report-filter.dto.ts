@@ -21,6 +21,10 @@ export class OrderReportFilterDto {
   qty?: number;
 
   @IsOptional()
+  @IsString()
+  betNumber?: string;
+
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
   page?: number = 1;

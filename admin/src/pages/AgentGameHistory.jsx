@@ -51,6 +51,12 @@ const AgentGameHistory = () => {
 
   const columns = [
     {
+      title: 'S.No',
+      key: 'sno',
+      width: 70,
+      render: (_, __, index) => index + 1
+    },
+    {
       title: 'Date',
       dataIndex: 'createdAt',
       key: 'date',

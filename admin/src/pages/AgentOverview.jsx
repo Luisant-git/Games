@@ -47,11 +47,17 @@ const AgentOverview = () => {
 
   const columns = [
     {
+      title: 'S.No',
+      key: 'sno',
+      width: 70,
+      fixed: isMobile ? false : 'left',
+      render: (_, __, index) => index + 1
+    },
+    {
       title: 'Agent',
       dataIndex: ['agent', 'username'],
       key: 'agent',
       width: 120,
-      fixed: isMobile ? false : 'left',
       render: (username, record) => (
         <div>
           <div>{username}</div>

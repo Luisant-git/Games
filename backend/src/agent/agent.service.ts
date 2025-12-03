@@ -464,7 +464,35 @@ export class AgentService {
       };
     });
 
-    const result: any = { data: enrichedData };
+    // Group by categoryId, showtimeId, and showDate
+    const grouped = enrichedData.reduce((acc: any, history: any) => {
+      const showDate = new Date(history.showTime).toISOString().split('T')[0];
+      const key = `${history.categoryId}-${history.showtimeId}-${showDate}`;
+      
+      if (!acc[key]) {
+        acc[key] = {
+          player: history.player,
+          categoryId: history.categoryId,
+          showtimeId: history.showtimeId,
+          showTime: history.showTime,
+          totalBetAmount: 0,
+          totalWinAmount: 0,
+          agentCommission: 0,
+          category: history.category,
+          showtime: history.showtime,
+          gameplay: []
+        };
+      }
+      
+      acc[key].totalBetAmount += history.totalBetAmount;
+      acc[key].totalWinAmount += history.totalWinAmount;
+      acc[key].agentCommission += history.agentCommission;
+      acc[key].gameplay.push(...history.gameplay);
+      
+      return acc;
+    }, {});
+
+    const result: any = { data: Object.values(grouped) };
     
     if (page && limit) {
       result.pagination = { page, limit, total, totalPages: Math.ceil(total / limit) };

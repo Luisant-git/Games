@@ -44,6 +44,12 @@ const Withdraw = () => {
 
   const columns = [
     {
+      title: 'S.No',
+      key: 'sno',
+      width: 70,
+      render: (_, __, index) => index + 1,
+    },
+    {
       title: 'User Type',
       key: 'userType',
       width: 100,

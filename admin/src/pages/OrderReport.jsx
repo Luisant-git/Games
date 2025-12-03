@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Table, Input, Button, Select, Space, Checkbox } from 'antd'
 import { SearchOutlined, WhatsAppOutlined, ReloadOutlined } from '@ant-design/icons'
 import { getOrderReport, getWhatsAppFormat, getShowtimes } from '../api/orderReport'
+import { gamesAPI } from '../api/games'
 import toast from 'react-hot-toast'
 import dayjs from 'dayjs'
 
@@ -10,10 +11,12 @@ const { Option } = Select
 export default function OrderReport() {
   const [data, setData] = useState([])
   const [showTimes, setShowTimes] = useState([])
+  const [games, setGames] = useState([])
   const [filters, setFilters] = useState({ 
     showtimeId: null,
     board: '', 
-    qty: '' 
+    qty: '',
+    betNumber: '' 
   })
   const [loading, setLoading] = useState(false)
   const [pagination, setPagination] = useState({ total: 0, current: 1, pageSize: 10 })
@@ -22,6 +25,7 @@ export default function OrderReport() {
 
   useEffect(() => {
     fetchShowTimes()
+    fetchGames()
   }, [])
 
   const fetchShowTimes = async () => {
@@ -30,6 +34,16 @@ export default function OrderReport() {
       setShowTimes(result)
     } catch (error) {
       toast.error('Failed to fetch showtimes')
+    }
+  }
+
+  const fetchGames = async () => {
+    try {
+      const result = await gamesAPI.getAll()
+      const uniqueBoards = [...new Set(result.map(game => game.board))]
+      setGames(uniqueBoards)
+    } catch (error) {
+      toast.error('Failed to fetch games')
     }
   }
 
@@ -66,6 +80,7 @@ export default function OrderReport() {
     if (filters.showtimeId) params.showtimeId = filters.showtimeId
     if (filters.board) params.board = filters.board
     if (filters.qty) params.qty = filters.qty
+    if (filters.betNumber) params.betNumber = filters.betNumber
     fetchData(params)
   }
 
@@ -74,6 +89,7 @@ export default function OrderReport() {
     if (filters.showtimeId) params.showtimeId = filters.showtimeId
     if (filters.board) params.board = filters.board
     if (filters.qty) params.qty = filters.qty
+    if (filters.betNumber) params.betNumber = filters.betNumber
     fetchData(params)
   }
 
@@ -112,6 +128,7 @@ export default function OrderReport() {
       if (filters.showtimeId) params.showtimeId = filters.showtimeId
       if (filters.board) params.board = filters.board
       if (filters.qty) params.qty = filters.qty
+      if (filters.betNumber) params.betNumber = filters.betNumber
       
       const result = await getWhatsAppFormat(params, selectedRows, selectAll)
       const message = encodeURIComponent(result.message)
@@ -153,17 +170,20 @@ export default function OrderReport() {
 
   const columns = [
     { 
-      title: <Checkbox checked={selectAll} onChange={handleSelectAll}>Select All</Checkbox>, 
-      key: 'select', 
-      width: 120,
-      render: (_, record) => (
-        <Checkbox 
-          checked={selectedRows.includes(record.sno)} 
-          onChange={() => handleRowSelect(record.sno)}
-        />
+      title: <><Checkbox checked={selectAll} onChange={handleSelectAll} /> S.No</>, 
+      dataIndex: 'sno', 
+      key: 'sno', 
+      width: 100,
+      render: (sno, record) => (
+        <>
+          <Checkbox 
+            checked={selectedRows.includes(record.sno)} 
+            onChange={() => handleRowSelect(record.sno)}
+          />
+          {' '}{sno}
+        </>
       )
     },
-    { title: 'S.No', dataIndex: 'sno', key: 'sno', width: 80 },
     { title: 'Board Name', dataIndex: 'board', key: 'board', width: 120 },
     { title: 'Bet Number', dataIndex: 'number', key: 'number', width: 100, render: (number) => formatNumber(number) },
     { title: 'Qty', dataIndex: 'qty', key: 'qty', width: 80 },
@@ -192,18 +212,30 @@ export default function OrderReport() {
             ))}
           </Select>
 
-          <Input
+          <Select
             placeholder="Board"
-            value={filters.board}
-            onChange={(e) => handleFilterChange('board', e.target.value)}
+            value={filters.board || undefined}
+            onChange={(value) => handleFilterChange('board', value)}
             style={{ width: 120 }}
-            prefix={<SearchOutlined />}
-          />
+            allowClear
+          >
+            {games.map((board) => (
+              <Option key={board} value={board}>
+                {board}
+              </Option>
+            ))}
+          </Select>
           <Input
             placeholder="Quantity"
             type="number"
             value={filters.qty}
             onChange={(e) => handleFilterChange('qty', e.target.value)}
+            style={{ width: 110 }}
+          />
+          <Input
+            placeholder="Bet Number"
+            value={filters.betNumber}
+            onChange={(e) => handleFilterChange('betNumber', e.target.value)}
             style={{ width: 120 }}
           />
           <Button type="primary" onClick={handleSearch}>Search</Button>
@@ -217,7 +249,7 @@ export default function OrderReport() {
             Share Selected ({selectedRows.length})
           </Button>
           <Button icon={<ReloadOutlined />} onClick={handleSearch}></Button>
-          <Button onClick={() => { setFilters({ showtimeId: null, board: '', qty: '' }); setSelectedRows([]); setSelectAll(false); fetchData(); }}>Clear</Button>
+          <Button onClick={() => { setFilters({ showtimeId: null, board: '', qty: '', betNumber: '' }); setSelectedRows([]); setSelectAll(false); fetchData(); }}>Clear</Button>
         </Space>
       </div>
 

@@ -83,11 +83,10 @@ const Games = () => {
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 60,
-      render: (id) => `#${id}`,
+      title: 'S.No',
+      key: 'sno',
+      width: 70,
+      render: (_, __, index) => index + 1,
     },
     {
       title: 'Bet Type',

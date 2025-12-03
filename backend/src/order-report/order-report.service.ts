@@ -27,8 +27,8 @@ export class OrderReportService {
       where.board = { contains: filterDto.board, mode: 'insensitive' };
     }
 
-    if (filterDto.qty) {
-      where.qty = { gte: Number(filterDto.qty) };
+    if (filterDto.betNumber && filterDto.board !== 'ABC') {
+      where.numbers = { contains: filterDto.betNumber };
     }
 
     const gamePlays = await this.prisma.gamePlay.findMany({
@@ -66,7 +66,24 @@ export class OrderReportService {
       return acc;
     }, {});
 
-    const allData = Object.values(groupedData);
+    let allData = Object.values(groupedData);
+    
+    if (filterDto.qty) {
+      allData = allData.filter((item: any) => item.qty >= Number(filterDto.qty));
+    }
+    
+    if (filterDto.betNumber && filterDto.board === 'ABC') {
+      const betNumber = filterDto.betNumber;
+      allData = allData.filter((item: any) => {
+        try {
+          const numbers = JSON.parse(item.number);
+          const betDigits = betNumber.split('');
+          return betDigits.every(digit => numbers.includes(parseInt(digit)));
+        } catch {
+          return false;
+        }
+      });
+    }
     const totalAmount = allData.reduce((sum: number, item: any) => sum + item.amount, 0);
     const total = allData.length;
     const page = filterDto.page || 1;
@@ -157,6 +174,14 @@ export class OrderReportService {
 
     if (filterDto.qty) {
       where.qty = { gte: Number(filterDto.qty) };
+    }
+
+    if (filterDto.betNumber) {
+      if (filterDto.board === 'ABC') {
+        where.numbers = { contains: filterDto.betNumber };
+      } else {
+        where.numbers = { contains: filterDto.betNumber };
+      }
     }
 
     const gamePlays = await this.prisma.gamePlay.findMany({
