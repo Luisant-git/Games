@@ -58,7 +58,7 @@ const AppContent = () => {
     if (path === '/game') return 'game';
     if (path === '/history') return 'history';
     if (path === '/profile') return 'profile';
-    if (path === '/results') return 'support';
+    if (path === '/results') return 'result';
     return 'home';
   };
 
