@@ -20,7 +20,21 @@ export class ResultService {
       orderBy: { createdAt: 'desc' },
     });
 
-    const enrichedResults = await Promise.all(
+    return this.enrichResults(results);
+  }
+
+  async findPublished() {
+    const results = await this.prisma.result.findMany({
+      where: { isPublished: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return this.enrichResults(results);
+  }
+
+  private async enrichResults(results: any[]) {
+
+    return Promise.all(
       results.map(async (result) => {
         // Convert 12-hour format to 24-hour for matching
         const convertTo24Hour = (time12: string) => {
@@ -60,8 +74,6 @@ export class ResultService {
         };
       }),
     );
-
-    return enrichedResults;
   }
 
   private mapNumbersToBoards(numbers: string) {

@@ -28,10 +28,17 @@ export class ResultController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all results' })
+  @ApiOperation({ summary: 'Get all results (admin)' })
   @ApiResponse({ status: 200, description: 'Results retrieved successfully' })
   findAll() {
     return this.resultService.findAll();
+  }
+
+  @Get('public')
+  @ApiOperation({ summary: 'Get published results (public)' })
+  @ApiResponse({ status: 200, description: 'Published results retrieved successfully' })
+  findPublished() {
+    return this.resultService.findPublished();
   }
 
   @Get('analyze/:showTime')

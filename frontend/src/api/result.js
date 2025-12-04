@@ -1,7 +1,7 @@
 import { API_BASE_URL } from './config.js';
 
 export const getResults = async () => {
-  const response = await fetch(`${API_BASE_URL}/results`, {
+  const response = await fetch(`${API_BASE_URL}/results/public`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

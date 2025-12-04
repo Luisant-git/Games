@@ -19,7 +19,8 @@ const Result = () => {
       const uniqueCategories = [...new Set(data.map(r => r.category).filter(Boolean))];
       setCategories(uniqueCategories);
       if (uniqueCategories.length > 0) {
-        setSelectedCategory(uniqueCategories[0]);
+        const dearCategory = uniqueCategories.find(cat => cat.toUpperCase() === 'DEAR');
+        setSelectedCategory(dearCategory || uniqueCategories[0]);
       }
     } catch (error) {
       console.error("Error fetching results:", error);
