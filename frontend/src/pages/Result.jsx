@@ -5,6 +5,8 @@ import "./Result.css";
 const Result = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     fetchResults();
@@ -14,6 +16,11 @@ const Result = () => {
     try {
       const data = await getResults();
       setResults(data);
+      const uniqueCategories = [...new Set(data.map(r => r.category).filter(Boolean))];
+      setCategories(uniqueCategories);
+      if (uniqueCategories.length > 0) {
+        setSelectedCategory(uniqueCategories[0]);
+      }
     } catch (error) {
       console.error("Error fetching results:", error);
     } finally {
@@ -75,15 +82,31 @@ const Result = () => {
     );
   }
 
+  const filteredResults = selectedCategory 
+    ? results.filter(r => r.category === selectedCategory)
+    : results;
+
   return (
     <div className="result-container">
       <div className="result-header">
         <h2>🏆 Game Results</h2>
       </div>
 
+      <div className="category-tabs">
+        {categories.map(category => (
+          <button
+            key={category}
+            className={`category-tab ${selectedCategory === category ? 'active' : ''}`}
+            onClick={() => setSelectedCategory(category)}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+
       <div className="results-list">
-        {results.length > 0 ? (
-          Object.entries(groupResultsByDate(results)).map(
+        {filteredResults.length > 0 ? (
+          Object.entries(groupResultsByDate(filteredResults)).map(
             ([date, dateResults]) => (
               <div key={date} className="date-group">
                 <div className="date-header">{date}</div>

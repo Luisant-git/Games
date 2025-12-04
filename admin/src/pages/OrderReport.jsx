@@ -170,28 +170,31 @@ export default function OrderReport() {
 
   const columns = [
     { 
-      title: <><Checkbox checked={selectAll} onChange={handleSelectAll} /> S.No</>, 
+      title: <Checkbox checked={selectAll} onChange={handleSelectAll} />, 
       dataIndex: 'sno', 
       key: 'sno', 
-      width: 100,
+      width: 40,
       render: (sno, record) => (
-        <>
-          <Checkbox 
-            checked={selectedRows.includes(record.sno)} 
-            onChange={() => handleRowSelect(record.sno)}
-          />
-          {' '}{sno}
-        </>
+        <Checkbox 
+          checked={selectedRows.includes(record.sno)} 
+          onChange={() => handleRowSelect(record.sno)}
+        />
       )
     },
-    { title: 'Board Name', dataIndex: 'board', key: 'board', width: 120 },
-    { title: 'Bet Number', dataIndex: 'number', key: 'number', width: 100, render: (number) => formatNumber(number) },
-    { title: 'Qty', dataIndex: 'qty', key: 'qty', width: 80 },
-    { title: 'Amount', dataIndex: 'amount', key: 'amount', width: 100, render: (amount) => `₹${amount}` },
+    { 
+      title: '', 
+      dataIndex: 'display', 
+      key: 'display',
+      render: (_, record) => (
+        <span>
+          {record.sno}. <span style={{ marginLeft: '8px' }}>{record.board}</span> <span style={{ marginLeft: '8px' }}>-</span> <span style={{ marginLeft: '8px' }}>{formatNumber(record.number)}</span> <span style={{ marginLeft: '8px' }}>X</span> <span style={{ marginLeft: '8px' }}>{record.qty}</span> <span style={{ marginLeft: '8px' }}>-</span> <span style={{ marginLeft: '8px' }}>₹{record.amount}</span>
+        </span>
+      )
+    },
   ]
 
   return (
-    <div style={{ width: '100vw', marginLeft: '-1.5rem', marginRight: '-1.5rem', padding: '0 1rem' }}>
+    <div style={{ width: '100vw', marginLeft: '-1.5rem', marginRight: '-1.5rem', paddingLeft: '1rem' }}>
       <div className="section-header" style={{ padding: '0 0.5rem' }}>
         <h2>Order Report</h2>
       </div>
@@ -263,14 +266,19 @@ export default function OrderReport() {
         )}
       </div>
 
+      <div style={{ padding: '8px 0.5rem', display: 'flex', alignItems: 'center' }}>
+        <Checkbox checked={selectAll} onChange={handleSelectAll} />
+        <span style={{ marginLeft: '8px' }}>Select All</span>
+      </div>
+
       <div style={{
-        width: '100%',
+        width: 'calc(100% - 0.5rem)',
         overflowX: 'auto',
         overflowY: 'hidden',
         WebkitOverflowScrolling: 'touch',
         border: '1px solid #d9d9d9',
         borderRadius: '6px',
-        margin: '0 0.5rem'
+        marginLeft: '0.5rem'
       }}>
         <Table
           columns={columns}
@@ -285,6 +293,7 @@ export default function OrderReport() {
           }}
           onChange={handleTableChange}
           size="small"
+          showHeader={false}
         />
       </div>
 

@@ -24,7 +24,7 @@ export class OrderReportService {
     }
 
     if (filterDto.board) {
-      where.board = { contains: filterDto.board, mode: 'insensitive' };
+      where.board = { equals: filterDto.board, mode: 'insensitive' };
     }
 
     if (filterDto.betNumber && filterDto.board !== 'ABC') {
@@ -169,7 +169,7 @@ export class OrderReportService {
     }
 
     if (filterDto.board) {
-      where.board = { contains: filterDto.board, mode: 'insensitive' };
+      where.board = { equals: filterDto.board, mode: 'insensitive' };
     }
 
     if (filterDto.qty) {

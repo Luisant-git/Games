@@ -40,7 +40,33 @@ export class SummaryReportService {
         const showtimeRecord = gh.showtimeId ? await this.prisma.showTime.findUnique({ where: { id: gh.showtimeId } }) : null;
         const formattedShowtime = showtimeRecord?.showTime || '-';
         
-        const winningNumbers = gh.isWon ? gh.gameplay.filter(p => p.winAmount && p.winAmount > 0).map(p => `${p.board}-${p.numbers}`) : [];
+        const convertTo12Hour = (time24: string) => {
+          if (!time24 || time24 === '-') return '-';
+          const [hours, minutes] = time24.split(':');
+          const hour = parseInt(hours);
+          const ampm = hour >= 12 ? 'PM' : 'AM';
+          const hour12 = hour % 12 || 12;
+          return `${hour12}:${minutes} ${ampm}`;
+        };
+        
+        const showDate = new Date(gh.createdAt);
+        showDate.setHours(0, 0, 0, 0);
+        const nextDay = new Date(showDate);
+        nextDay.setDate(nextDay.getDate() + 1);
+        
+        const time12Hour = convertTo12Hour(formattedShowtime);
+        
+        const result = await this.prisma.result.findFirst({
+          where: {
+            date: {
+              gte: showDate,
+              lt: nextDay,
+            },
+            time: time12Hour,
+            isPublished: true,
+          },
+        });
+        
         const winningAmount = gh.totalWinAmount;
         const profit = balance - winningAmount;
 
@@ -55,7 +81,7 @@ export class SummaryReportService {
           totalAmount,
           commission,
           balance,
-          winningNos: winningNumbers,
+          winningNo: result?.numbers || '-',
           winningAmount,
           profit,
         };
@@ -76,7 +102,7 @@ export class SummaryReportService {
           totalAmount: 0,
           commission: 0,
           balance: 0,
-          winningNos: [],
+          winningNo: item.winningNo,
           winningAmount: 0,
           profit: 0,
           gameHistories: [],
@@ -89,7 +115,6 @@ export class SummaryReportService {
       acc[key].balance += item.balance;
       acc[key].winningAmount += item.winningAmount;
       acc[key].profit += item.profit;
-      acc[key].winningNos.push(...item.winningNos);
       acc[key].gameHistories.push(item.gameHistory);
       
       return acc;
@@ -146,7 +171,7 @@ export class SummaryReportService {
         totalAmount: item.totalAmount,
         commission: item.commission,
         balance: item.balance,
-        winningNo: item.winningNos.length > 0 ? item.winningNos.join(', ') : '-',
+        winningNo: item.winningNo,
         winningAmount: item.winningAmount,
         profit: item.profit,
         agentReport: Array.from(agentMap.values()).map((agent, idx) => ({

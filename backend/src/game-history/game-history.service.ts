@@ -209,6 +209,7 @@ export class GameHistoryService {
 
     const where = {
       agentId,
+      playerId: null,
       ...(board && {
         gameplay: {
           some: {

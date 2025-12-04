@@ -54,6 +54,18 @@ export default function SummaryReport() {
     return `${day}-${month}-${year}`
   }
 
+  const formatNumber = (number) => {
+    if (typeof number === 'string') {
+      try {
+        const parsed = JSON.parse(number)
+        return Array.isArray(parsed) ? parsed.join('') : number
+      } catch {
+        return number
+      }
+    }
+    return number
+  }
+
   const summaryColumns = [
     { title: 'S.No', dataIndex: 'sno', key: 'sno', width: 60 },
     { title: 'Category', dataIndex: 'category', key: 'category', width: 100 },
@@ -113,7 +125,7 @@ export default function SummaryReport() {
     { title: 'Username', dataIndex: 'username', key: 'username', width: 120 },
     { title: 'User Type', dataIndex: 'userType', key: 'userType', width: 100 },
     { title: 'Board Name', dataIndex: 'boardName', key: 'boardName', width: 120 },
-    { title: 'Number', dataIndex: 'number', key: 'number', width: 100 },
+    { title: 'Number', dataIndex: 'number', key: 'number', width: 100, render: (number) => formatNumber(number) },
     { title: 'Qty', dataIndex: 'qty', key: 'qty', width: 80 },
     { title: 'Rate', dataIndex: 'rate', key: 'rate', width: 100, render: (amt) => `₹${amt}` },
     { title: 'Total Amount', dataIndex: 'totalAmount', key: 'totalAmount', width: 120, render: (amt) => `₹${amt}` },

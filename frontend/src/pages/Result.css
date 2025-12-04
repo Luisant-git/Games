@@ -12,6 +12,36 @@
   text-align: center;
 }
 
+.category-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  padding: 4px 0;
+}
+
+.category-tab {
+  padding: 8px 16px;
+  border: 2px solid var(--primary-color);
+  background: white;
+  color: var(--primary-color);
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.category-tab.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.category-tab:hover {
+  opacity: 0.8;
+}
+
 .results-list {
   display: flex;
   flex-direction: column;

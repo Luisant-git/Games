@@ -28,8 +28,9 @@ const History = () => {
       } else {
         response = await getPlayerGameHistory();
       }
-      const historyData = await response.json();
-      setHistory(userType === 'agent' ? historyData.data || [] : historyData);
+      const result = await response.json();
+      const historyData = userType === 'agent' ? (result.data || []) : result;
+      setHistory(historyData);
 
       const totalGames = historyData.length;
       const totalWon = historyData.filter((game) => game.isWon).length;

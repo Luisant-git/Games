@@ -17,13 +17,52 @@ export class ResultService {
 
   async findAll() {
     const results = await this.prisma.result.findMany({
+      where: { isPublished: true },
       orderBy: { createdAt: 'desc' },
     });
 
-    return results.map((result) => ({
-      ...result,
-      boards: this.mapNumbersToBoards(result.numbers),
-    }));
+    const enrichedResults = await Promise.all(
+      results.map(async (result) => {
+        // Convert 12-hour format to 24-hour for matching
+        const convertTo24Hour = (time12: string) => {
+          const [time, period] = time12.split(' ');
+          let [hours, minutes] = time.split(':');
+          let hour = parseInt(hours);
+          
+          if (period === 'PM' && hour !== 12) {
+            hour += 12;
+          } else if (period === 'AM' && hour === 12) {
+            hour = 0;
+          }
+          
+          return `${hour.toString().padStart(2, '0')}:${minutes}`;
+        };
+
+        const time24 = convertTo24Hour(result.time);
+        
+        // Get all showtimes to match
+        const allShowtimes = await this.prisma.showTime.findMany({
+          include: {
+            timing: {
+              include: {
+                category: true,
+              },
+            },
+          },
+        });
+        
+        // Find matching showtime
+        const showtime = allShowtimes.find(st => st.showTime === time24) || null;
+
+        return {
+          ...result,
+          boards: this.mapNumbersToBoards(result.numbers),
+          category: showtime?.timing?.category?.name || null,
+        };
+      }),
+    );
+
+    return enrichedResults;
   }
 
   private mapNumbersToBoards(numbers: string) {
