@@ -17,7 +17,6 @@ export class ResultService {
 
   async findAll() {
     const results = await this.prisma.result.findMany({
-      where: { isPublished: true },
       orderBy: { createdAt: 'desc' },
     });
 
@@ -56,7 +55,7 @@ export class ResultService {
 
         return {
           ...result,
-          boards: this.mapNumbersToBoards(result.numbers),
+          boards: result.numbers.length === 5 ? this.mapNumbersToBoards(result.numbers) : null,
           category: showtime?.timing?.category?.name || null,
         };
       }),
