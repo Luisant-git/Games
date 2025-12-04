@@ -17,10 +17,14 @@ const Result = () => {
       const data = await getResults();
       setResults(data);
       const uniqueCategories = [...new Set(data.map(r => r.category).filter(Boolean))];
-      setCategories(uniqueCategories);
-      if (uniqueCategories.length > 0) {
-        const dearCategory = uniqueCategories.find(cat => cat.toUpperCase() === 'DEAR');
-        setSelectedCategory(dearCategory || uniqueCategories[0]);
+      const sortedCategories = uniqueCategories.sort((a, b) => {
+        if (a.toUpperCase() === 'DEAR') return -1;
+        if (b.toUpperCase() === 'DEAR') return 1;
+        return 0;
+      });
+      setCategories(sortedCategories);
+      if (sortedCategories.length > 0) {
+        setSelectedCategory(sortedCategories[0]);
       }
     } catch (error) {
       console.error("Error fetching results:", error);
