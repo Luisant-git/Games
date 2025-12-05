@@ -27,7 +27,7 @@ export class OrderReportService {
       where.board = { equals: filterDto.board, mode: 'insensitive' };
     }
 
-    if (filterDto.betNumber && filterDto.board !== 'ABC') {
+    if (filterDto.betNumber && filterDto.board !== 'ABC' && filterDto.board !== 'ABCD' && filterDto.board !== 'DABC') {
       where.numbers = { contains: filterDto.betNumber };
     }
 
@@ -41,6 +41,18 @@ export class OrderReportService {
             playStart: true,
             playEnd: true,
             categoryId: true,
+            playerId: true,
+            agentId: true,
+            player: {
+              select: {
+                username: true,
+              },
+            },
+            agent: {
+              select: {
+                username: true,
+              },
+            },
           },
         },
       },
@@ -51,34 +63,25 @@ export class OrderReportService {
 
 
 
-    const groupedData: Record<string, any> = gamePlays.reduce((acc, play) => {
-      const key = `${play.board}-${play.numbers}`;
-      if (!acc[key]) {
-        acc[key] = {
-          board: play.board,
-          number: play.numbers,
-          amount: 0,
-          qty: 0,
-        };
-      }
-      acc[key].qty += play.qty;
-      acc[key].amount += play.amount;
-      return acc;
-    }, {});
-
-    let allData = Object.values(groupedData);
+    let allData = gamePlays.map(play => ({
+      board: play.board,
+      number: play.numbers,
+      username: play.gameHistory.player?.username || play.gameHistory.agent?.username || 'Unknown',
+      amount: play.amount,
+      qty: play.qty,
+    }));
     
     if (filterDto.qty) {
       allData = allData.filter((item: any) => item.qty >= Number(filterDto.qty));
     }
     
-    if (filterDto.betNumber && filterDto.board === 'ABC') {
+    if (filterDto.betNumber && (filterDto.board === 'ABC' || filterDto.board === 'ABCD' || filterDto.board === 'DABC')) {
       const betNumber = filterDto.betNumber;
       allData = allData.filter((item: any) => {
         try {
           const numbers = JSON.parse(item.number);
           const betDigits = betNumber.split('');
-          return betDigits.every(digit => numbers.includes(parseInt(digit)));
+          return betDigits.some(digit => numbers.includes(parseInt(digit)));
         } catch {
           return false;
         }
@@ -176,39 +179,42 @@ export class OrderReportService {
       where.qty = { gte: Number(filterDto.qty) };
     }
 
-    if (filterDto.betNumber) {
-      if (filterDto.board === 'ABC') {
-        where.numbers = { contains: filterDto.betNumber };
-      } else {
-        where.numbers = { contains: filterDto.betNumber };
-      }
+    if (filterDto.betNumber && filterDto.board !== 'ABC' && filterDto.board !== 'ABCD' && filterDto.board !== 'DABC') {
+      where.numbers = { contains: filterDto.betNumber };
     }
 
     const gamePlays = await this.prisma.gamePlay.findMany({
       where,
+      include: {
+        gameHistory: {
+          select: {
+            playerId: true,
+            agentId: true,
+            player: {
+              select: {
+                username: true,
+              },
+            },
+            agent: {
+              select: {
+                username: true,
+              },
+            },
+          },
+        },
+      },
       orderBy: {
         board: 'asc',
       },
     });
 
-    const groupedData: Record<string, any> = gamePlays.reduce((acc, play) => {
-      const key = `${play.board}-${play.numbers}`;
-      if (!acc[key]) {
-        acc[key] = {
-          board: play.board,
-          number: play.numbers,
-          amount: 0,
-          qty: 0,
-        };
-      }
-      acc[key].qty += play.qty;
-      acc[key].amount += play.amount;
-      return acc;
-    }, {});
-
-    let allData = Object.values(groupedData).map((item: any, index) => ({
+    let allData = gamePlays.map((play, index) => ({
       sno: index + 1,
-      ...item,
+      board: play.board,
+      number: play.numbers,
+      username: play.gameHistory.player?.username || play.gameHistory.agent?.username || 'Unknown',
+      amount: play.amount,
+      qty: play.qty,
     }));
 
     if (selectedNumbers) {
