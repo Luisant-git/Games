@@ -406,8 +406,36 @@ export class ResultService {
       resultDate.getDate() + 1,
     );
 
+    // Convert 12-hour format to 24-hour for matching
+    const convertTo24Hour = (time12: string) => {
+      const [time, period] = time12.split(' ');
+      let [hours, minutes] = time.split(':');
+      let hour = parseInt(hours);
+      
+      if (period === 'PM' && hour !== 12) {
+        hour += 12;
+      } else if (period === 'AM' && hour === 12) {
+        hour = 0;
+      }
+      
+      return `${hour.toString().padStart(2, '0')}:${minutes}`;
+    };
+
+    const time24 = convertTo24Hour(result.time);
+
+    const showtime = await this.prisma.showTime.findFirst({
+      where: {
+        showTime: time24,
+      },
+    });
+
+    if (!showtime) {
+      throw new BadRequestException(`Showtime not found for this result time: ${result.time} (${time24})`);
+    }
+
     const gameHistories = await this.prisma.gameHistory.findMany({
       where: {
+        showtimeId: showtime.id,
         showTime: {
           gte: startOfDay,
           lt: endOfDay,
@@ -451,10 +479,15 @@ export class ResultService {
 
       // Update wallets based on win/loss
       if (totalWinAmount > 0) {
-        // Player wins - add to player wallet
+        // Player/Agent wins - add to their wallet
         if (history.playerId) {
           await this.prisma.playerWallet.update({
             where: { playerId: history.playerId },
+            data: { balance: { increment: totalWinAmount } },
+          });
+        } else if (history.agentId) {
+          await this.prisma.agentWallet.update({
+            where: { agentId: history.agentId },
             data: { balance: { increment: totalWinAmount } },
           });
         }

@@ -94,12 +94,11 @@ export default function OrderReport() {
   }
 
   const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedRows([])
-      setSelectAll(false)
-    } else {
+    setSelectAll(!selectAll)
+    if (!selectAll) {
       setSelectedRows(data.map(item => item.sno))
-      setSelectAll(true)
+    } else {
+      setSelectedRows([])
     }
   }
 
@@ -107,11 +106,10 @@ export default function OrderReport() {
     setSelectedRows(prev => {
       if (prev.includes(sno)) {
         const newSelected = prev.filter(id => id !== sno)
-        setSelectAll(newSelected.length === data.length && data.length > 0)
+        setSelectAll(false)
         return newSelected
       } else {
         const newSelected = [...prev, sno]
-        setSelectAll(newSelected.length === data.length && data.length > 0)
         return newSelected
       }
     })
@@ -119,7 +117,7 @@ export default function OrderReport() {
 
   const handleWhatsAppShare = async () => {
     try {
-      if (selectedRows.length === 0) {
+      if (selectedRows.length === 0 && !selectAll) {
         toast.error('Please select at least one order to share')
         return
       }
@@ -130,7 +128,7 @@ export default function OrderReport() {
       if (filters.qty) params.qty = filters.qty
       if (filters.betNumber) params.betNumber = filters.betNumber
       
-      const result = await getWhatsAppFormat(params, selectedRows, selectAll)
+      const result = await getWhatsAppFormat(params, selectAll ? [] : selectedRows, selectAll)
       const message = encodeURIComponent(result.message)
       window.open(`https://wa.me/?text=${message}`, '_blank')
     } catch (error) {
@@ -247,9 +245,9 @@ export default function OrderReport() {
             icon={<WhatsAppOutlined />} 
             style={{ backgroundColor: '#25D366' }} 
             onClick={handleWhatsAppShare}
-            disabled={selectedRows.length === 0}
+            disabled={selectedRows.length === 0 && !selectAll}
           >
-            Share Selected ({selectedRows.length})
+            Share Selected ({selectAll ? pagination.total : selectedRows.length})
           </Button>
           <Button icon={<ReloadOutlined />} onClick={handleSearch}></Button>
           <Button onClick={() => { setFilters({ showtimeId: null, board: '', qty: '', betNumber: '' }); setSelectedRows([]); setSelectAll(false); fetchData(); }}>Clear</Button>

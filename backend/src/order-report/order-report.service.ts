@@ -217,7 +217,7 @@ export class OrderReportService {
       qty: play.qty,
     }));
 
-    if (selectedNumbers) {
+    if (selectedNumbers && !isSelectAll) {
       const selectedSNos = selectedNumbers.split(',').map(n => parseInt(n));
       allData = allData.filter((item: any) => selectedSNos.includes(item.sno));
     }
