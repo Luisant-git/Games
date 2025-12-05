@@ -227,11 +227,11 @@ const Deposit = () => {
             <div className="upi-id-section">
               <p className="upi-label">UPI ID:</p>
               <div className="upi-id-container">
-                <span className="upi-id">gamehub@paytm</span>
+                <span className="upi-id">7845089752@axl</span>
                 <button 
                   className="copy-btn"
                   onClick={() => {
-                    navigator.clipboard.writeText('gamehub@paytm');
+                    navigator.clipboard.writeText('7845089752@axl');
                     toast.success('UPI ID copied to clipboard!');
                   }}
                 >

@@ -1,11 +1,14 @@
 .history {
-  padding: 14px 14px 80px;
+  padding: 14px;
+  padding-bottom: 80px;
   background: var(--background-color);
-  height: auto;
+  min-height: calc(100vh - 0px);
+  height: 100%;
   overflow: visible;
 }
 
 .history-list {
+  min-height: calc(100vh - 200px);
   height: auto;
   overflow: visible;
 }
