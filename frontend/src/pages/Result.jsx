@@ -68,8 +68,20 @@ const Result = () => {
       .join("");
   };
 
+  const convertTo24Hour = (time12h) => {
+    const [time, modifier] = time12h.split(' ');
+    let [hours, minutes] = time.split(':');
+    if (hours === '12') {
+      hours = '00';
+    }
+    if (modifier === 'PM') {
+      hours = parseInt(hours, 10) + 12;
+    }
+    return `${hours}:${minutes}`;
+  };
+
   const groupResultsByDate = (results) => {
-    return results.reduce((groups, result) => {
+    const groups = results.reduce((groups, result) => {
       const date = formatDateWithoutTime(result.date);
       if (!groups[date]) {
         groups[date] = [];
@@ -77,6 +89,16 @@ const Result = () => {
       groups[date].push(result);
       return groups;
     }, {});
+    
+    Object.keys(groups).forEach(date => {
+      groups[date].sort((a, b) => {
+        const timeA = convertTo24Hour(a.time);
+        const timeB = convertTo24Hour(b.time);
+        return timeA.localeCompare(timeB);
+      });
+    });
+    
+    return groups;
   };
 
   if (loading) {
