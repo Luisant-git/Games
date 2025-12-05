@@ -82,6 +82,20 @@ export default function Enquiry() {
       render: (text) => text?.length > 12 ? `${text.substring(0, 12)}...` : text
     },
     { 
+      title: 'Image', 
+      dataIndex: 'image', 
+      key: 'image',
+      width: 80,
+      render: (image) => image ? (
+        <img 
+          src={image} 
+          alt="Ticket" 
+          style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px', cursor: 'pointer' }}
+          onClick={() => window.open(image, '_blank')}
+        />
+      ) : 'N/A'
+    },
+    { 
       title: 'Status', 
       dataIndex: 'status', 
       key: 'status', 
@@ -165,6 +179,18 @@ export default function Enquiry() {
             <p><strong>Message:</strong> {selectedRecord.message}</p>
             <p><strong>Status:</strong> {selectedRecord.status}</p>
             <p><strong>Created At:</strong> {dayjs(selectedRecord.createdAt).format('DD-MM-YYYY HH:mm')}</p>
+            {selectedRecord.image && (
+              <div style={{ marginTop: '16px' }}>
+                <p><strong>Attached Image:</strong></p>
+                <img 
+                  src={selectedRecord.image} 
+                  alt="Support ticket" 
+                  style={{ maxWidth: '100%', maxHeight: '400px', borderRadius: '8px', border: '1px solid #d9d9d9', cursor: 'pointer' }}
+                  onClick={() => window.open(selectedRecord.image, '_blank')}
+                  title="Click to view full screen"
+                />
+              </div>
+            )}
           </div>
         )}
       </Modal>

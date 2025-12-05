@@ -6,11 +6,12 @@ const Support = () => {
   const [fileName, setFileName] = useState("");
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({ subject: "", message: "" });
+  const [formData, setFormData] = useState({ subject: "", message: "", image: null });
 
   const onFileChange = (e) => {
     const f = e.target.files?.[0];
     setFileName(f ? f.name : "");
+    setFormData({...formData, image: f});
   };
 
   const fetchTickets = async () => {
@@ -28,7 +29,7 @@ const Support = () => {
     
     try {
       await createSupportTicket(formData);
-      setFormData({ subject: "", message: "" });
+      setFormData({ subject: "", message: "", image: null });
       setFileName("");
       document.getElementById('image').value = '';
       await fetchTickets();
@@ -84,7 +85,7 @@ const Support = () => {
           <div className="upload-row">
             <label htmlFor="image" className="upload-label">
               <span className="upload-icon">🖼️</span>
-              <span>Upload Image (Max 500KB)</span>
+              <span>Upload Image (Max 2MB)</span>
             </label>
             <input
               id="image"
@@ -122,6 +123,14 @@ const Support = () => {
                   </span>
                 </div>
                 <p className="ticket-message">{ticket.message}</p>
+                {ticket.image && (
+                  <img 
+                    src={ticket.image} 
+                    alt="Ticket attachment" 
+                    style={{ maxWidth: '100%', maxHeight: '200px', marginTop: '10px', borderRadius: '6px', cursor: 'pointer' }}
+                    onClick={() => window.open(ticket.image, '_blank')}
+                  />
+                )}
                 <div className="ticket-date">
                   {new Date(ticket.createdAt).toLocaleDateString()}
                 </div>
