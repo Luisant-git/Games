@@ -13,6 +13,8 @@ const MyPlayers = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedPlayerHistory, setSelectedPlayerHistory] = useState([]);
   const [selectedPlayerName, setSelectedPlayerName] = useState('');
+  const [detailModalVisible, setDetailModalVisible] = useState(false);
+  const [selectedGameplay, setSelectedGameplay] = useState([]);
 
   useEffect(() => {
     fetchMyPlayers();
@@ -108,11 +110,41 @@ const MyPlayers = () => {
         totalAmount: history.totalBetAmount || 0,
         commission: history.agentCommission || 0,
         winningAmount: history.totalWinAmount || 0,
+        gameplay: history.gameplay || [],
       };
     }) || [];
     setSelectedPlayerHistory(historyData);
     setSelectedPlayerName(player.username);
     setModalVisible(true);
+  };
+
+  const handleGameplayDetails = (history) => {
+    const gameplayData = history.gameplay?.map((game, index) => {
+      let displayNumber = game.numbers;
+      try {
+        const parsed = JSON.parse(game.numbers);
+        displayNumber = Array.isArray(parsed) ? parsed.join('') : game.numbers;
+      } catch {
+        displayNumber = game.numbers;
+      }
+      const amount = game.amount || 0;
+      const qty = game.qty || 1;
+      const boardAmount = amount / qty;
+      const totalAmount = amount;
+      return {
+        sno: index + 1,
+        board: game.board,
+        betType: game.betType,
+        number: displayNumber,
+        qty: qty,
+        boardAmount: boardAmount,
+        totalAmount: totalAmount,
+        winAmount: game.winAmount || 0,
+      };
+    }) || [];
+    setSelectedGameplay(gameplayData);
+    setModalVisible(false);
+    setDetailModalVisible(true);
   };
 
   const formatTime = (time) => {
@@ -194,6 +226,47 @@ const MyPlayers = () => {
         </table>
       </div>
 
+      {detailModalVisible && (
+        <div className="modal-overlay" onClick={() => { setDetailModalVisible(false); setModalVisible(true); }}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Gameplay Details</h2>
+              <button className="modal-close" onClick={() => { setDetailModalVisible(false); setModalVisible(true); }}>×</button>
+            </div>
+            <div className="modal-body">
+              <table>
+                <thead>
+                  <tr>
+                    <th>S.No</th>
+                    <th>Board</th>
+                    <th>Bet Type</th>
+                    <th>Number</th>
+                    <th>Qty</th>
+                    <th>Board Amount</th>
+                    <th>Total Amount</th>
+                    <th>Win Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedGameplay.map(game => (
+                    <tr key={game.sno}>
+                      <td>{game.sno}</td>
+                      <td>{game.board}</td>
+                      <td>{game.betType}</td>
+                      <td>{game.number}</td>
+                      <td>{game.qty}</td>
+                      <td>₹{game.boardAmount.toFixed(2)}</td>
+                      <td>₹{game.totalAmount.toFixed(2)}</td>
+                      <td>₹{game.winAmount.toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
       {modalVisible && (
         <div className="modal-overlay" onClick={() => setModalVisible(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -213,6 +286,7 @@ const MyPlayers = () => {
                     <th>Total Amount</th>
                     <th>Commission</th>
                     <th>Winning Amount</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -226,6 +300,15 @@ const MyPlayers = () => {
                       <td>₹{history.totalAmount.toFixed(2)}</td>
                       <td>₹{history.commission.toFixed(2)}</td>
                       <td>₹{history.winningAmount.toFixed(2)}</td>
+                      <td>
+                        <button 
+                          className="see-more-btn" 
+                          onClick={() => handleGameplayDetails(history)}
+                          disabled={!history.gameplay || history.gameplay.length === 0}
+                        >
+                          See More
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

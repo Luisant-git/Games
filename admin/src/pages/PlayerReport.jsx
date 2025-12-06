@@ -86,6 +86,15 @@ export default function PlayerReport() {
     return `${day}-${month}-${year}`
   }
 
+  const formatNumber = (numStr) => {
+    try {
+      const parsed = JSON.parse(numStr)
+      return Array.isArray(parsed) ? parsed.join('') : numStr
+    } catch {
+      return numStr
+    }
+  }
+
   const handleSeeMore = (record) => {
     const gameData = record.games?.map((game, index) => ({
       sno: index + 1,
@@ -99,7 +108,7 @@ export default function PlayerReport() {
   const gameColumns = [
     { title: 'S.No', dataIndex: 'sno', key: 'sno', width: 60 },
     { title: 'Board Name', dataIndex: 'boardName', key: 'boardName', width: 120 },
-    { title: 'Number', dataIndex: 'number', key: 'number', width: 100 },
+    { title: 'Number', dataIndex: 'number', key: 'number', width: 100, render: (num) => formatNumber(num) },
     { title: 'Qty', dataIndex: 'qty', key: 'qty', width: 80 },
     { title: 'Amount', dataIndex: 'amount', key: 'amount', width: 100, render: (amt) => `₹${amt}` },
     { title: 'Winning Amount', dataIndex: 'winningAmount', key: 'winningAmount', width: 140, render: (amt) => `₹${amt}` },

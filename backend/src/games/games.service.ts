@@ -108,8 +108,8 @@ export class GamesService {
           },
         });
         const commissionRate = commission?.commissionRate || 0;
-        const gameCommission = commissionRate;
-        console.log(`Game ${game.gameId}: Amount ${game.amount}, Flat Commission Rate ₹${commissionRate}, Commission ₹${gameCommission}`);
+        const gameCommission = commissionRate * game.qty;
+        console.log(`Game ${game.gameId}: Qty ${game.qty}, Commission Rate ₹${commissionRate}, Total Commission ₹${gameCommission}`);
         agentCommission += gameCommission;
       }
       console.log(`Total games played: ${gameplay.length}`);
@@ -191,7 +191,7 @@ export class GamesService {
           const updated = await this.prisma.agentCommission.update({
             where: { id: commission.id },
             data: { 
-              amount: { increment: commission.commissionRate },
+              amount: { increment: commission.commissionRate * game.qty },
               fromPlayerId: playerId
             }
           });

@@ -14,11 +14,11 @@ export class AuthService {
 
   async register(registerDto: RegisterDto) {
     const existingUser = await this.prisma.admin.findUnique({
-      where: { email: registerDto.email },
+      where: { username: registerDto.username },
     });
 
     if (existingUser) {
-      throw new ConflictException('Email already exists');
+      throw new ConflictException('Username already exists');
     }
 
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
@@ -36,14 +36,14 @@ export class AuthService {
 
   async login(loginDto: LoginDto) {
     const user = await this.prisma.admin.findUnique({
-      where: { email: loginDto.email },
+      where: { username: loginDto.username },
     });
 
     if (!user || !(await bcrypt.compare(loginDto.password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { id: user.id, email: user.email, type: 'admin' };
+    const payload = { id: user.id, username: user.username, type: 'admin' };
     return {
       access_token: this.jwtService.sign(payload),
     };
@@ -55,8 +55,7 @@ export class AuthService {
       select: {
         id: true,
         name: true,
-        email: true,
-        phone: true,
+        username: true,
         createdAt: true,
         updatedAt: true,
       },

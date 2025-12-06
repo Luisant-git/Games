@@ -19,6 +19,15 @@ const AgentGameHistory = () => {
     winRate: 0
   })
 
+  const formatNumber = (numStr) => {
+    try {
+      const parsed = JSON.parse(numStr)
+      return Array.isArray(parsed) ? parsed.join('') : numStr
+    } catch {
+      return numStr
+    }
+  }
+
   useEffect(() => {
     fetchAgentGameHistory()
   }, [agentId])
@@ -104,7 +113,7 @@ const AgentGameHistory = () => {
         <div style={{ maxHeight: '100px', overflowY: 'auto' }}>
           {gameplay?.map((play, index) => (
             <div key={index} style={{ fontSize: '12px', marginBottom: '4px' }}>
-              {play.board} - {play.betType} - {play.numbers} (₹{play.amount})
+              {play.board} - {play.betType} - {formatNumber(play.numbers)} (₹{play.amount})
             </div>
           ))}
         </div>

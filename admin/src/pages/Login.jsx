@@ -11,7 +11,7 @@ const Login = () => {
   const onFinish = async (values) => {
     setLoading(true)
     try {
-      const result = await loginAdmin(values.email, values.password)
+      const result = await loginAdmin(values.username, values.password)
       localStorage.setItem('adminToken', result.access_token)
       message.success('Login successful!')
       navigate('/category')
@@ -44,14 +44,13 @@ const Login = () => {
           layout="vertical"
         >
           <Form.Item
-            name="email"
-            rules={[{ required: true, message: 'Please input your email!' }]}
+            name="username"
+            rules={[{ required: true, message: 'Please input your username!' }]}
           >
             <Input
               prefix={<UserOutlined />}
-              placeholder="Email"
+              placeholder="Username"
               size="large"
-              type="email"
             />
           </Form.Item>
 
