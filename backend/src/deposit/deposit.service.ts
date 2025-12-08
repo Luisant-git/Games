@@ -6,12 +6,14 @@ import { UpdateDepositStatusDto } from './dto/update-deposit-status.dto';
 import { DepositStatus } from './entities/deposit.entity';
 import { DepositValidation } from './deposit.validation';
 import { SettingsService } from '../settings/settings.service';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class DepositService {
   constructor(
     private prisma: PrismaService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private emailService: EmailService
   ) {}
 
   async create(createDepositDto: CreateDepositDto, userId: number, userType: string = 'player') {
@@ -60,6 +62,8 @@ export class DepositService {
         } : undefined,
       },
     });
+
+    await this.emailService.sendDepositNotification(deposit);
 
     return {
       success: true,

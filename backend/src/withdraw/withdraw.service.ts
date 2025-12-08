@@ -6,12 +6,14 @@ import { UpdateWithdrawStatusDto } from './dto/update-withdraw-status.dto';
 import { WithdrawStatus } from './entities/withdraw.entity';
 import { WithdrawValidation } from './withdraw.validation';
 import { SettingsService } from '../settings/settings.service';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class WithdrawService {
   constructor(
     private prisma: PrismaService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private emailService: EmailService
   ) {}
 
   async create(createWithdrawDto: CreateWithdrawDto, userId: number, userType: string = 'player') {
@@ -101,6 +103,8 @@ export class WithdrawService {
         } : undefined,
       },
     });
+
+    await this.emailService.sendWithdrawNotification(withdraw);
 
     return {
       success: true,
