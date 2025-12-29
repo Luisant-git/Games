@@ -106,69 +106,89 @@ const Register = ({
         <h2>Registration</h2>
 
         <form onSubmit={handleSubmit} noValidate>
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            required
-            aria-label="Full Name"
-          />
-          <input
-            type="text"
-            placeholder="Username"
-            value={formData.username}
-            onChange={(e) =>
-              setFormData({ ...formData, username: e.target.value })
-            }
-            required
-            aria-label="Username"
-            autoComplete="username"
-          />
-          <input
-            type="tel"
-            placeholder="Phone (10 digits)"
-            value={formData.phone}
-            onChange={(e) => {
-              const value = e.target.value.replace(/\D/g, "").slice(0, 10);
-              setFormData({ ...formData, phone: value });
-            }}
-            required
-            aria-label="Phone"
-            autoComplete="tel"
-            maxLength="10"
-          />
-          <div className="password-input">
+          <div className="form-group">
+            <label htmlFor="name">Full Name</label>
             <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              value={formData.password}
+              id="name"
+              type="text"
+              placeholder="Enter your full name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              required
+              aria-label="Full Name"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              id="username"
+              type="text"
+              placeholder="Enter your username"
+              value={formData.username}
               onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
+                setFormData({ ...formData, username: e.target.value })
               }
               required
-              aria-label="Password"
-              autoComplete="new-password"
+              aria-label="Username"
+              autoComplete="username"
             />
-            <button
-              type="button"
-              className="password-toggle"
-              onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? "Hide password" : "Show password"}
-              title={showPassword ? "Hide password" : "Show password"}
-            >
-              {showPassword ? "🫥" : "👁️"}
-            </button>
           </div>
-          <input
-            type="text"
-            placeholder="Referral Code (Optional)"
-            value={formData.referalCode}
-            onChange={(e) =>
-              setFormData({ ...formData, referalCode: e.target.value })
-            }
-            aria-label="Referral Code"
-          />
+          <div className="form-group">
+            <label htmlFor="phone">Phone Number</label>
+            <input
+              id="phone"
+              type="tel"
+              placeholder="Enter 10 digit phone number"
+              value={formData.phone}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "").slice(0, 10);
+                setFormData({ ...formData, phone: value });
+              }}
+              required
+              aria-label="Phone"
+              autoComplete="tel"
+              maxLength="10"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <div className="password-input">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+                required
+                aria-label="Password"
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                title={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? "🫥" : "👁️"}
+              </button>
+            </div>
+          </div>
+          <div className="form-group">
+            <label htmlFor="referalCode">Referral Code (Optional)</label>
+            <input
+              id="referalCode"
+              type="text"
+              placeholder="Enter referral code"
+              value={formData.referalCode}
+              onChange={(e) =>
+                setFormData({ ...formData, referalCode: e.target.value })
+              }
+              aria-label="Referral Code"
+            />
+          </div>
 
           <button type="submit" disabled={isLoading}>
             {isLoading ? (

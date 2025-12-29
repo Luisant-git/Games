@@ -18,6 +18,11 @@ export class OrderReportFilterDto {
   @IsOptional()
   @Type(() => Number)
   @IsInt()
+  ticket?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
   qty?: number;
 
   @IsOptional()

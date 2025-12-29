@@ -23,7 +23,17 @@ export class OrderReportService {
       };
     }
 
-    if (filterDto.board) {
+    if (filterDto.board && filterDto.ticket) {
+      const game = await this.prisma.game.findFirst({
+        where: {
+          board: { equals: filterDto.board, mode: 'insensitive' },
+          ticket: Number(filterDto.ticket),
+        },
+      });
+      if (game) {
+        where.gameId = game.id;
+      }
+    } else if (filterDto.board) {
       where.board = { equals: filterDto.board, mode: 'insensitive' };
     }
 
@@ -208,9 +218,23 @@ export class OrderReportService {
       },
     });
 
-    let allData = gamePlays.map((play, index) => ({
+    const gamePlayWithTickets = await Promise.all(
+      gamePlays.map(async (play) => {
+        const game = await this.prisma.game.findUnique({
+          where: { id: play.gameId },
+          select: { ticket: true },
+        });
+        return {
+          ...play,
+          ticket: game?.ticket || 0,
+        };
+      })
+    );
+
+    let allData = gamePlayWithTickets.map((play, index) => ({
       sno: index + 1,
       board: play.board,
+      ticket: play.ticket,
       number: play.numbers,
       username: play.gameHistory.player?.username || play.gameHistory.agent?.username || 'Unknown',
       amount: play.amount,
@@ -222,11 +246,12 @@ export class OrderReportService {
       allData = allData.filter((item: any) => selectedSNos.includes(item.sno));
     }
 
-    const groupedByBoard: Record<string, any[]> = allData.reduce((acc, item: any) => {
-      if (!acc[item.board]) {
-        acc[item.board] = [];
+    const groupedByBoardTicket: Record<string, any[]> = allData.reduce((acc, item: any) => {
+      const key = `${item.board}-${item.ticket}`;
+      if (!acc[key]) {
+        acc[key] = [];
       }
-      acc[item.board].push({
+      acc[key].push({
         number: item.number,
         qty: item.qty,
         amount: item.amount,
@@ -271,11 +296,27 @@ export class OrderReportService {
     }
 
     let totalAmount = 0;
-    Object.entries(groupedByBoard).forEach(([board, items]: [string, any[]]) => {
+    
+    Object.entries(groupedByBoardTicket).forEach(([key, items]: [string, any[]]) => {
+      const [board, ticket] = key.split('-');
+      message += `${board} - ${ticket} rs\n`;
+      message += '-'.repeat(20) + '\n';
+      
       items.forEach((item) => {
         totalAmount += item.amount;
-        message += `${board}\n${item.number} * ${item.qty}\n\n`;
+        let formattedNumber = item.number;
+        try {
+          const parsed = JSON.parse(item.number);
+          if (Array.isArray(parsed)) {
+            formattedNumber = parsed.join('');
+          }
+        } catch {
+          formattedNumber = item.number;
+        }
+        message += `${formattedNumber} x ${item.qty}\n`;
       });
+      
+      message += '\n';
     });
 
     if (isSelectAll) {

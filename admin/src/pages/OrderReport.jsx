@@ -15,6 +15,7 @@ export default function OrderReport() {
   const [filters, setFilters] = useState({ 
     showtimeId: null,
     board: '', 
+    ticket: '',
     qty: '',
     betNumber: '' 
   })
@@ -40,8 +41,11 @@ export default function OrderReport() {
   const fetchGames = async () => {
     try {
       const result = await gamesAPI.getAll()
-      const uniqueBoards = [...new Set(result.map(game => game.board))]
-      setGames(uniqueBoards)
+      const boardsWithTicket = result.map(game => ({
+        board: game.board,
+        ticket: game.ticket
+      }))
+      setGames(boardsWithTicket)
     } catch (error) {
       toast.error('Failed to fetch games')
     }
@@ -72,13 +76,19 @@ export default function OrderReport() {
   }
 
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({ ...prev, [key]: value }))
+    if (key === 'boardTicket') {
+      const [board, ticket] = value.split('|')
+      setFilters(prev => ({ ...prev, board, ticket }))
+    } else {
+      setFilters(prev => ({ ...prev, [key]: value }))
+    }
   }
 
   const handleSearch = () => {
     const params = { page: 1, limit: pagination.pageSize, date: dayjs().format('YYYY-MM-DD') }
     if (filters.showtimeId) params.showtimeId = filters.showtimeId
     if (filters.board) params.board = filters.board
+    if (filters.ticket) params.ticket = filters.ticket
     if (filters.qty) params.qty = filters.qty
     if (filters.betNumber) params.betNumber = filters.betNumber
     fetchData(params)
@@ -88,6 +98,7 @@ export default function OrderReport() {
     const params = { page: paginationInfo.current, limit: paginationInfo.pageSize, date: dayjs().format('YYYY-MM-DD') }
     if (filters.showtimeId) params.showtimeId = filters.showtimeId
     if (filters.board) params.board = filters.board
+    if (filters.ticket) params.ticket = filters.ticket
     if (filters.qty) params.qty = filters.qty
     if (filters.betNumber) params.betNumber = filters.betNumber
     fetchData(params)
@@ -125,6 +136,7 @@ export default function OrderReport() {
       const params = { date: dayjs().format('YYYY-MM-DD') }
       if (filters.showtimeId) params.showtimeId = filters.showtimeId
       if (filters.board) params.board = filters.board
+      if (filters.ticket) params.ticket = filters.ticket
       if (filters.qty) params.qty = filters.qty
       if (filters.betNumber) params.betNumber = filters.betNumber
       
@@ -215,14 +227,14 @@ export default function OrderReport() {
 
           <Select
             placeholder="Board"
-            value={filters.board || undefined}
-            onChange={(value) => handleFilterChange('board', value)}
-            style={{ width: 120 }}
+            value={filters.board && filters.ticket ? `${filters.board}|${filters.ticket}` : undefined}
+            onChange={(value) => handleFilterChange('boardTicket', value)}
+            style={{ width: 180 }}
             allowClear
           >
-            {games.map((board) => (
-              <Option key={board} value={board}>
-                {board}
+            {games.map((game, index) => (
+              <Option key={`${game.board}-${game.ticket}-${index}`} value={`${game.board}|${game.ticket}`}>
+                {game.board} - ₹{game.ticket}
               </Option>
             ))}
           </Select>
@@ -250,7 +262,7 @@ export default function OrderReport() {
             Share Selected ({selectAll ? pagination.total : selectedRows.length})
           </Button>
           <Button icon={<ReloadOutlined />} onClick={handleSearch}></Button>
-          <Button onClick={() => { setFilters({ showtimeId: null, board: '', qty: '', betNumber: '' }); setSelectedRows([]); setSelectAll(false); fetchData(); }}>Clear</Button>
+          <Button onClick={() => { setFilters({ showtimeId: null, board: '', ticket: '', qty: '', betNumber: '' }); setSelectedRows([]); setSelectAll(false); fetchData(); }}>Clear</Button>
         </Space>
       </div>
 
