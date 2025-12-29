@@ -16,6 +16,9 @@ export class OrderReportFilterDto {
   board?: string;
 
   @IsOptional()
+  boards?: string;
+
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
   ticket?: number;

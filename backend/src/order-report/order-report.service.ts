@@ -23,7 +23,27 @@ export class OrderReportService {
       };
     }
 
-    if (filterDto.board && filterDto.ticket) {
+    if (filterDto.boards) {
+      const boardTicketPairs = filterDto.boards.split(',');
+      const gameIds: number[] = [];
+      
+      for (const pair of boardTicketPairs) {
+        const [board, ticket] = pair.split('|');
+        const game = await this.prisma.game.findFirst({
+          where: {
+            board: { equals: board, mode: 'insensitive' },
+            ticket: Number(ticket),
+          },
+        });
+        if (game) {
+          gameIds.push(game.id);
+        }
+      }
+      
+      if (gameIds.length > 0) {
+        where.gameId = { in: gameIds };
+      }
+    } else if (filterDto.board && filterDto.ticket) {
       const game = await this.prisma.game.findFirst({
         where: {
           board: { equals: filterDto.board, mode: 'insensitive' },
