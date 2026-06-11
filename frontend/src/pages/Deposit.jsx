@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./Deposit.css";
-import QRCODE from "../assets/scan_me_qr_code.jpg";
+const QRCODE = "/finaQR.png";
 import { getPlayerWallet, getAgentWallet } from "../api/wallet";
 import { createDeposit, getDepositHistory } from "../api/deposit";
 import { uploadFile } from "../api/upload";
@@ -218,7 +218,7 @@ const Deposit = () => {
               onClick={() => {
                 const link = document.createElement('a');
                 link.href = QRCODE;
-                link.download = 'payment-qr-code.jpg';
+                link.download = 'payment-qr-code.png';
                 link.click();
               }}
             >
@@ -227,11 +227,11 @@ const Deposit = () => {
             <div className="upi-id-section">
               <p className="upi-label">UPI ID:</p>
               <div className="upi-id-container">
-                <span className="upi-id">7845089752@axl</span>
+                <span className="upi-id">12193926399@okbizaxis</span>
                 <button 
                   className="copy-btn"
                   onClick={() => {
-                    navigator.clipboard.writeText('7845089752@axl');
+                    navigator.clipboard.writeText('12193926399@okbizaxis');
                     toast.success('UPI ID copied to clipboard!');
                   }}
                 >
