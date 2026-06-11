@@ -120,18 +120,21 @@
 .upi-id-container {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .upi-id {
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-dark);
   background-color: white;
-  padding: 8px 12px;
+  padding: 8px;
   border-radius: 6px;
   border: 1px solid #dee2e6;
   flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .copy-btn {
